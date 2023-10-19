@@ -9,7 +9,7 @@ features:
   favicon: true
   node_user_picture: true
 logo:
-  path: ''
+  path: 'public://logo_asmsa.png'
   use_default: false
 header_shadow: 0
 slim_header_container_type: container
@@ -31,17 +31,17 @@ svg_logo_box_sticky: ''
 image_logo_fluid: 1
 social_new_window: 1
 behance: ''
-facebook: 'https://www.facebook.com/iststor/'
+facebook: 'https://www.facebook.com/Colonizzazioninterne'
 flickr: ''
 github: ''
-instagram: ''
+instagram: 'https://www.instagram.com/colonizzazioni.interne/'
 linkedin: ''
 medium: ''
 rss: ''
-twitter: 'https://twitter.com/iststor'
+twitter: ''
 telegram: ''
 whatsapp: ''
-youtube: ''
+youtube: 'https://www.youtube.com/channel/UC1QKtOc2ybi7yFsCtytF7DA'
 search_type: modal
 search_page_url: ''
 search_modal_size: fullscreen
