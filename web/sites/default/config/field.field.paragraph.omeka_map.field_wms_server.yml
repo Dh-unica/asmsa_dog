@@ -1,0 +1,88 @@
+uuid: 8f05fc03-7000-4c55-9770-8211561cbd65
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_wms_server
+    - paragraphs.paragraphs_type.geonode_wms
+    - paragraphs.paragraphs_type.omeka_map
+  module:
+    - entity_reference_revisions
+id: paragraph.omeka_map.field_wms_server
+field_name: field_wms_server
+entity_type: paragraph
+bundle: omeka_map
+label: 'Wms server'
+description: 'Enter the connection data of a WMS server'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      geonode_wms: geonode_wms
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 21
+        enabled: false
+      accordion_item:
+        weight: 22
+        enabled: false
+      attachments:
+        weight: 23
+        enabled: false
+      callout:
+        weight: 24
+        enabled: false
+      carousel:
+        weight: 25
+        enabled: false
+      citation:
+        weight: 26
+        enabled: false
+      content:
+        weight: 27
+        enabled: false
+      gallery:
+        weight: 28
+        enabled: false
+      gallery_item:
+        weight: 29
+        enabled: false
+      geonode_wms:
+        weight: 30
+        enabled: true
+      hero:
+        weight: 31
+        enabled: false
+      map:
+        weight: 32
+        enabled: false
+      node_reference:
+        weight: 33
+        enabled: false
+      omeka_map:
+        weight: 34
+        enabled: false
+      section:
+        weight: 35
+        enabled: false
+      settings:
+        weight: 36
+        enabled: false
+      slide:
+        weight: 37
+        enabled: false
+      timeline:
+        weight: 38
+        enabled: false
+      timeline_item:
+        weight: 39
+        enabled: false
+      webform:
+        weight: 40
+        enabled: false
+field_type: entity_reference_revisions

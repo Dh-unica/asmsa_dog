@@ -1,0 +1,14 @@
+uuid: 59cabec2-b63d-4a31-9fb8-a02028c78cc9
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.omeka_gallery.field_omeka_item
+    - paragraphs.paragraphs_type.omeka_gallery
+id: paragraph.omeka_gallery.default
+targetEntityType: paragraph
+bundle: omeka_gallery
+mode: default
+content: {  }
+hidden:
+  field_omeka_item: true

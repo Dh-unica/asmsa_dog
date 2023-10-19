@@ -1,0 +1,32 @@
+uuid: c2d902d4-c299-4783-92cb-8c7ad735122e
+langcode: it
+status: true
+dependencies:
+  module:
+    - options
+    - paragraphs
+_core:
+  default_config_hash: QZbMzdvaSglikLoh1OLHYccUVTyyLl4S8MveffBt6uA
+id: paragraph.field_gallery_grid_type
+field_name: field_gallery_grid_type
+entity_type: paragraph
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: quilted
+      label: Quilted
+    -
+      value: double
+      label: 'First image double (4 items min.)'
+    -
+      value: masonry
+      label: Masonry
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

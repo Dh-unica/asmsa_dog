@@ -1,0 +1,25 @@
+uuid: 172a6014-9e40-4b0f-ac81-7172d656c71b
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_call_to_action
+    - paragraphs.paragraphs_type.gallery_item
+  module:
+    - link
+_core:
+  default_config_hash: 4qx_sb7M9slUyHs4c2dNhUmZgWNiZfj3PXibo_Q1358
+id: paragraph.gallery_item.field_call_to_action
+field_name: field_call_to_action
+entity_type: paragraph
+bundle: gallery_item
+label: 'Call to action'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 2
+  link_type: 17
+field_type: link

@@ -1,0 +1,4 @@
+services:
+  omeka_utils.utils:
+    class: Drupal\omeka_utils\Utils
+

@@ -1,0 +1,5 @@
+label: Small
+description: 'Enable small variant. <a href="https://italia.github.io/bootstrap-italia/docs/componenti/hero/#versione-small" title="Read the Docs" target="_blank">Docs</a>'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

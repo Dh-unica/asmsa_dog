@@ -1,0 +1,32 @@
+uuid: c15e7670-3ed9-4260-94ff-0017ae19e376
+langcode: it
+status: true
+dependencies:
+  config:
+    - image.style.bootstrap_italia_card_image_standard
+    - image.style.bootstrap_italia_card_image_standard_2x
+    - image.style.bootstrap_italia_card_image_standard_4x
+  theme:
+    - bootstrap_italia
+_core:
+  default_config_hash: kvHn_d07YYmXd-vNy0-tcvTO450g4WfFPcJHe_f-GGM
+id: bootstrap_italia_card_standard
+label: 'Bootstrap Italia Card Standard'
+image_style_mappings:
+  -
+    image_mapping_type: image_style
+    image_mapping: bootstrap_italia_card_image_standard_4x
+    breakpoint_id: bootstrap_italia.full_hd
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: bootstrap_italia_card_image_standard_2x
+    breakpoint_id: bootstrap_italia.extra_large
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: bootstrap_italia_card_image_standard
+    breakpoint_id: bootstrap_italia.extra_small
+    multiplier: 1x
+breakpoint_group: bootstrap_italia
+fallback_image_style: bootstrap_italia_card_image_standard

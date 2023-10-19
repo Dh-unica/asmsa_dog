@@ -1,0 +1,27 @@
+uuid: f7d41909-e64a-41cc-8f0e-04ae16d0f5c6
+langcode: it
+status: true
+dependencies:
+  config:
+    - system.menu.small-prints
+  module:
+    - system
+  theme:
+    - italiagov
+_core:
+  default_config_hash: sJ-hjMYm76uMJxOLSdJf0m8n3l1THeKBiPSlJ-C6Qw8
+id: smallprints
+theme: italiagov
+region: footer_small_prints
+weight: 0
+provider: null
+plugin: 'system_menu_block:small-prints'
+settings:
+  id: 'system_menu_block:small-prints'
+  label: 'Small prints'
+  label_display: '0'
+  provider: system
+  level: 1
+  depth: 0
+  expand_all_items: false
+visibility: {  }

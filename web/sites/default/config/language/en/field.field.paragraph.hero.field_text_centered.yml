@@ -1,0 +1,5 @@
+label: 'Text centered'
+description: 'If checked, centers the text. <a href="https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-contenuti-testuali-centrati" title="Read the Docs" target="_blank">Docs</a>'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

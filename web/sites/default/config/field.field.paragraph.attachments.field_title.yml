@@ -1,0 +1,21 @@
+uuid: 67131024-b510-40a5-888e-26f8e0c62119
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.attachments
+_core:
+  default_config_hash: HK7LMxEoKTXGLpprnGMpuGwuR0r9zh4aqo0THFeoPkg
+id: paragraph.attachments.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: attachments
+label: Titolo
+description: 'Section title'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

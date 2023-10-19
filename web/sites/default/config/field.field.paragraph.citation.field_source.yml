@@ -1,0 +1,21 @@
+uuid: b85a45e8-274c-44be-9ade-ebe97791ad85
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_source
+    - paragraphs.paragraphs_type.citation
+_core:
+  default_config_hash: W-k3doLyznFDaTszuh1wAQXCeEZEcon61QZhHDS7Xfs
+id: paragraph.citation.field_source
+field_name: field_source
+entity_type: paragraph
+bundle: citation
+label: Sorgente
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

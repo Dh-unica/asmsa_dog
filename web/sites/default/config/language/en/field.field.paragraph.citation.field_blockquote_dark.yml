@@ -1,0 +1,5 @@
+label: 'Card dark'
+description: 'Check to display <code>Card Dark</code> variant. <a href="https://italia.github.io/bootstrap-italia/docs/organizzare-i-contenuti/tipografia/#card" title="Read the docs" target="_blank">Docs</a>'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

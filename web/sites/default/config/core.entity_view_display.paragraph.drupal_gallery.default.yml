@@ -1,0 +1,18 @@
+uuid: 99c911ab-1317-4bd5-8252-d33a1798e2b8
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.drupal_gallery.field_link
+    - field.field.paragraph.drupal_gallery.field_media
+    - field.field.paragraph.drupal_gallery.field_title
+    - paragraphs.paragraphs_type.drupal_gallery
+id: paragraph.drupal_gallery.default
+targetEntityType: paragraph
+bundle: drupal_gallery
+mode: default
+content: {  }
+hidden:
+  field_link: true
+  field_media: true
+  field_title: true

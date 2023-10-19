@@ -1,0 +1,5 @@
+content:
+  field_node_reference:
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs

@@ -1,0 +1,19 @@
+third_party_settings:
+  field_group:
+    group_content:
+      label: Content
+    group_accordion_items:
+      label: 'Accordion items'
+    group_settings:
+      label: Settings
+    group_accordion_behaviours:
+      label: 'Accordion behaviours'
+content:
+  field_accordion_item:
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+  field_settings:
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs

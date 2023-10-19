@@ -1,0 +1,31 @@
+uuid: b0d6a824-c5db-4bdd-8558-5ec6aa77234e
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_file_managed
+    - media.type.document
+    - paragraphs.paragraphs_type.attachments
+_core:
+  default_config_hash: XX1zRlb9YwDMjnwEi-dN0vb9ueTf0jXEMVU5TG5-xuo
+id: paragraph.attachments.field_file_managed
+field_name: field_file_managed
+entity_type: paragraph
+bundle: attachments
+label: 'File managed'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      document: document
+    sort:
+      field: name
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

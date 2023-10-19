@@ -1,0 +1,23 @@
+uuid: 395a16b2-8572-4b1c-a4a4-0ba05ac89b7e
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.omeka_gallery.field_omeka_item
+    - paragraphs.paragraphs_type.omeka_gallery
+  module:
+    - dog_library
+id: paragraph.omeka_gallery.default
+targetEntityType: paragraph
+bundle: omeka_gallery
+mode: default
+content:
+  field_omeka_item:
+    type: dog_omeka_resource_library
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

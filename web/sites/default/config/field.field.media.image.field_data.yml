@@ -1,0 +1,21 @@
+uuid: bc527cfb-3fd3-4077-8ce1-8bb7923a40b6
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_data
+    - media.type.image
+  module:
+    - datetime
+id: media.image.field_data
+field_name: field_data
+entity_type: media
+bundle: image
+label: Data
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

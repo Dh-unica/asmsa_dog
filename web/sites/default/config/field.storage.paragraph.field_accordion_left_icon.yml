@@ -1,0 +1,20 @@
+uuid: 1deebf09-d496-4c04-ae23-e77f60539a5c
+langcode: it
+status: true
+dependencies:
+  module:
+    - paragraphs
+_core:
+  default_config_hash: zciEDp8DaVEmOaz-JtBl5UuX5Qal61C5Jw4_i5I2qzI
+id: paragraph.field_accordion_left_icon
+field_name: field_accordion_left_icon
+entity_type: paragraph
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

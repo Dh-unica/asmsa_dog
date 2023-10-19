@@ -1,0 +1,6 @@
+name: Dog Utils
+type: module
+description: Utils for Dog
+package: Custom
+core_version_requirement: ^9 || ^10
+

@@ -1,0 +1,6 @@
+dog_library.ui:
+  path: '/omeka-resource-library'
+  defaults:
+    _controller: 'dog_library.ui_builder:buildUi'
+  requirements:
+    _custom_access: 'dog_library.ui_builder:checkAccess'

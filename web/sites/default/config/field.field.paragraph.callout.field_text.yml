@@ -1,0 +1,24 @@
+uuid: 3abd329a-1b2e-45dd-ae27-bc45d64b7d5b
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text
+    - paragraphs.paragraphs_type.callout
+  module:
+    - text
+_core:
+  default_config_hash: USKPZeQOzWC6jH9jTaxnc9NqVPT4_sUidwgoe3fk-Xc
+id: paragraph.callout.field_text
+field_name: field_text
+entity_type: paragraph
+bundle: callout
+label: Testo
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

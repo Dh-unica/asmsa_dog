@@ -1,0 +1,14 @@
+uuid: 8c535302-09fc-4762-a22c-949ee352aadf
+langcode: it
+status: true
+dependencies:
+  enforced:
+    module:
+      - webform
+_core:
+  default_config_hash: YNrKbYrWWjeubUUM8AsQ19KnX7cU1elACR14CZJHmdg
+id: days
+label: Giorni
+category: 'Data e ora'
+likert: false
+options: "Sunday: Domenica\r\nMonday: Lunedì\r\nTuesday: Martedì\r\nWednesday: Mercoledì\r\nThursday: Giovedì\r\nFriday: Venerdì\r\nSaturday: Sabato\n"

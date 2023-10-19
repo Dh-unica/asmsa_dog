@@ -1,0 +1,25 @@
+uuid: 9935ff11-eee8-4553-95a3-5fd196c5a6cb
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_call_to_action
+    - paragraphs.paragraphs_type.hero
+  module:
+    - link
+_core:
+  default_config_hash: Cz7ucS6nuhvA10Nbvw9cc5YG5sZBA1duoz8PNBp76BU
+id: paragraph.hero.field_call_to_action
+field_name: field_call_to_action
+entity_type: paragraph
+bundle: hero
+label: 'Call to action'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 2
+  link_type: 17
+field_type: link

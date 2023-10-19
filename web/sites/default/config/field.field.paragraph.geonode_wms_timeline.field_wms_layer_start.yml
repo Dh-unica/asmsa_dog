@@ -1,0 +1,21 @@
+uuid: c9ec709c-0120-4630-98c0-61d908cfaee3
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_wms_layer_start
+    - paragraphs.paragraphs_type.geonode_wms_timeline
+  module:
+    - datetime
+id: paragraph.geonode_wms_timeline.field_wms_layer_start
+field_name: field_wms_layer_start
+entity_type: paragraph
+bundle: geonode_wms_timeline
+label: 'Wms layer start'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

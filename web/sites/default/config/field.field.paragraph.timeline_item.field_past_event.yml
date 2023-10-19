@@ -1,0 +1,25 @@
+uuid: f043a2de-900a-4d22-828e-680b7c46ac1f
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_past_event
+    - paragraphs.paragraphs_type.timeline_item
+_core:
+  default_config_hash: yejHvAHOYjg-Gkkt6pA--lfTOHqqahUR_LLvP3f5g3U
+id: paragraph.timeline_item.field_past_event
+field_name: field_past_event
+entity_type: paragraph
+bundle: timeline_item
+label: 'Past event'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

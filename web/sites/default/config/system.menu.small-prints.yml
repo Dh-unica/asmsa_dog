@@ -1,0 +1,10 @@
+uuid: 6214452b-4c92-4737-bfd7-ae451bf7296b
+langcode: it
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: PNNOkkCuzasFULrco6LtJ79PXX6bDZ9IM1gDjwpuO30
+id: small-prints
+label: 'Small prints'
+description: 'Footer legal links'
+locked: false

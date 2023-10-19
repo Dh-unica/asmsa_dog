@@ -1,0 +1,8 @@
+name: Drupal Omeka Geonode
+type: module
+description: Drupal connect Omeka and Geonode
+package: Custom
+core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:field
+  - views_remote_data:views_remote_data

@@ -1,0 +1,10 @@
+uuid: a82cf3f5-ca73-491a-82b0-da00626da3d7
+langcode: it
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: cmq9OVSFdcjN4KjXgaDNJXekP8dwydAyftfBxQ6pTd0
+id: slim-top
+label: 'Slim top'
+description: 'Top slim menu'
+locked: false

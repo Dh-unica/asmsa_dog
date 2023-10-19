@@ -1,0 +1,14 @@
+uuid: 8df5e4a1-3cdd-4b02-acc9-0a245295e50a
+langcode: it
+status: true
+dependencies:
+  enforced:
+    module:
+      - webform
+_core:
+  default_config_hash: 8rVcRXLnTAEoWs7zl8du-7RIUnayqUcGYnvb3JT21-o
+id: time_zones
+label: 'Fusi orari'
+category: 'Data e ora'
+likert: false
+options: ''

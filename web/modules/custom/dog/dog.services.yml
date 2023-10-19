@@ -1,0 +1,17 @@
+services:
+
+  # Services.
+  dog.omeka_resource_fetcher:
+    class: Drupal\dog\Service\OmekaResourceFetcher
+    arguments: [ '@config.factory', '@http_client_factory', '@logger.factory' ]
+
+  dog.omeka_resource_view_builder:
+    class: Drupal\dog\Service\OmekaResourceViewBuilder
+    arguments: [ '@dog.omeka_resource_fetcher' ]
+
+  # Event Subscriber.
+  dog.omeka_resource_query_event:
+    class: Drupal\dog\EventSubscriber\OmekaResourceSubscriber
+    arguments: [ '@dog.omeka_resource_fetcher' ]
+    tags:
+      - { name: event_subscriber }

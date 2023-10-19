@@ -1,0 +1,2 @@
+label: 'Icon name'
+description: 'If you leave it blank the ''it-check'' icon will be used if the event has passed otherwise the ''it-refresh'' icon will be used, or you can choose an icon from this <a href="https://italia.github.io/bootstrap-italia/docs/utilities/icone/#lista-delle-icone-disponibili" title="Icon list" target="_blank">list</a>.'

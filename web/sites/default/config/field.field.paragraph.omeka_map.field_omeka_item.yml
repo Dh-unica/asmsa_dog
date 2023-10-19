@@ -1,0 +1,23 @@
+uuid: e66e4e43-1eff-44e1-9629-e4c819a662e4
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_omeka_item
+    - paragraphs.paragraphs_type.omeka_map
+  module:
+    - dog
+id: paragraph.omeka_map.field_omeka_item
+field_name: field_omeka_item
+entity_type: paragraph
+bundle: omeka_map
+label: 'Omeka item'
+description: 'Browse the Omeka server and select the items to associate'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  type:
+    items: items
+field_type: dog_omeka_resource

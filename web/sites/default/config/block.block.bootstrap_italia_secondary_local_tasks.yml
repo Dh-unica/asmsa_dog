@@ -1,0 +1,22 @@
+uuid: eba6fd2a-2997-4aab-b714-f0361fb67db6
+langcode: en
+status: true
+dependencies:
+  theme:
+    - bootstrap_italia
+_core:
+  default_config_hash: ydSxdq7R66I8UMC460rOzlfzvlUL4VRbdwc6z9DWaUI
+id: bootstrap_italia_secondary_local_tasks
+theme: bootstrap_italia
+region: disabled_blocks
+weight: -2
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: 'Schede secondarie'
+  label_display: '0'
+  provider: core
+  primary: false
+  secondary: true
+visibility: {  }

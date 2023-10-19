@@ -1,0 +1,6 @@
+settings:
+  allowed_values:
+    -
+      label: 'Landscape abstract: 3 cols'
+    -
+      label: 'Landscape abstract: 3 cols with arrows'

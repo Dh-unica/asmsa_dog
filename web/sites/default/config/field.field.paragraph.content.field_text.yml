@@ -1,0 +1,24 @@
+uuid: 38483600-babf-4c91-af2a-aedb4add0324
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text
+    - paragraphs.paragraphs_type.content
+  module:
+    - text
+_core:
+  default_config_hash: UnODNBb2v46E9Z52WNGSnE2-4vevFX9d9GKMygaQefw
+id: paragraph.content.field_text
+field_name: field_text
+entity_type: paragraph
+bundle: content
+label: Testo
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

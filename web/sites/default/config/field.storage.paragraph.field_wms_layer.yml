@@ -1,0 +1,19 @@
+uuid: 8751e299-5e3b-464a-994c-fa067cfd30d7
+langcode: it
+status: true
+dependencies:
+  module:
+    - paragraphs
+id: paragraph.field_wms_layer
+field_name: field_wms_layer
+entity_type: paragraph
+type: string_long
+settings:
+  case_sensitive: false
+module: core
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

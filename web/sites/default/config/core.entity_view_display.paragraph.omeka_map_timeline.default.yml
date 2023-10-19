@@ -1,0 +1,22 @@
+uuid: 6c803f37-d2d5-40de-b158-6af540c5ce19
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.omeka_map_timeline.field_basic_page
+    - field.field.paragraph.omeka_map_timeline.field_media
+    - field.field.paragraph.omeka_map_timeline.field_omeka_item
+    - field.field.paragraph.omeka_map_timeline.field_settings
+    - field.field.paragraph.omeka_map_timeline.field_wms_server_timeline
+    - paragraphs.paragraphs_type.omeka_map_timeline
+id: paragraph.omeka_map_timeline.default
+targetEntityType: paragraph
+bundle: omeka_map_timeline
+mode: default
+content: {  }
+hidden:
+  field_basic_page: true
+  field_media: true
+  field_omeka_item: true
+  field_settings: true
+  field_wms_server_timeline: true

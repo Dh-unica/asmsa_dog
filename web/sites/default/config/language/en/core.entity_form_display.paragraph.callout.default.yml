@@ -1,0 +1,19 @@
+third_party_settings:
+  field_group:
+    group_container:
+      label: Container
+    group_content:
+      label: Content
+    group_callout_behaviours:
+      label: Behaviours
+    group_settings:
+      label: Settings
+    group_more:
+      label: More
+      format_settings:
+        description: 'If you choose <code>more</code> display, fill this fields.'
+content:
+  field_settings:
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs

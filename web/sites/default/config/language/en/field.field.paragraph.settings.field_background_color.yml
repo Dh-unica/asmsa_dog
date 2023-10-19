@@ -1,0 +1,2 @@
+label: 'Background Color'
+description: 'Choose the background color. Set the transparency by entering values between "0.01" and "0.99" in the "Opacity" box, otherwise enter "1" for a tint without transparency. '

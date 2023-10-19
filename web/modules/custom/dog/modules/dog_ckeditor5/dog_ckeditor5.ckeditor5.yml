@@ -1,0 +1,30 @@
+dog_ckeditor5_omeka_resource:
+  provider: dog_ckeditor5
+  ckeditor5:
+    plugins:
+      - drupalOmekaResource.DrupalOmekaResource
+    config:
+      drupalOmekaResource:
+        openDialog:
+          func:
+            name: Drupal.ckeditor5.openDialog
+            invoke: false
+        dialogSettings:
+          width: 75%
+          height: 75%
+          dialogClass: drupal-omeka-resource-library-widget-modal
+          title: Add or select Drupal Omeka Resource
+  drupal:
+    label: Drupal Omeka Resource
+    library: dog_ckeditor5/drupal_omeka_resource
+    admin_library: dog_ckeditor5/admin.drupal_omeka_resource
+    class: Drupal\dog_ckeditor5\Plugin\CKEditor5Plugin\DrupalOmekaResource
+    toolbar_items:
+      drupalOmekaResource:
+        label: Drupal Omeka Resource
+    elements:
+      - <drupal-omeka-resource>
+      - <drupal-omeka-resource data-entity-type data-entity-id data-entity-bundle>
+      - <drupal-omeka-resource data-view-mode>
+    conditions:
+      filter: dog_omeka_resource_embed

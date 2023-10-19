@@ -1,0 +1,19 @@
+uuid: ce9e7fee-89df-4cc2-b402-c2345520afa1
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.drupal_gallery
+id: paragraph.drupal_gallery.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: drupal_gallery
+label: Titolo
+description: "Inserire un titolo per l'immagine"
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

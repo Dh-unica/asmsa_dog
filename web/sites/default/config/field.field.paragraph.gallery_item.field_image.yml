@@ -1,0 +1,31 @@
+uuid: 95e65822-9e4f-4906-ae17-50a8fadbe40e
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_image
+    - media.type.image
+    - paragraphs.paragraphs_type.gallery_item
+_core:
+  default_config_hash: hZrqkTKQdr36mXkwGvFafxZNl2dNwhh7uwGyXQKIx4U
+id: paragraph.gallery_item.field_image
+field_name: field_image
+entity_type: paragraph
+bundle: gallery_item
+label: 'Image managed'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: name
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

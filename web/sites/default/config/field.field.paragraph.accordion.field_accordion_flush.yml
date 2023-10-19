@@ -1,0 +1,25 @@
+uuid: fa2dc7f5-a5de-427c-9d84-f6cd9f44d47d
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_accordion_flush
+    - paragraphs.paragraphs_type.accordion
+_core:
+  default_config_hash: LuEpoYycTqesQlzITU0tulrDyR3UbLL8BtDi8yKIsC0
+id: paragraph.accordion.field_accordion_flush
+field_name: field_accordion_flush
+entity_type: paragraph
+bundle: accordion
+label: 'Accordion flush'
+description: 'Enable to remove the default background color, some borders, and some rounded corners to render accordions edge-to-edge with their parent container.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

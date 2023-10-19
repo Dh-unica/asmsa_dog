@@ -1,0 +1,5 @@
+label: 'Accordion background hover'
+description: 'Adds the primary background to the element that has focus'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

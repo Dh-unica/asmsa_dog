@@ -1,0 +1,6 @@
+dog.settings:
+  title: Drupal Omeka Geonode
+  description: Drupal Omeka Geonode settings
+  parent: system.admin_config_services
+  route_name: dog.settings
+  weight: 10

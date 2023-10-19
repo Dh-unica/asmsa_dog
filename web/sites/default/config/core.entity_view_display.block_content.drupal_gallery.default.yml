@@ -1,0 +1,15 @@
+uuid: b33a549b-7126-4917-8336-9820dcbe6405
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.drupal_gallery
+    - field.field.block_content.drupal_gallery.field_drupal_gallery
+id: block_content.drupal_gallery.default
+targetEntityType: block_content
+bundle: drupal_gallery
+mode: default
+content: {  }
+hidden:
+  field_drupal_gallery: true
+  langcode: true

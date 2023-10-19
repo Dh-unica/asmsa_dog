@@ -1,0 +1,25 @@
+uuid: 0f18c88c-324f-4bf9-8e73-20acb37740bb
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_now_event
+    - paragraphs.paragraphs_type.timeline_item
+_core:
+  default_config_hash: 72XSkaHAcj58KPIpgdjWSRRyDVDO2H1IzFPvyD6iAe0
+id: paragraph.timeline_item.field_now_event
+field_name: field_now_event
+entity_type: paragraph
+bundle: timeline_item
+label: 'Now event'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

@@ -1,0 +1,42 @@
+settings:
+  allowed_values:
+    -
+      label: Primary
+    -
+      label: Secondary
+    -
+      label: Success
+    -
+      label: Warning
+    -
+      label: Danger
+    -
+      label: Info
+    -
+      label: White
+    -
+      label: Dark
+    -
+      label: Light
+    -
+      label: Black
+    -
+      label: 'Outline Primary'
+    -
+      label: 'Outline Secondary'
+    -
+      label: 'Outline Success'
+    -
+      label: 'Outline Warning'
+    -
+      label: 'Outline Danger'
+    -
+      label: 'Outline Info'
+    -
+      label: 'Outline White'
+    -
+      label: 'Outline Dark'
+    -
+      label: 'Outline Light'
+    -
+      label: 'Outline Black'

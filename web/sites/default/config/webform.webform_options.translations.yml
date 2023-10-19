@@ -1,0 +1,14 @@
+uuid: 7d450b58-ac89-450b-9208-b95e045109e0
+langcode: it
+status: true
+dependencies:
+  enforced:
+    module:
+      - webform
+_core:
+  default_config_hash: Mb_L3vE-0IBZH5s2rjpk2LNn0QHClQP9AARQdCmVLt4
+id: translations
+label: Traduzioni
+category: Lingua
+likert: false
+options: ''

@@ -1,0 +1,39 @@
+# Schema for the configuration files of the Dog module.
+dog.settings:
+  type: config_object
+  label: 'Dog settings'
+  mapping:
+    base_url:
+      type: string
+      label: 'Base URL to webservice'
+    key_identity:
+      type: string
+      label: 'API key identity'
+    key_credential:
+      type: string
+      label: 'API key credential'
+
+# Field instance.
+field.field_settings.dog_omeka_resource:
+  type: mapping
+  label: Omeka Resource field settings
+  mapping:
+    type:
+      type: sequence
+      label: Type
+      sequence:
+        type: string
+
+# Default value.
+field.value.dog_omeka_resource:
+  type: mapping
+  label: Default value
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    type:
+      type: string
+      label: 'Type'
+
+

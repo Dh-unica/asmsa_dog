@@ -1,0 +1,292 @@
+/**
+ * @file resource-library.css
+ *
+ * Styling for Resource Library.
+ */
+.resource-library-wrapper {
+  display: flex;
+  margin: -1rem -1.5rem -1rem -1rem;
+}
+
+.resource-library-wrapper .messages-list,
+.resource-library-wrapper .messages {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.resource-library-content {
+  width: 100%;
+  outline: none;
+}
+
+.resource-library-selected-count {
+  margin: 0 1.5rem;
+}
+
+/* Generic resource library view styles. */
+.resource-library-views-form,
+.resource-library-selection {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.resource-library-views-form > .form-actions {
+  flex-basis: 100%;
+}
+
+/* Resource library widget view styles. */
+.resource-library-wrapper .resource-library-view {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.resource-library-wrapper .resource-library-view .view-filters,
+.resource-library-wrapper .resource-library-view .view-content {
+  flex: 0 0 100%;
+}
+
+/**
+ * Style the resource library grid items.
+ */
+.resource-library-item {
+  position: relative;
+}
+
+/**
+ * Ajax throbbers inside a resource library item.
+ */
+.resource-library-item .ajax-progress.ajax-progress.ajax-progress {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  box-sizing: border-box;
+  width: 3rem; /* 56px */
+  height: 3rem;
+  margin: -1.5rem;
+  border: 1px solid rgba(216, 217, 224, 0.8);
+  border-radius: 3.5rem;
+  background: #fff;
+  box-shadow: 0 0.25rem 0.625rem rgba(34, 35, 48, 0.1);
+}
+
+.resource-library-item .ajax-progress__throbber {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: -0.875rem;
+  border: 3px solid #003ecc;
+  border-right: 3px dotted transparent;
+}
+
+.resource-library-item .ajax-progress__message {
+  display: none;
+}
+
+.resource-library-item--grid {
+  justify-content: center;
+  box-sizing: border-box;
+  width: 50%;
+  padding: 0.5rem;
+  vertical-align: top;
+  outline: none;
+  background: #fff;
+}
+
+.resource-library-item--grid:before {
+  position: absolute;
+  top: 0.4375rem;
+  left: 0.4375rem;
+  width: calc(100% - 1rem);
+  height: calc(100% - 1rem);
+  content: "";
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  pointer-events: none;
+  border: 1px solid #dbdbdb;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/**
+* The resource library grid item focus border is moved to a child element to improve padding.
+*/
+.resource-library-item--grid:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Resource library widget weight field styles. */
+.resource-library-item--grid .form-item {
+  margin: 0.75em;
+}
+
+.resource-library-widget-modal .ui-dialog-buttonpane {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+}
+
+.resource-library-widget-modal .ui-dialog-buttonpane .form-actions {
+  flex: 1;
+}
+
+/**
+ * By default, the dialog is too narrow to be usable.
+ * @see Drupal.ckeditor5.openDialog()
+ */
+.ui-dialog--narrow.resource-library-widget-modal {
+  max-width: 75%;
+}
+
+@media screen and (min-width: 45em) {
+  .resource-library-item--grid {
+    width: 33.3%;
+  }
+
+  .resource-library-selection .resource-library-item--grid {
+    width: 50%;
+  }
+}
+
+@media screen and (min-width: 60em) {
+  .resource-library-item--grid {
+    width: 25%;
+  }
+
+  .resource-library-selection .resource-library-item--grid {
+    width: 33.3%;
+  }
+}
+
+@media screen and (min-width: 77em) {
+  .resource-library-item--grid {
+    width: 16.6%;
+  }
+
+  .resource-library-selection .resource-library-item--grid {
+    width: 25%;
+  }
+}
+
+/* Resource library widget styles. */
+.resource-library-widget {
+  position: relative;
+}
+
+.resource-library-widget__toggle-weight.resource-library-widget__toggle-weight {
+  position: absolute !important;
+  top: 0.75rem;
+  right: 1rem;
+  text-decoration: none;
+}
+
+/* Add negative margin for flex grid. */
+.resource-library-selection {
+  margin: 1em -0.5rem;
+}
+
+/**
+ * Resource library widget edit and delete button styles.
+ */
+.resource-library-item__remove,
+.resource-library-item__remove:hover,
+.resource-library-item__remove:focus,
+.resource-library-item__remove.button,
+.resource-library-item__remove.button:first-child,
+.resource-library-item__remove.button:disabled,
+.resource-library-item__remove.button:disabled:active,
+.resource-library-item__remove.button:hover,
+.resource-library-item__remove.button:focus {
+  font-size: 0;
+  position: absolute;
+  z-index: 1;
+  top: 0.625rem;
+  overflow: hidden;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0.3125rem;
+  padding: 0;
+  transition: 0.2s border-color;
+  color: transparent;
+  background-size: 0.75rem;
+  text-shadow: none;
+}
+
+.resource-library-item__remove {
+  right: 0.625rem;
+}
+
+.resource-library-item__remove,
+.resource-library-item__remove.button,
+.resource-library-item__remove.button:first-child,
+.resource-library-item__remove.button:disabled,
+.resource-library-item__remove.button:disabled:active,
+.resource-library-item__remove.button:hover,
+.resource-library-item__remove.button:focus {
+  border: 1px solid #d3d4d9 !important;
+}
+
+.resource-library-item__remove,
+.resource-library-item__remove.button,
+.resource-library-item__remove.button:first-child,
+.resource-library-item__remove.button:disabled,
+.resource-library-item__remove.button:disabled:active,
+.resource-library-item__remove.button:hover,
+.resource-library-item__remove.button:focus {
+  background-image: url("data:image/svg+xml,%3csvg width='16' height='16' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M2.344 2.343l11.313 11.313M2.344 13.657L13.657 2.343' stroke='%2355565B' stroke-width='3'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 0.75rem;
+}
+
+.resource-library-item__remove:active,
+.resource-library-item__remove.button:active,
+.resource-library-item__remove.button:disabled:active {
+  border-color: #003ecc !important;
+}
+
+.resource-library-item__remove:active,
+.resource-library-item__remove.button:active,
+.resource-library-item__remove.button:disabled:active {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3e%3cpath fill='%23ffffff' d='M3.51 13.925c.194.194.512.195.706.001l3.432-3.431c.194-.194.514-.194.708 0l3.432 3.431c.192.194.514.193.707-.001l1.405-1.417c.191-.195.189-.514-.002-.709l-3.397-3.4c-.192-.193-.192-.514-.002-.708l3.401-3.43c.189-.195.189-.515 0-.709l-1.407-1.418c-.195-.195-.513-.195-.707-.001l-3.43 3.431c-.195.194-.516.194-.708 0l-3.432-3.431c-.195-.195-.512-.194-.706.001l-1.407 1.417c-.194.195-.194.515 0 .71l3.403 3.429c.193.195.193.514-.001.708l-3.4 3.399c-.194.195-.195.516-.001.709l1.406 1.419z'/%3e%3c/svg%3e");
+}
+
+/**
+ * Custom css for checkbox field.
+ */
+.views-field-dog-library-omeka-resource-select-form {
+  width: 15px;
+}
+
+/**
+ * Style omeka-resource--library
+ */
+.omeka-resource--library {
+  position: relative;
+  padding: 6px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.omeka-resource--library img,
+.omeka-resource--library svg {
+  width: 70%;
+  height: 11.25rem;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.omeka-resource--library p {
+  font-size: small;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  color: white;
+  background: rgb(0, 0, 0, 0.5);
+}

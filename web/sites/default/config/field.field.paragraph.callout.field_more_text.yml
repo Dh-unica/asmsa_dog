@@ -1,0 +1,24 @@
+uuid: 92979721-1b72-4223-8bc0-45272695b3ac
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_more_text
+    - paragraphs.paragraphs_type.callout
+  module:
+    - text
+_core:
+  default_config_hash: hbhnsvz0D-wcLMZc49wGeBoFjFAzneg9w5xo0S_h5e0
+id: paragraph.callout.field_more_text
+field_name: field_more_text
+entity_type: paragraph
+bundle: callout
+label: 'More Text'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

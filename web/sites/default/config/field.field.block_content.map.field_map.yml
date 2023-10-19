@@ -1,0 +1,82 @@
+uuid: fdee111a-512d-4f5d-ba44-bdd7ac6760ab
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.map
+    - field.storage.block_content.field_map
+    - paragraphs.paragraphs_type.map
+  module:
+    - entity_reference_revisions
+id: block_content.map.field_map
+field_name: field_map
+entity_type: block_content
+bundle: map
+label: Map
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      map: map
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 19
+        enabled: false
+      accordion_item:
+        weight: 20
+        enabled: false
+      attachments:
+        weight: 21
+        enabled: false
+      callout:
+        weight: 22
+        enabled: false
+      carousel:
+        weight: 23
+        enabled: false
+      citation:
+        weight: 24
+        enabled: false
+      content:
+        weight: 25
+        enabled: false
+      gallery:
+        weight: 26
+        enabled: false
+      gallery_item:
+        weight: 27
+        enabled: false
+      hero:
+        weight: 28
+        enabled: false
+      map:
+        weight: 29
+        enabled: true
+      node_reference:
+        weight: 30
+        enabled: false
+      section:
+        weight: 31
+        enabled: false
+      settings:
+        weight: 32
+        enabled: false
+      slide:
+        weight: 33
+        enabled: false
+      timeline:
+        weight: 34
+        enabled: false
+      timeline_item:
+        weight: 35
+        enabled: false
+      webform:
+        weight: 36
+        enabled: false
+field_type: entity_reference_revisions

@@ -1,0 +1,28 @@
+uuid: 20cf9999-85a9-4739-8648-3a5be05524d3
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_wms_server_link
+    - paragraphs.paragraphs_type.geonode_wms
+  module:
+    - link
+id: paragraph.geonode_wms.field_wms_server_link
+field_name: field_wms_server_link
+entity_type: paragraph
+bundle: geonode_wms
+label: 'Wms server link'
+description: 'Enter the address of the geonode, this will have a similar form: https://geonode.dh.unica.it/geoserver/ows?service=WMS&version=1.1.1&request=GetCapabilities'
+required: true
+translatable: false
+default_value:
+  -
+    attributes: {  }
+    uri: 'https://geonode.dh.unica.it/geoserver/ows?service=WMS&version=1.1.1&request=GetCapabilities'
+    title: ''
+    options: {  }
+default_value_callback: ''
+settings:
+  title: 0
+  link_type: 16
+field_type: link

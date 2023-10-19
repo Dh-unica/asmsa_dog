@@ -1,0 +1,28 @@
+uuid: 17720677-e773-4e03-ab78-945287d45b95
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.map
+    - field.field.block_content.map.field_map
+  module:
+    - ds
+    - entity_reference_revisions
+id: block_content.map.default
+targetEntityType: block_content
+bundle: map
+mode: default
+content:
+  field_map:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings:
+      ds:
+        ds_limit: ''
+    weight: 0
+    region: content
+hidden:
+  langcode: true

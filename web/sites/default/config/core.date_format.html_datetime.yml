@@ -1,0 +1,10 @@
+uuid: 497802a3-0382-4b43-9734-9f555825fb87
+langcode: it
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: jxfClwZIRXIdcvMrE--WkcZxDGUVoOIE3Sm2NRZlFuE
+id: html_datetime
+label: 'Data e ora HTML'
+locked: true
+pattern: 'Y-m-d\TH:i:sO'

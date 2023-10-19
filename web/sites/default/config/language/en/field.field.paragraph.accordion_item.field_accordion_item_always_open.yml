@@ -1,0 +1,5 @@
+label: 'Accordion item always open'
+description: 'Enable to make accordion items stay open when another item is opened.'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

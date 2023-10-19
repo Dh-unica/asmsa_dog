@@ -1,0 +1,21 @@
+uuid: d7f1178f-df2b-4867-b3f6-f7504f4dc27a
+langcode: it
+status: true
+dependencies:
+  module:
+    - media
+id: media.field_titolo
+field_name: field_titolo
+entity_type: media
+type: string
+settings:
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

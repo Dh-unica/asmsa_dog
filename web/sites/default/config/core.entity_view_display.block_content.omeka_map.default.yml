@@ -1,0 +1,25 @@
+uuid: 7f939db9-c2df-49b5-9772-d762ea2c46d3
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.omeka_map
+    - field.field.block_content.omeka_map.field_omeka_map
+  module:
+    - entity_reference_revisions
+id: block_content.omeka_map.default
+targetEntityType: block_content
+bundle: omeka_map
+mode: default
+content:
+  field_omeka_map:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  langcode: true

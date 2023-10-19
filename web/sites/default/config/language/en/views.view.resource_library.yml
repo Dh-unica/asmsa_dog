@@ -1,0 +1,43 @@
+label: 'Resource Library'
+display:
+  default:
+    display_title: Default
+    display_options:
+      title: 'Resource Library'
+      fields:
+        property:
+          label: Title
+      pager:
+        options:
+          tags:
+            next: ››
+            previous: ‹‹
+            first: '« First'
+            last: 'Last »'
+          expose:
+            items_per_page_label: 'Items per page'
+            items_per_page_options_all_label: '- All -'
+            offset_label: Offset
+      exposed_form:
+        options:
+          submit_button: Apply
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      empty:
+        area_text_custom:
+          content: 'No resource found.'
+      arguments:
+        dog_omeka_resource_type:
+          exception:
+            title: All
+      filters:
+        dog_omeka_resource_fulltext_search:
+          expose:
+            label: Search
+        dog_omeka_resource_collection:
+          expose:
+            label: Collection
+  widget_table:
+    display_title: 'Widget (table)'

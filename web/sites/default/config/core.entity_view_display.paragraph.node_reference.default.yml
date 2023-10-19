@@ -1,0 +1,36 @@
+uuid: 2e5f160b-a68f-4b28-8573-15461c79e009
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.node_reference.field_display_mode
+    - field.field.paragraph.node_reference.field_node
+    - paragraphs.paragraphs_type.node_reference
+  module:
+    - entity_reference_display
+    - options
+_core:
+  default_config_hash: j577dnYd2v3Vj7Wqz_DcGmLK-ODqzQLf-u5uC8MQ4MM
+id: paragraph.node_reference.default
+targetEntityType: paragraph
+bundle: node_reference
+mode: default
+content:
+  field_display_mode:
+    type: list_key
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_node:
+    type: entity_reference_display_default
+    label: hidden
+    settings:
+      view_mode: default
+      link: true
+      display_field: null
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden: {  }

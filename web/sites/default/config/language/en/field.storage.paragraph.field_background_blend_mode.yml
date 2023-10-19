@@ -1,0 +1,34 @@
+settings:
+  allowed_values:
+    -
+      label: Normal
+    -
+      label: Multiply
+    -
+      label: Screen
+    -
+      label: Overlay
+    -
+      label: Darken
+    -
+      label: Lighten
+    -
+      label: 'Color Dodge'
+    -
+      label: 'Color Burn'
+    -
+      label: 'Hard Light'
+    -
+      label: 'Soft Light'
+    -
+      label: Difference
+    -
+      label: Exclusion
+    -
+      label: Hue
+    -
+      label: Saturation
+    -
+      label: Color
+    -
+      label: Luminosity

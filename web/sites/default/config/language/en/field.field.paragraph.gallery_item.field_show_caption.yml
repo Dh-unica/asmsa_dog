@@ -1,0 +1,4 @@
+label: 'Show caption'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

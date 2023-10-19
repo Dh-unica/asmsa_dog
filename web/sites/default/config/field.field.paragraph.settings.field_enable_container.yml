@@ -1,0 +1,25 @@
+uuid: f08564fe-6178-4998-8662-153864349c32
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_enable_container
+    - paragraphs.paragraphs_type.settings
+_core:
+  default_config_hash: GdASFvnQB6wiGN8y9E-S1OHMGLZQ1hZMSUVpgpNQags
+id: paragraph.settings.field_enable_container
+field_name: field_enable_container
+entity_type: paragraph
+bundle: settings
+label: 'Enable container'
+description: "If the box is checked, a div with the class \"container\" will be inserted. It is used to automatically manage the empty spaces to the right and left of the paragraph according to the device that displays the site.\r\nIf deactivated, the paragraph will always occupy all the space horizontally.\r\n<strong>This control is activated only if \"full width\" is active.</strong>"
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

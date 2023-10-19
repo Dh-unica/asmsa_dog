@@ -1,0 +1,21 @@
+uuid: 12612d0c-7f44-4662-bab9-686f65416c69
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_data
+    - media.type.audio
+  module:
+    - datetime
+id: media.audio.field_data
+field_name: field_data
+entity_type: media
+bundle: audio
+label: Data
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

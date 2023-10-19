@@ -1,0 +1,210 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for dog_library module.
+ */
+
+use Drupal\dog_library\ResourceLibraryState;
+use Drupal\Component\Utility\UrlHelper;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
+use Drupal\views\Plugin\views\cache\CachePluginBase;
+use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_theme().
+ */
+function dog_library_theme($existing, $type, $theme, $path) {
+  return [
+    'dog_omeka_resource__library' => [
+      'base hook' => 'dog_omeka_resource',
+    ],
+    'resource_library_item' => [
+      'render element' => 'element',
+    ],
+    'resource_library_wrapper' => [
+      'render element' => 'element',
+    ],
+    'container__resource_library_content' => [
+      'base hook' => 'container',
+    ],
+    'container__resource_library_widget_selection' => [
+      'base hook' => 'container',
+    ],
+    'fieldset__resource_library_widget' => [
+      'base hook' => 'container',
+    ],
+    'views_view__resource_library' => [
+      'base hook' => 'views_view',
+    ],
+  ];
+}
+
+/**
+ * Prepares variables for the resource library modal dialog.
+ *
+ * Default template: resource-library-wrapper.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - element: An associative array containing the properties of the element.
+ *     Properties used: #content.
+ */
+function template_preprocess_resource_library_wrapper(array &$variables) {
+  $variables['content'] = &$variables['element']['content'];
+}
+
+/**
+ * Prepares variables for a selected resource item.
+ *
+ * Default template: resource-library-item.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - element: An associative array containing the properties and children of
+ *     the element.
+ */
+function template_preprocess_resource_library_item(array &$variables) {
+  $element = &$variables['element'];
+  foreach (Element::children($element) as $key) {
+    $variables['content'][$key] = $element[$key];
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function dog_library_views_pre_render(ViewExecutable $view) {
+  $add_classes = function (&$option, array $classes_to_add) {
+    $classes = $option ? preg_split('/\s+/', trim($option)) : [];
+    $classes = array_filter($classes);
+    $classes = array_merge($classes, $classes_to_add);
+    $option = implode(' ', array_unique($classes));
+  };
+
+  if ($view->id() === 'resource_library') {
+    if ($view->display_handler->options['defaults']['css_class']) {
+      $add_classes($view->displayHandlers->get('default')->options['css_class'], ['resource-library-view']);
+    }
+    else {
+      $add_classes($view->display_handler->options['css_class'], ['resource-library-view']);
+    }
+
+    if (strpos($view->current_display, 'widget') === 0) {
+      if (array_key_exists('resource_library_select_form', $view->field)) {
+        $add_classes($view->field['resource_library_select_form']->options['element_wrapper_class'], [
+          'js-click-to-select-checkbox',
+          'resource-library-item__click-to-select-checkbox',
+        ]);
+      }
+      $add_classes($view->display_handler->options['css_class'], [
+        'js-resource-library-view',
+        'resource-library-view--widget',
+      ]);
+    }
+
+    $add_classes($view->style_plugin->options['row_class'], [
+      'js-resource-library-item',
+      'js-click-to-select',
+    ]);
+
+    if ($view->display_handler->options['defaults']['css_class']) {
+      $add_classes($view->displayHandlers->get('default')->options['css_class'], ['js-resource-library-view']);
+    }
+    else {
+      $add_classes($view->display_handler->options['css_class'], ['js-resource-library-view']);
+    }
+  }
+}
+
+/**
+ * Implements hook_views_post_render().
+ */
+function dog_library_views_post_render(ViewExecutable $view, &$output, CachePluginBase $cache) {
+  if ($view->id() === 'resource_library') {
+    if (strpos($view->current_display, 'widget') === 0) {
+      try {
+        $query = ResourceLibraryState::fromRequest($view->getRequest())->all();
+      }
+      catch (InvalidArgumentException $e) {
+        // ResourceLibraryState::fromRequest() will throw an exception if the view
+        // is being previewed, since not all required query parameters will be
+        // present. In a preview, however, this can be omitted since we're
+        // merely previewing.
+        if (empty($view->preview) && empty($view->live_preview)) {
+          throw $e;
+        }
+      }
+
+      // If the current query contains any parameters we use to contextually
+      // filter the view, ensure they persist across AJAX rebuilds.
+      // The ajax_path is shared for all AJAX views on the page, but our query
+      // parameters are prefixed and should not interfere with any other views.
+      if (!empty($query)) {
+        $ajax_path = &$output['#attached']['drupalSettings']['views']['ajax_path'];
+        $parsed_url = UrlHelper::parse($ajax_path);
+        $query = array_merge($query, $parsed_url['query']);
+        $ajax_path = $parsed_url['path'] . '?' . UrlHelper::buildQuery($query);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_views_view() for the 'resource_library' view.
+ */
+function dog_library_preprocess_views_view__resource_library(array &$variables) {
+  $variables['attributes']['data-view-display-id'] = $variables['view']->current_display;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function dog_library_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
+  // Add a process callback to ensure that the resource library view's exposed
+  // filters submit button is not moved to the modal dialog's button area.
+  if ($form_id === 'views_exposed_form' && strpos($form['#id'], 'views-exposed-form-resource-library-widget') === 0) {
+    $form['#after_build'][] = '_dog_library_views_form_resource_library_after_build';
+  }
+}
+
+/**
+ * Form #after_build callback for resource_library view's exposed filters form.
+ */
+function _dog_library_views_form_resource_library_after_build(array $form, FormStateInterface $form_state) {
+  // Remove .form-actions from the view's exposed filter actions. This prevents
+  // the "Apply filters" submit button from being moved into the dialog's
+  // button area.
+  // @see \Drupal\Core\Render\Element\Actions::processActions
+  // @see Drupal.behaviors.dialog.prepareDialogButtons
+  if (($key = array_search('form-actions', $form['actions']['#attributes']['class'])) !== FALSE) {
+    unset($form['actions']['#attributes']['class'][$key]);
+  }
+  return $form;
+}
+
+/**
+ * Implements hook_preprocess_resource_library_item__widget().
+ *
+ * This targets each resource item selected in an entity reference field.
+ */
+function dog_library_preprocess_resource_library_item__widget(array &$variables) {
+  $variables['content']['remove_button']['#attributes']['class'][] = 'resource-library-item__remove';
+  $variables['content']['remove_button']['#attributes']['class'][] = 'icon-link';
+}
+
+/**
+ * Implements hook_preprocess_fieldset().
+ */
+function dog_library_preprocess_fieldset__resource_library_widget(array &$variables) {
+  if (isset($variables['prefix']['weight_toggle'])) {
+    $variables['prefix']['weight_toggle']['#attributes']['class'][] = 'action-link';
+    $variables['prefix']['weight_toggle']['#attributes']['class'][] = 'action-link--extrasmall';
+    $variables['prefix']['weight_toggle']['#attributes']['class'][] = 'action-link--icon-show';
+    $variables['prefix']['weight_toggle']['#attributes']['class'][] = 'resource-library-widget__toggle-weight';
+  }
+  if (isset($variables['suffix']['open_button'])) {
+    $variables['suffix']['open_button']['#attributes']['class'][] = 'resource-library-open-button';
+  }
+}

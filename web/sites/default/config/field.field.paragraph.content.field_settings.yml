@@ -1,0 +1,36 @@
+uuid: d8203b53-c515-4e3b-9437-ab3e18e827e7
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_settings
+    - paragraphs.paragraphs_type.content
+    - paragraphs.paragraphs_type.settings
+  module:
+    - entity_reference_revisions
+_core:
+  default_config_hash: J3lpVRUlbcSJ_j2WPp59Gr2D7VkpRAmm6YA9LvVB_Uw
+id: paragraph.content.field_settings
+field_name: field_settings
+entity_type: paragraph
+bundle: content
+label: Impostazioni
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      settings: settings
+    negate: 0
+    target_bundles_drag_drop:
+      content:
+        weight: 3
+        enabled: false
+      settings:
+        weight: 4
+        enabled: true
+field_type: entity_reference_revisions

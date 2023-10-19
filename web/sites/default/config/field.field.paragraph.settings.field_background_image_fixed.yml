@@ -1,0 +1,25 @@
+uuid: ae3b41d5-8139-422f-ba98-3375669202a5
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_background_image_fixed
+    - paragraphs.paragraphs_type.settings
+_core:
+  default_config_hash: C044HwQV7X4xvzZ4B44K0qnEyXVHqDXDKX2bQ5rTXx0
+id: paragraph.settings.field_background_image_fixed
+field_name: field_background_image_fixed
+entity_type: paragraph
+bundle: settings
+label: 'Background Image fixed'
+description: 'If on, sets the paragraph background image as fixed.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

@@ -1,0 +1,57 @@
+uuid: 28201221-3df4-4d8e-8687-f02e21230198
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_settings
+    - paragraphs.paragraphs_type.accordion
+    - paragraphs.paragraphs_type.settings
+  module:
+    - entity_reference_revisions
+_core:
+  default_config_hash: YGGvW-meaybictv1eKLmQ-AK_-ib5OacIS2CWauQP8k
+id: paragraph.accordion.field_settings
+field_name: field_settings
+entity_type: paragraph
+bundle: accordion
+label: Impostazioni
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      settings: settings
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 10
+        enabled: false
+      carousel:
+        weight: 11
+        enabled: false
+      content:
+        weight: 12
+        enabled: false
+      gallery:
+        weight: 13
+        enabled: false
+      map:
+        weight: 14
+        enabled: false
+      settings:
+        weight: 15
+        enabled: true
+      slide:
+        weight: 16
+        enabled: false
+      table:
+        weight: 17
+        enabled: false
+      webform:
+        weight: 18
+        enabled: false
+field_type: entity_reference_revisions

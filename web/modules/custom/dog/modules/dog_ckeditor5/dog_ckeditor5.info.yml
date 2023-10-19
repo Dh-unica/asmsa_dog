@@ -1,0 +1,9 @@
+name: Drupal Omeka Geonode - CkEditor5
+type: module
+description: Provides additional functionality for the site.
+package: Custom
+core_version_requirement: ^9 || ^10
+dependencies:
+  - dog:dog
+  - dog:dog_library
+  - drupal:ckeditor5

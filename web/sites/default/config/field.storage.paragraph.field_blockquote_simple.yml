@@ -1,0 +1,20 @@
+uuid: 470fb936-13dc-491a-bd40-62c1a5eface2
+langcode: it
+status: true
+dependencies:
+  module:
+    - paragraphs
+_core:
+  default_config_hash: 6Or2z0d7WyOE3JUnfEVC63HtKZ2dxj0hGLcmdzO88tw
+id: paragraph.field_blockquote_simple
+field_name: field_blockquote_simple
+entity_type: paragraph
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

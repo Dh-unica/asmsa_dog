@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Contains dh_omeka.module.
+ */
+
+/**
+ *
+  $omeka = \Drupal::service('omeka_utils.utils');
+  $entity = $vars['eck_entity'];
+  $omeka_id = $omeka->getIdFromEck($entity);
+  $omeka_item = $omeka->getItem($omeka_id);
+  $vars['omeka_id'] = $omeka_id;
+  $vars['descrizione'] = $omeka->getDescription($omeka_item);
+  $vars['titolo'] = $omeka->getTitle($omeka_item);
+  $vars['immagine'] = $omeka->getImage($omeka_item, 'large');
+  $vars['immagine_square'] = $omeka->getImage($omeka_item, 'square');
+
+ *
+ */
+

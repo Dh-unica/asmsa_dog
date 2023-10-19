@@ -1,0 +1,19 @@
+third_party_settings:
+  field_group:
+    group_container:
+      label: Container
+    group_content:
+      label: Content
+    group_settings:
+      label: Settings
+    group_behaviours:
+      label: Behaviours
+content:
+  field_gallery_item:
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+  field_settings:
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs

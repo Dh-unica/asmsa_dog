@@ -1,0 +1,5 @@
+label: 'Accordion left icon'
+description: 'Show the icon on the left instead of on the right'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

@@ -1,0 +1,64 @@
+uuid: aa3e9070-50e5-43db-a69b-2345df2d8fa6
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.media.audio.field_data
+    - field.field.media.audio.field_location
+    - field.field.media.audio.field_media_audio_file
+    - field.field.media.audio.field_titolo
+    - media.type.audio
+  module:
+    - datetime
+    - file
+    - geofield
+_core:
+  default_config_hash: AS765MdDfNpK6K5eE7WVnBvpynClz_havy1R3bO3gVo
+id: media.audio.default
+targetEntityType: media
+bundle: audio
+mode: default
+content:
+  field_data:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_location:
+    type: geofield_default
+    label: above
+    settings:
+      output_format: wkt
+      output_escape: true
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_media_audio_file:
+    type: file_audio
+    label: visually_hidden
+    settings:
+      controls: true
+      autoplay: false
+      loop: false
+      multiple_file_display_type: tags
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_titolo:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+hidden:
+  created: true
+  langcode: true
+  name: true
+  thumbnail: true
+  uid: true

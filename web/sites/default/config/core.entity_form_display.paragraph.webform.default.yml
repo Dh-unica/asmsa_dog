@@ -1,0 +1,89 @@
+uuid: fdae85bc-4811-4a09-a5c4-3d0176c03d58
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.webform.field_settings
+    - field.field.paragraph.webform.field_webform
+    - paragraphs.paragraphs_type.webform
+  module:
+    - field_group
+    - paragraphs
+    - webform
+third_party_settings:
+  field_group:
+    group_container:
+      children:
+        - group_webform
+        - group_settings
+      label: Contenitore
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: tabs
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        direction: horizontal
+        width_breakpoint: 640
+    group_webform:
+      children:
+        - field_webform
+      label: Webform
+      region: content
+      parent_name: group_container
+      weight: 5
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: open
+        description: ''
+        required_fields: true
+    group_settings:
+      children:
+        - field_settings
+      label: Impostazioni
+      region: content
+      parent_name: group_container
+      weight: 6
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+_core:
+  default_config_hash: 8R49grg9kkEIYCGQ9D3HPa8l2YpX6LBUWuhYL1crr4o
+id: paragraph.webform.default
+targetEntityType: paragraph
+bundle: webform
+mode: default
+content:
+  field_settings:
+    type: entity_reference_paragraphs
+    weight: 2
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: settings
+    third_party_settings: {  }
+  field_webform:
+    type: webform_entity_reference_select
+    weight: 1
+    region: content
+    settings:
+      default_data: true
+      webforms: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

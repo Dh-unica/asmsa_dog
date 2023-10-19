@@ -1,0 +1,25 @@
+uuid: c25916cb-6f6d-4830-bdd8-ee443216f926
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_accordion_item_always_open
+    - paragraphs.paragraphs_type.accordion_item
+_core:
+  default_config_hash: 94Y9iQzqpHDihJHz2_WsSEtv9TWSq27sU5PtAJkUbXs
+id: paragraph.accordion_item.field_accordion_item_always_open
+field_name: field_accordion_item_always_open
+entity_type: paragraph
+bundle: accordion_item
+label: 'Accordion item always open'
+description: 'Enable to make accordion items stay open when another item is opened.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

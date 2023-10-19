@@ -1,0 +1,11 @@
+uuid: a0017506-4eac-47b6-b327-bf8c93c4bee5
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.omeka_gallery
+id: block_content.omeka_gallery
+target_entity_type_id: block_content
+target_bundle: omeka_gallery
+default_langcode: site_default
+language_alterable: false

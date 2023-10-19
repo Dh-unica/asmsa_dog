@@ -1,0 +1,29 @@
+uuid: 9a25ec9d-3bce-46e0-a7aa-6c523a06fe4f
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_media
+    - media.type.image
+    - paragraphs.paragraphs_type.drupal_gallery
+id: paragraph.drupal_gallery.field_media
+field_name: field_media
+entity_type: paragraph
+bundle: drupal_gallery
+label: Immagine
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: image
+field_type: entity_reference

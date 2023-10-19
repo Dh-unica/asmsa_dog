@@ -1,0 +1,5 @@
+name: Omeka Utils
+type: module
+description: Utils for Omeka
+package: Custom
+core_version_requirement: ^9 || ^10

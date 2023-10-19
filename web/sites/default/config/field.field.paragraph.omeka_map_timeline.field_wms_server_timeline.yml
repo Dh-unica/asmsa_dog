@@ -1,0 +1,94 @@
+uuid: 5e782b8b-76c0-4518-ac6b-bcaecad40aa2
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_wms_server_timeline
+    - paragraphs.paragraphs_type.geonode_wms_timeline
+    - paragraphs.paragraphs_type.omeka_map_timeline
+  module:
+    - entity_reference_revisions
+id: paragraph.omeka_map_timeline.field_wms_server_timeline
+field_name: field_wms_server_timeline
+entity_type: paragraph
+bundle: omeka_map_timeline
+label: 'Wms server timeline'
+description: 'Enter the connection data of a WMS server and date range for layers'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      geonode_wms_timeline: geonode_wms_timeline
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 23
+        enabled: false
+      accordion_item:
+        weight: 24
+        enabled: false
+      attachments:
+        weight: 25
+        enabled: false
+      callout:
+        weight: 26
+        enabled: false
+      carousel:
+        weight: 27
+        enabled: false
+      citation:
+        weight: 28
+        enabled: false
+      content:
+        weight: 29
+        enabled: false
+      gallery:
+        weight: 30
+        enabled: false
+      gallery_item:
+        weight: 31
+        enabled: false
+      geonode_wms:
+        weight: 32
+        enabled: false
+      geonode_wms_timeline:
+        weight: 33
+        enabled: true
+      hero:
+        weight: 34
+        enabled: false
+      map:
+        weight: 35
+        enabled: false
+      node_reference:
+        weight: 36
+        enabled: false
+      omeka_map:
+        weight: 37
+        enabled: false
+      omeka_map_timeline:
+        weight: 38
+        enabled: false
+      section:
+        weight: 39
+        enabled: false
+      settings:
+        weight: 40
+        enabled: false
+      slide:
+        weight: 41
+        enabled: false
+      timeline:
+        weight: 42
+        enabled: false
+      timeline_item:
+        weight: 43
+        enabled: false
+      webform:
+        weight: 44
+        enabled: false
+field_type: entity_reference_revisions

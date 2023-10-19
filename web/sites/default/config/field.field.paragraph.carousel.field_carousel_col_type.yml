@@ -1,0 +1,25 @@
+uuid: 2213efa9-1276-455b-a10b-6e027f387130
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_carousel_col_type
+    - paragraphs.paragraphs_type.carousel
+  module:
+    - options
+_core:
+  default_config_hash: tyg5DqyL4BopqZcCfg0uU3U1g2TE2HiqptjBFX9AZzQ
+id: paragraph.carousel.field_carousel_col_type
+field_name: field_carousel_col_type
+entity_type: paragraph
+bundle: carousel
+label: 'Column type'
+description: 'Select slide column type.'
+required: true
+translatable: false
+default_value:
+  -
+    value: it-carousel-landscape-abstract-three-cols
+default_value_callback: ''
+settings: {  }
+field_type: list_string

@@ -1,0 +1,25 @@
+uuid: ae0e4670-823d-40f9-abc9-7825d676ff16
+langcode: it
+status: true
+dependencies:
+  module:
+    - focal_point
+_core:
+  default_config_hash: I1jh3aOZZ7h5NmDXB2L9uLiMy_Kjq6xCqr2niKcIwCM
+name: focal_point_wxga_16_10_1440x900_
+label: 'Focal point WXGA+ 16:10 (1440x900) Wide'
+effects:
+  399b5ee2-f2a8-4a81-964b-7a9103cb4c3e:
+    uuid: 399b5ee2-f2a8-4a81-964b-7a9103cb4c3e
+    id: focal_point_scale_and_crop
+    weight: 1
+    data:
+      width: 1440
+      height: 900
+      crop_type: focal_point
+  5504ae51-e2b9-4ea4-85f6-98556c53342a:
+    uuid: 5504ae51-e2b9-4ea4-85f6-98556c53342a
+    id: image_convert
+    weight: 2
+    data:
+      extension: webp

@@ -1,0 +1,177 @@
+uuid: 3dbaf9ff-af22-40bc-8f3c-ddf98bb9907e
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.node.page.body
+    - field.field.node.page.field_date
+    - field.field.node.page.field_location
+    - field.field.node.page.field_media
+    - field.field.node.page.layout_builder__layout
+    - node.type.page
+  module:
+    - datetime
+    - leaflet
+    - media_library
+    - path
+    - text
+_core:
+  default_config_hash: SfpLhPExzvR0MgFp0Wp7CrmgEnhcqQ-fXIWFhbf4ue0
+id: node.page.default
+targetEntityType: node
+bundle: page
+mode: default
+content:
+  body:
+    type: text_textarea_with_summary
+    weight: 31
+    region: content
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+      show_summary: false
+    third_party_settings: {  }
+  created:
+    type: datetime_timestamp
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_date:
+    type: datetime_default
+    weight: -3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_location:
+    type: leaflet_widget_default
+    weight: 122
+    region: content
+    settings:
+      map:
+        leaflet_map: 'OSM Mapnik'
+        height: 400
+        auto_center: 1
+        map_position:
+          force: false
+          center:
+            lat: 0.0
+            lon: 0.0
+          zoomControlPosition: topleft
+          zoom: 3
+          minZoom: 1
+          maxZoom: 18
+          zoomFiner: 0
+        scroll_zoom_enabled: 1
+      input:
+        show: true
+        readonly: false
+      toolbar:
+        position: topright
+        marker: defaultMarker
+        drawPolyline: false
+        drawRectangle: false
+        drawPolygon: false
+        drawCircle: false
+        drawText: false
+        editMode: false
+        dragMode: false
+        cutPolygon: false
+        removalMode: false
+        rotateMode: false
+      reset_map:
+        control: false
+        options: '{"position":"topleft","title":"Reset View"}'
+      map_scale:
+        control: false
+        options: '{"position":"bottomright","maxWidth":100,"metric":true,"imperial":false,"updateWhenIdle":false}'
+      fullscreen:
+        control: false
+        options: '{"position":"topleft","pseudoFullscreen":false}'
+      path: '{"color":"#3388ff","opacity":"1.0","stroke":true,"weight":3,"fill":"depends","fillColor":"*","fillOpacity":"0.2","radius":"6"}'
+      locate:
+        control: true
+        options: '{"position":"topright","setView":"untilPanOrZoom","returnToPrevBounds":true,"keepCurrentZoomLevel":true,"strings":{"title":"Locate my position"}}'
+        automatic: true
+      geocoder:
+        control: false
+        settings:
+          position: topright
+          input_size: 20
+          providers: {  }
+          min_terms: 4
+          delay: 800
+          zoom: 16
+          popup: false
+          options: ''
+      geometry_validation: '1'
+      feature_properties:
+        values: ''
+    third_party_settings: {  }
+  field_media:
+    type: media_library_widget
+    weight: -4
+    region: content
+    settings:
+      media_types:
+        - image
+        - document
+        - video
+        - remote_video
+        - audio
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  promote:
+    type: boolean_checkbox
+    weight: 15
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 120
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  sticky:
+    type: boolean_checkbox
+    weight: 16
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  uid:
+    type: entity_reference_autocomplete
+    weight: 5
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  layout_builder__layout: true

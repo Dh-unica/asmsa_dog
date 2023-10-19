@@ -1,0 +1,32 @@
+uuid: feedb998-c849-454b-ba53-12565779f424
+langcode: it
+status: true
+dependencies:
+  module:
+    - options
+    - paragraphs
+_core:
+  default_config_hash: 8ovWnfZ9mv8nJKsdM2RSbk1ro0zogvZrljd-NXveWXY
+id: paragraph.field_alignment
+field_name: field_alignment
+entity_type: paragraph
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: text-start
+      label: Sinistra
+    -
+      value: text-center
+      label: Centro
+    -
+      value: text-end
+      label: Destra
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

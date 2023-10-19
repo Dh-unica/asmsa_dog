@@ -1,0 +1,142 @@
+<?php
+
+namespace Drupal\dog_library\Plugin\views\field;
+
+use Drupal\dog_library\ResourceLibraryState;
+use Drupal\Core\Ajax\CloseDialogCommand;
+use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Drupal\views\Plugin\views\field\FieldPluginBase;
+use Drupal\views\Render\ViewsRenderPipelineMarkup;
+use Drupal\views\ResultRow;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * Defines a field that outputs a checkbox and form for selecting resource.
+ *
+ * @ViewsField("dog_library_omeka_resource_select_form")
+ */
+class ResourceLibrarySelectForm extends FieldPluginBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getValue(ResultRow $row, $field = NULL) {
+    return '<!--form-item-' . $this->options['id'] . '--' . $row->index . '-->';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function render(ResultRow $values) {
+    return ViewsRenderPipelineMarkup::create($this->getValue($values));
+  }
+
+  /**
+   * Form constructor for the resource library select form.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   */
+  public function viewsForm(array &$form, FormStateInterface $form_state) {
+    $form['#attributes']['class'] = ['js-resource-library-views-form'];
+
+    // Add an attribute that identifies the resource type displayed in the form.
+    if (isset($this->view->args[0])) {
+      $form['#attributes']['data-drupal-resource-type'] = $this->view->args[0];
+    }
+
+    // Render checkboxes for all rows.
+    $form[$this->options['id']]['#tree'] = TRUE;
+    foreach ($this->view->result as $row_index => $row) {
+      $form[$this->options['id']][$row_index] = [
+        '#type' => 'checkbox',
+        '#title' => $this->t('Select @label', [
+          '@label' => property_exists($row, 'name') ? $row->name : '',
+        ]),
+        '#title_display' => 'invisible',
+        '#return_value' => property_exists($row, 'id') ? $row->id : NULL,
+      ];
+    }
+
+    // The selection is persistent across different pages in the resource
+    // library and populated via JavaScript.
+    $selection_field_id = $this->options['id'] . '_selection';
+    $form[$selection_field_id] = [
+      '#type' => 'hidden',
+      '#attributes' => [
+        // This is used to identify the hidden field in the form via JavaScript.
+        'id' => 'resource-library-modal-selection',
+      ],
+    ];
+
+    // Currently the default URL for all AJAX form elements is the current URL,
+    // not the form action. This causes bugs when this form is rendered from an
+    // AJAX path like /views/ajax, which cannot process AJAX form submits.
+    $query = $this->view->getRequest()->query->all();
+    $query[FormBuilderInterface::AJAX_FORM_REQUEST] = TRUE;
+    $query['views_display_id'] = $this->view->getDisplay()->display['id'];
+    $form['actions']['submit']['#ajax'] = [
+      'url' => Url::fromRoute('dog_library.ui'),
+      'options' => [
+        'query' => $query,
+      ],
+      'callback' => [static::class, 'updateWidget'],
+      // The AJAX system automatically moves focus to the first tabbable
+      // element of the modal, so we need to disable refocus on the button.
+      'disable-refocus' => TRUE,
+    ];
+
+    $form['actions']['submit']['#value'] = $this->t('Insert selected');
+    $form['actions']['submit']['#button_type'] = 'primary';
+    $form['actions']['submit']['#field_id'] = $selection_field_id;
+  }
+
+  /**
+   * Submit handler for the resource library select form.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current request.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   A command to send the selection to the current field widget.
+   */
+  public static function updateWidget(array &$form, FormStateInterface $form_state, Request $request) {
+    $field_id = $form_state->getTriggeringElement()['#field_id'];
+    $selected_ids = $form_state->getValue($field_id);
+    $selected_ids = $selected_ids ? array_filter(explode(',', $selected_ids)) : [];
+
+    // Allow the opener service to handle the selection.
+    $state = ResourceLibraryState::fromRequest($request);
+
+    return \Drupal::service('dog_library.opener_resolver')
+      ->get($state)
+      ->getSelectionResponse($state, $selected_ids)
+      ->addCommand(new CloseDialogCommand());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function viewsFormValidate(array &$form, FormStateInterface $form_state) {
+    $selected = array_filter($form_state->getValue($this->options['id']));
+    if (empty($selected)) {
+      $form_state->setErrorByName('', $this->t('No items selected.'));
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function clickSortable() {
+    return FALSE;
+  }
+
+}

@@ -1,0 +1,22 @@
+uuid: 049b20dc-70df-4173-8c6c-0cb7d8aa6a66
+langcode: en
+status: true
+dependencies:
+  module:
+    - help
+  theme:
+    - bootstrap_italia
+_core:
+  default_config_hash: VfPFqqxfkomud5CO8DUijw85QIl9GIxh_nIxLOYESxg
+id: bootstrap_italia_help
+theme: bootstrap_italia
+region: disabled_blocks
+weight: 0
+provider: null
+plugin: help_block
+settings:
+  id: help_block
+  label: Aiuto
+  label_display: '0'
+  provider: help
+visibility: {  }

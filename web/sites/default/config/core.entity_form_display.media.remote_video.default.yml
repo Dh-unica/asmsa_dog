@@ -1,0 +1,115 @@
+uuid: 79b2e8d4-4292-4b37-829e-883d3975e9e2
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.media.remote_video.field_data
+    - field.field.media.remote_video.field_location
+    - field.field.media.remote_video.field_media_oembed_video
+    - field.field.media.remote_video.field_titolo
+    - media.type.remote_video
+  module:
+    - datetime
+    - leaflet
+    - media
+_core:
+  default_config_hash: pM8mGlwfpvfG_y5tZn0lGAXFLXz2_yKkL7MvWZsRqdA
+id: media.remote_video.default
+targetEntityType: media
+bundle: remote_video
+mode: default
+content:
+  field_data:
+    type: datetime_default
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_location:
+    type: leaflet_widget_default
+    weight: 3
+    region: content
+    settings:
+      map:
+        leaflet_map: 'OSM Mapnik'
+        height: 400
+        auto_center: 1
+        map_position:
+          force: false
+          center:
+            lat: 0.0
+            lon: 0.0
+          zoomControlPosition: topleft
+          zoom: 12
+          minZoom: 1
+          maxZoom: 18
+          zoomFiner: 0
+        scroll_zoom_enabled: 1
+      input:
+        show: true
+        readonly: false
+      toolbar:
+        position: topright
+        marker: defaultMarker
+        drawPolyline: true
+        drawRectangle: true
+        drawPolygon: true
+        drawCircle: false
+        drawText: false
+        editMode: true
+        dragMode: true
+        cutPolygon: false
+        removalMode: true
+        rotateMode: false
+      reset_map:
+        control: false
+        options: '{"position":"topleft","title":"Reset View"}'
+      map_scale:
+        control: false
+        options: '{"position":"bottomright","maxWidth":100,"metric":true,"imperial":false,"updateWhenIdle":false}'
+      fullscreen:
+        control: false
+        options: '{"position":"topleft","pseudoFullscreen":false}'
+      path: '{"color":"#3388ff","opacity":"1.0","stroke":true,"weight":3,"fill":"depends","fillColor":"*","fillOpacity":"0.2","radius":"6"}'
+      locate:
+        control: false
+        options: '{"position":"topright","setView":"untilPanOrZoom","returnToPrevBounds":true,"keepCurrentZoomLevel":true,"strings":{"title":"Locate my position"}}'
+        automatic: false
+      geocoder:
+        control: false
+        settings:
+          position: topright
+          input_size: 20
+          providers: {  }
+          min_terms: 4
+          delay: 800
+          zoom: 16
+          popup: false
+          options: ''
+      geometry_validation: '1'
+      feature_properties:
+        values: ''
+    third_party_settings: {  }
+  field_media_oembed_video:
+    type: oembed_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 255
+      placeholder: ''
+    third_party_settings: {  }
+  field_titolo:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  langcode: true
+  name: true
+  path: true
+  status: true
+  uid: true

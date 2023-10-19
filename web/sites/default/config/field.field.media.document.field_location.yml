@@ -1,0 +1,21 @@
+uuid: c018429d-f21d-4b87-8dba-fe0fb07dbc2c
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_location
+    - media.type.document
+  module:
+    - geofield
+id: media.document.field_location
+field_name: field_location
+entity_type: media
+bundle: document
+label: Localizzazione
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: geofield

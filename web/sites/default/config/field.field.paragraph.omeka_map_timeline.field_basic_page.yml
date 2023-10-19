@@ -1,0 +1,29 @@
+uuid: 23d8def7-c9f8-4a6c-a4a8-d7d11c6b3a4b
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_basic_page
+    - node.type.page
+    - paragraphs.paragraphs_type.omeka_map_timeline
+id: paragraph.omeka_map_timeline.field_basic_page
+field_name: field_basic_page
+entity_type: paragraph
+bundle: omeka_map_timeline
+label: 'Contenuti Drupal'
+description: 'Inserisci contenuti "interni" del sito.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      page: page
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

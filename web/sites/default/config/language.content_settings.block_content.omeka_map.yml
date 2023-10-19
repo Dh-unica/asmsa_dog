@@ -1,0 +1,11 @@
+uuid: 7201ba9b-5ea0-4b03-b489-4d2f602aee37
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.omeka_map
+id: block_content.omeka_map
+target_entity_type_id: block_content
+target_bundle: omeka_map
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,7 @@
+dog.settings:
+  path: '/admin/config/services/dog-settings'
+  defaults:
+    _title: 'Drupal Omeka Geonode Settings'
+    _form: 'Drupal\dog\Form\SettingsForm'
+  requirements:
+    _permission: 'administer site configuration'

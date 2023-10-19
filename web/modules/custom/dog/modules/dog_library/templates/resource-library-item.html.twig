@@ -1,0 +1,26 @@
+{#
+/**
+ * @file
+ * Default theme implementation of a resource library item.
+ *
+ * This is used when displaying selected resource items, either in the field
+ * widget or in the "Additional selected resource" area when adding new
+ * resource items in the resource library modal dialog.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the containing element.
+ * - content: The content of the resource library item, plus any additional
+ *   fields or elements surrounding it.
+ *
+ * @see template_preprocess_resource_library_item()
+ *
+ * @ingroup themeable
+ */
+#}
+{% set classes = [
+  'resource-library-item',
+  'resource-library-item--grid',
+] %}
+<div{{ attributes.addClass(classes) }}>
+  {{ content }}
+</div>

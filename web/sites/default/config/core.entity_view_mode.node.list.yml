@@ -1,0 +1,12 @@
+uuid: 77c06e1d-0ac4-4859-a8ab-986b4c705f53
+langcode: it
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: U6PPS109fOo2IBUik8kmoTRIDP1ZU6ijlQ3bXE_PDUA
+id: node.list
+label: Elenco
+targetEntityType: node
+cache: true

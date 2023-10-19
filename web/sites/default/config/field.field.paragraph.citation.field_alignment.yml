@@ -1,0 +1,25 @@
+uuid: d3e9abe9-b940-48be-93de-8f66bedf969b
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_alignment
+    - paragraphs.paragraphs_type.citation
+  module:
+    - options
+_core:
+  default_config_hash: wWiTOHH54w72pcZg4g9ABJW71VcUA7vt9KbWIqJOXZ0
+id: paragraph.citation.field_alignment
+field_name: field_alignment
+entity_type: paragraph
+bundle: citation
+label: Allineamento
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: text-start
+default_value_callback: ''
+settings: {  }
+field_type: list_string

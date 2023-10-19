@@ -1,0 +1,25 @@
+uuid: 680b4def-383c-4521-b23d-fb272fd32671
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_hero_image_filter
+    - paragraphs.paragraphs_type.hero
+_core:
+  default_config_hash: 31BR_six8Ud7afk5fBI5-hfQrbpXkzivVqJhK8cigkA
+id: paragraph.hero.field_hero_image_filter
+field_name: field_hero_image_filter
+entity_type: paragraph
+bundle: hero
+label: 'Image filter'
+description: 'If checked, a filter is added as described in the <a href="https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-overlay-e-filtro-di-colore-primario" title="Read the Docs" target="_blank">Docs</a>.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

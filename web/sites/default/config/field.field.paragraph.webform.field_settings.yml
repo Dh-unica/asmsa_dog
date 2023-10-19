@@ -1,0 +1,51 @@
+uuid: b3147680-7a44-4f07-a8cb-739b3b02034d
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_settings
+    - paragraphs.paragraphs_type.settings
+    - paragraphs.paragraphs_type.webform
+  module:
+    - entity_reference_revisions
+_core:
+  default_config_hash: rJTVOgZOz2bxYqDuy_zdANsiKYMn--8Xm1rXReXUw_g
+id: paragraph.webform.field_settings
+field_name: field_settings
+entity_type: paragraph
+bundle: webform
+label: Impostazioni
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      settings: settings
+    negate: 0
+    target_bundles_drag_drop:
+      carousel:
+        weight: 9
+        enabled: false
+      content:
+        weight: 10
+        enabled: false
+      gallery:
+        weight: 11
+        enabled: false
+      settings:
+        weight: 12
+        enabled: true
+      slide:
+        weight: 13
+        enabled: false
+      table:
+        weight: 14
+        enabled: false
+      webform:
+        weight: 8
+        enabled: false
+field_type: entity_reference_revisions

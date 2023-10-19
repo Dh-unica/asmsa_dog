@@ -1,0 +1,20 @@
+uuid: 746d4652-7cdf-44b2-9c9f-7f4bc9203890
+langcode: it
+status: true
+dependencies:
+  module:
+    - paragraphs
+_core:
+  default_config_hash: 8X4DQCf9Q3Ux_NdYCD8zozbAPNC5WoNq_1aScv7DpaM
+id: paragraph.field_accordion_item_always_open
+field_name: field_accordion_item_always_open
+entity_type: paragraph
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

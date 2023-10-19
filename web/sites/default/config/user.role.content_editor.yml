@@ -1,0 +1,88 @@
+uuid: 13671a4b-2143-4bd8-be89-575c5264e5c7
+langcode: it
+status: true
+dependencies:
+  config:
+    - core.entity_view_display.node.page.full
+    - filter.format.bootstrap_italia_2
+    - media.type.audio
+    - media.type.document
+    - media.type.image
+    - media.type.remote_video
+    - node.type.page
+    - taxonomy.vocabulary.tags
+  module:
+    - comment
+    - contextual
+    - file
+    - filter
+    - layout_builder
+    - media
+    - node
+    - path
+    - system
+    - taxonomy
+    - toolbar
+    - tour
+_core:
+  default_config_hash: NtMgnXp0miNtJhag07NSjwdCm4zpJwhlDFs1HgyL4wI
+id: content_editor
+label: 'Content editor'
+weight: 2
+is_admin: false
+permissions:
+  - 'access administration pages'
+  - 'access content overview'
+  - 'access contextual links'
+  - 'access files overview'
+  - 'access media overview'
+  - 'access toolbar'
+  - 'access tour'
+  - 'administer url aliases'
+  - 'configure all page node layout overrides'
+  - 'configure editable page node layout overrides'
+  - 'create and edit custom blocks'
+  - 'create audio media'
+  - 'create document media'
+  - 'create image media'
+  - 'create media'
+  - 'create page content'
+  - 'create remote_video media'
+  - 'create terms in tags'
+  - 'create url aliases'
+  - 'delete any audio media'
+  - 'delete any document media'
+  - 'delete any image media'
+  - 'delete any media'
+  - 'delete any page content'
+  - 'delete any remote_video media'
+  - 'delete media'
+  - 'delete own audio media'
+  - 'delete own document media'
+  - 'delete own files'
+  - 'delete own image media'
+  - 'delete own page content'
+  - 'delete own remote_video media'
+  - 'delete page revisions'
+  - 'edit any audio media'
+  - 'edit any document media'
+  - 'edit any image media'
+  - 'edit any page content'
+  - 'edit any remote_video media'
+  - 'edit own audio media'
+  - 'edit own comments'
+  - 'edit own document media'
+  - 'edit own image media'
+  - 'edit own page content'
+  - 'edit own remote_video media'
+  - 'edit terms in tags'
+  - 'revert all revisions'
+  - 'revert page revisions'
+  - 'update any media'
+  - 'update media'
+  - 'use text format bootstrap_italia_2'
+  - 'view all revisions'
+  - 'view own unpublished content'
+  - 'view own unpublished media'
+  - 'view page revisions'
+  - 'view the administration theme'

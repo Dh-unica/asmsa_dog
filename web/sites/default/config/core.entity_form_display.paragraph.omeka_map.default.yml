@@ -1,0 +1,120 @@
+uuid: da9a6f4a-376a-4f01-9b33-95fea503bf98
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.omeka_map.field_basic_page
+    - field.field.paragraph.omeka_map.field_media
+    - field.field.paragraph.omeka_map.field_omeka_item
+    - field.field.paragraph.omeka_map.field_settings
+    - field.field.paragraph.omeka_map.field_wms_server
+    - paragraphs.paragraphs_type.omeka_map
+  module:
+    - dog_library
+    - field_group
+    - media_library
+    - paragraphs
+third_party_settings:
+  field_group:
+    group_contenitore:
+      children:
+        - field_omeka_item
+        - field_basic_page
+        - field_media
+        - field_wms_server
+      label: Contenitore
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: tabs
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        direction: horizontal
+        width_breakpoint: 640
+    group_settings:
+      children:
+        - field_settings
+      label: Settings
+      region: content
+      parent_name: ''
+      weight: 1
+      format_type: details_sidebar
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        open: false
+        description: ''
+        required_fields: true
+        weight: 0
+        effect: bounceslide
+id: paragraph.omeka_map.default
+targetEntityType: paragraph
+bundle: omeka_map
+mode: default
+content:
+  field_basic_page:
+    type: entity_reference_autocomplete
+    weight: 1
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_media:
+    type: media_library_widget
+    weight: 2
+    region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
+  field_omeka_item:
+    type: dog_omeka_resource_library
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_settings:
+    type: paragraphs
+    weight: 1
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: closed
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: settings
+      features:
+        add_above: '0'
+        collapse_edit_all: '0'
+        duplicate: '0'
+    third_party_settings: {  }
+  field_wms_server:
+    type: paragraphs
+    weight: 3
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+      features:
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

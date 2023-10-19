@@ -1,0 +1,20 @@
+uuid: f0e63ae9-06c2-40b3-a29f-f17bd4edb0fa
+langcode: it
+status: true
+dependencies:
+  module:
+    - datetime
+    - paragraphs
+id: paragraph.field_wms_layer_start
+field_name: field_wms_layer_start
+entity_type: paragraph
+type: datetime
+settings:
+  datetime_type: date
+module: datetime
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

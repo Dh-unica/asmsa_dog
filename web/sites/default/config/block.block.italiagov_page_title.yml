@@ -1,0 +1,26 @@
+uuid: e36e65f7-1dfc-41a5-8f36-a102a5264331
+langcode: it
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - italiagov
+_core:
+  default_config_hash: El0Dith66rEdG5NXyOonyNgyxc9Upgps2UCg_NsiBWk
+id: italiagov_page_title
+theme: italiagov
+region: title
+weight: -7
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Titolo della pagina'
+  label_display: '0'
+  provider: core
+visibility:
+  request_path:
+    id: request_path
+    negate: true
+    pages: '<front>'

@@ -1,0 +1,23 @@
+uuid: 84c348c9-fcae-42c5-b88c-6c483d7ead16
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_background_blend_mode
+    - paragraphs.paragraphs_type.settings
+  module:
+    - options
+_core:
+  default_config_hash: cvSn5WSQcYksoAE4RMU4zrLRhY8SakttKyXz69jzVcA
+id: paragraph.settings.field_background_blend_mode
+field_name: field_background_blend_mode
+entity_type: paragraph
+bundle: settings
+label: 'Background blend mode'
+description: 'Choose how to blend the background. You must have set a wallpaper first.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

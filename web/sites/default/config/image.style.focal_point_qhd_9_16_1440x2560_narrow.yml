@@ -1,0 +1,25 @@
+uuid: cd1221da-a461-41f1-ab9b-f99a04a71033
+langcode: it
+status: true
+dependencies:
+  module:
+    - focal_point
+_core:
+  default_config_hash: 1r5yk64Dp3zNPxrQgu8j56RdaKMNwcBvK2osCo7A4-0
+name: focal_point_qhd_9_16_1440x2560_narrow
+label: 'Focal point QHD 9:16 (1440x2560) Narrow'
+effects:
+  815126e2-6c28-4289-8ffe-c6f4cd87204a:
+    uuid: 815126e2-6c28-4289-8ffe-c6f4cd87204a
+    id: focal_point_scale_and_crop
+    weight: 1
+    data:
+      width: 1440
+      height: 2560
+      crop_type: focal_point
+  7cad59a7-c0a6-4a91-a779-4b68f3ebc164:
+    uuid: 7cad59a7-c0a6-4a91-a779-4b68f3ebc164
+    id: image_convert
+    weight: 2
+    data:
+      extension: webp

@@ -1,0 +1,21 @@
+uuid: 00ae21cf-8626-4adf-9d42-d1b13824a694
+langcode: it
+status: true
+dependencies:
+  module:
+    - block_content
+    - entity_reference_revisions
+    - paragraphs
+id: block_content.field_omeka_map_timeline
+field_name: field_omeka_map_timeline
+entity_type: block_content
+type: entity_reference_revisions
+settings:
+  target_type: paragraph
+module: entity_reference_revisions
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,5 @@
+label: 'Background Image fixed'
+description: 'If on, sets the paragraph background image as fixed.'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

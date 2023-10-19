@@ -1,0 +1,8 @@
+dog_ckeditor5.omeka_resource.filter.preview:
+  path: '/omeka-resource/{filter_format}/preview'
+  defaults:
+    _controller: '\Drupal\dog_ckeditor5\Controller\OmekaResourceFilterController::preview'
+  methods: [ GET ]
+  requirements:
+    _entity_access: 'filter_format.use'
+    _custom_access: '\Drupal\dog_ckeditor5\Controller\OmekaResourceFilterController::formatUsesOmekaResourceEmbedFilter'

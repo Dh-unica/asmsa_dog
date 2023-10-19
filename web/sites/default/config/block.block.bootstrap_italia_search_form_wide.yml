@@ -1,0 +1,23 @@
+uuid: ba9bba39-d9a7-4d70-b07c-3ca37f5d7a66
+langcode: en
+status: true
+dependencies:
+  module:
+    - search
+  theme:
+    - bootstrap_italia
+_core:
+  default_config_hash: imMyHD6LYci0gtXq56qr9ZKGHzbEG9uFydrN5EhKtSU
+id: bootstrap_italia_search_form_wide
+theme: bootstrap_italia
+region: disabled_blocks
+weight: -5
+provider: null
+plugin: search_form_block
+settings:
+  id: search_form_block
+  label: 'Search form (wide)'
+  label_display: '0'
+  provider: search
+  page_id: ''
+visibility: {  }

@@ -1,0 +1,94 @@
+uuid: 7d7c132e-8d41-4f0d-9d6b-6365fc56a545
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_settings
+    - paragraphs.paragraphs_type.omeka_map_timeline
+    - paragraphs.paragraphs_type.settings
+  module:
+    - entity_reference_revisions
+id: paragraph.omeka_map_timeline.field_settings
+field_name: field_settings
+entity_type: paragraph
+bundle: omeka_map_timeline
+label: Impostazioni
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      settings: settings
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 10
+        enabled: false
+      accordion_item:
+        weight: 24
+        enabled: false
+      attachments:
+        weight: 25
+        enabled: false
+      callout:
+        weight: 26
+        enabled: false
+      carousel:
+        weight: 11
+        enabled: false
+      citation:
+        weight: 28
+        enabled: false
+      content:
+        weight: 12
+        enabled: false
+      gallery:
+        weight: 13
+        enabled: false
+      gallery_item:
+        weight: 31
+        enabled: false
+      geonode_wms:
+        weight: 32
+        enabled: false
+      geonode_wms_timeline:
+        weight: 33
+        enabled: false
+      hero:
+        weight: 34
+        enabled: false
+      map:
+        weight: 14
+        enabled: false
+      node_reference:
+        weight: 36
+        enabled: false
+      omeka_map:
+        weight: 37
+        enabled: false
+      omeka_map_timeline:
+        weight: 38
+        enabled: false
+      section:
+        weight: 39
+        enabled: false
+      settings:
+        weight: 15
+        enabled: true
+      slide:
+        weight: 16
+        enabled: false
+      timeline:
+        weight: 42
+        enabled: false
+      timeline_item:
+        weight: 43
+        enabled: false
+      webform:
+        weight: 18
+        enabled: false
+field_type: entity_reference_revisions

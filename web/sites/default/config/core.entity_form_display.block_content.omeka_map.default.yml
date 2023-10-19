@@ -1,0 +1,41 @@
+uuid: 6bb2c825-d21e-4433-92a6-2c7846ab0e89
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.omeka_map
+    - field.field.block_content.omeka_map.field_omeka_map
+  module:
+    - paragraphs
+id: block_content.omeka_map.default
+targetEntityType: block_content
+bundle: omeka_map
+mode: default
+content:
+  field_omeka_map:
+    type: paragraphs
+    weight: 26
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+      features:
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+hidden:
+  info: true

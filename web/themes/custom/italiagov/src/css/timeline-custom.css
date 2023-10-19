@@ -1,0 +1,20 @@
+
+.tl-slider-container-mask {
+    display: none;
+}
+
+.tl-slider-background {
+    display: none;
+}
+
+#timeline-embed {
+    height: 200px !important;
+}
+
+.tl-storyslider {
+    display: none;
+}
+
+.tl-menubar {
+    top: 10px!important;
+}

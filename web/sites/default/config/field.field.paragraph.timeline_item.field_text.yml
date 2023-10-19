@@ -1,0 +1,24 @@
+uuid: e1ca9111-70eb-433b-be38-65ad62fc82be
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text
+    - paragraphs.paragraphs_type.timeline_item
+  module:
+    - text
+_core:
+  default_config_hash: 9Z1_dn1jk8hSf-H_HKv9pFheFvT7X8OIJIgcqlZ3kKg
+id: paragraph.timeline_item.field_text
+field_name: field_text
+entity_type: paragraph
+bundle: timeline_item
+label: Testo
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

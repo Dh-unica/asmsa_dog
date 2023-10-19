@@ -1,0 +1,27 @@
+uuid: c701ff31-902c-481d-91c8-65e1b749c9e8
+langcode: it
+status: true
+dependencies:
+  config:
+    - system.menu.account
+  module:
+    - system
+  theme:
+    - italiagov
+_core:
+  default_config_hash: 5QY7DVxS4CBe9x4Z5W7s7Gb4Uae9Rqf_SYwHr1mz3Zo
+id: italiagov_account_menu
+theme: italiagov
+region: header_slim_action
+weight: -7
+provider: null
+plugin: 'system_menu_block:account'
+settings:
+  id: 'system_menu_block:account'
+  label: 'Menu profilo utente'
+  label_display: '0'
+  provider: system
+  level: 1
+  depth: 1
+  expand_all_items: false
+visibility: {  }

@@ -1,0 +1,12 @@
+uuid: 85d50a8c-e373-433b-88ff-96e45b8fc5b2
+langcode: it
+status: true
+dependencies:
+  module:
+    - paragraphs
+_core:
+  default_config_hash: h3BeHVei4Lnyqbkao3YiF4KqoY-DhRvUNfEgKG8Rgjg
+id: paragraph.preview
+label: Anteprima
+targetEntityType: paragraph
+cache: true

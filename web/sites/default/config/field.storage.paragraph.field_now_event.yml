@@ -1,0 +1,20 @@
+uuid: fc9b998d-decd-4689-b237-98c41b67d0c9
+langcode: it
+status: true
+dependencies:
+  module:
+    - paragraphs
+_core:
+  default_config_hash: ZyaYVV7L1Sk8lgljnWgSBhvk7yvvxrCx_vLWWtc9cCE
+id: paragraph.field_now_event
+field_name: field_now_event
+entity_type: paragraph
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,2 @@
+label: 'Inline Style'
+description: 'You can insert a style inline. Ex: <em>padding: 20px; background-position: center; background-repeat: none;</em> etc. N.B the "background-image: url (...)" style is added automatically if a background image is loaded '

@@ -1,0 +1,8 @@
+settings:
+  allowed_values:
+    -
+      label: Standard
+    -
+      label: Highlight
+    -
+      label: More

@@ -1,0 +1,21 @@
+uuid: 9e940e72-abef-4598-9b0d-7c1480c074fe
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.section
+_core:
+  default_config_hash: tEi5j4shfBYtcae_qviExX3oY1PDkO7EbSjzpfE8yKw
+id: paragraph.section.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: section
+label: Titolo
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

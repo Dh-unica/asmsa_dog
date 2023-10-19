@@ -1,0 +1,65 @@
+uuid: 5ea9a00b-9108-4b78-b6b1-d4dbd6d7a40e
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.geonode_wms_timeline.field_wms_layer
+    - field.field.paragraph.geonode_wms_timeline.field_wms_layer_end
+    - field.field.paragraph.geonode_wms_timeline.field_wms_layer_name
+    - field.field.paragraph.geonode_wms_timeline.field_wms_layer_start
+    - field.field.paragraph.geonode_wms_timeline.field_wms_server_link
+    - paragraphs.paragraphs_type.geonode_wms_timeline
+  module:
+    - datetime
+    - link
+id: paragraph.geonode_wms_timeline.default
+targetEntityType: paragraph
+bundle: geonode_wms_timeline
+mode: default
+content:
+  field_wms_layer:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_wms_layer_end:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
+    weight: 5
+    region: content
+  field_wms_layer_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_wms_layer_start:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_wms_server_link:
+    type: link
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

@@ -1,0 +1,14 @@
+uuid: 7b22a665-0ea6-4683-bad1-a209befffd82
+langcode: it
+status: true
+dependencies:
+  enforced:
+    module:
+      - webform
+_core:
+  default_config_hash: pZJnuQkh9afNML5IcMuKTUC__vmHMFn66Qr5IWtedZ4
+id: months
+label: Mesi
+category: 'Data e ora'
+likert: false
+options: "January: Gennaio\r\nFebruary: Febbraio\r\nMarch: Marzo\r\nApril: Aprile\r\nMay: Maggio\r\nJune: Giugno\r\nJuly: Luglio\r\nAugust: Agosto\r\nSeptember: Settembre\r\nOctober: Ottobre\r\nNovember: Novembre\r\nDecember: Dicembre\n"

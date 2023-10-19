@@ -1,0 +1,5 @@
+label: Simple
+description: 'Check to display <code>simple</code> variant. <a href="https://italia.github.io/bootstrap-italia/docs/organizzare-i-contenuti/tipografia/#semplice" title="Read the docs" target="_blank">Docs</a>'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

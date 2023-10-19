@@ -1,0 +1,25 @@
+uuid: b9695b49-d3c4-4ab3-8efb-681bc9c73c14
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_overlapping
+    - paragraphs.paragraphs_type.hero
+_core:
+  default_config_hash: ZY2EBQavmYNsmPrqL05baZha3Aqa8UwjO5hEGpgdmcY
+id: paragraph.hero.field_overlapping
+field_name: field_overlapping
+entity_type: paragraph
+bundle: hero
+label: Overlapping
+description: 'If checked, the following content covers a portion of this component. <a href="https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-immagine-e-margine-negativo-per-contenuti-sovrapposti" title="Read the Docs" target="_blank">Docs</a>'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

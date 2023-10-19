@@ -1,0 +1,21 @@
+uuid: adb5c368-4dce-4b40-8207-7ab69b5f2ed1
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_date
+    - node.type.page
+  module:
+    - datetime
+id: node.page.field_date
+field_name: field_date
+entity_type: node
+bundle: page
+label: Data
+description: 'Enter a reference date for the content'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

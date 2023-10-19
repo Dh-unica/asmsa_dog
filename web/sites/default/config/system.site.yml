@@ -1,0 +1,14 @@
+_core:
+  default_config_hash: VDJxTZtQR21qB4lvOq8zszJZLvLKrSPQpdn2E3T71Ww
+langcode: it
+uuid: ed88e372-52b8-4172-98fe-024d4a4dba74
+name: 'Istituto Storico Italiano per l’Età Moderna e Contemporanea'
+mail: alessandrocapra@gmail.com
+slogan: ''
+page:
+  403: ''
+  404: ''
+  front: /node/8
+admin_compact_mode: false
+weight_select_max: 100
+default_langcode: it

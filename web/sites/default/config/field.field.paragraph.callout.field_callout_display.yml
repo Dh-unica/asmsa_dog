@@ -1,0 +1,25 @@
+uuid: 3be9ac6b-ce0e-4c28-8085-02dfaf84375e
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_callout_display
+    - paragraphs.paragraphs_type.callout
+  module:
+    - options
+_core:
+  default_config_hash: Jp9i8ND-QCB94umbAcjT2rHYr-0ftXA0VQ2RO3kDHFY
+id: paragraph.callout.field_callout_display
+field_name: field_callout_display
+entity_type: paragraph
+bundle: callout
+label: 'Callout display'
+description: 'Docs: <a href="https://italia.github.io/bootstrap-italia/docs/componenti/callout/" target="_blank" title="Read the Docs">https://italia.github.io/bootstrap-italia/docs/componenti/callout/</a>'
+required: true
+translatable: false
+default_value:
+  -
+    value: standard
+default_value_callback: ''
+settings: {  }
+field_type: list_string

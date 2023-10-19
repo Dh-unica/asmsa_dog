@@ -1,0 +1,22 @@
+uuid: 72ffbac8-ecca-484f-ae69-8265454e4abf
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - bootstrap_italia
+_core:
+  default_config_hash: BZ5tpW7H8X4PVGRm3MImTIHd2tN0eF7zOtp4SpRYUA0
+id: bootstrap_italia_messages
+theme: bootstrap_italia
+region: disabled_blocks
+weight: -5
+provider: null
+plugin: system_messages_block
+settings:
+  id: system_messages_block
+  label: 'Messaggi di stato'
+  label_display: '0'
+  provider: system
+visibility: {  }

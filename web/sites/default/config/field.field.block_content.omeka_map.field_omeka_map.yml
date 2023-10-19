@@ -1,0 +1,85 @@
+uuid: 4f14d493-5a0f-45b9-9e8f-649ec488abdb
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.omeka_map
+    - field.storage.block_content.field_omeka_map
+    - paragraphs.paragraphs_type.omeka_map
+  module:
+    - entity_reference_revisions
+id: block_content.omeka_map.field_omeka_map
+field_name: field_omeka_map
+entity_type: block_content
+bundle: omeka_map
+label: 'Omeka map'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      omeka_map: omeka_map
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 20
+        enabled: false
+      accordion_item:
+        weight: 21
+        enabled: false
+      attachments:
+        weight: 22
+        enabled: false
+      callout:
+        weight: 23
+        enabled: false
+      carousel:
+        weight: 24
+        enabled: false
+      citation:
+        weight: 25
+        enabled: false
+      content:
+        weight: 26
+        enabled: false
+      gallery:
+        weight: 27
+        enabled: false
+      gallery_item:
+        weight: 28
+        enabled: false
+      hero:
+        weight: 29
+        enabled: false
+      map:
+        weight: 30
+        enabled: false
+      node_reference:
+        weight: 31
+        enabled: false
+      omeka_map:
+        weight: 32
+        enabled: true
+      section:
+        weight: 33
+        enabled: false
+      settings:
+        weight: 34
+        enabled: false
+      slide:
+        weight: 35
+        enabled: false
+      timeline:
+        weight: 36
+        enabled: false
+      timeline_item:
+        weight: 37
+        enabled: false
+      webform:
+        weight: 38
+        enabled: false
+field_type: entity_reference_revisions

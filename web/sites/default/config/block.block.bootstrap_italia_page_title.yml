@@ -1,0 +1,20 @@
+uuid: bffbfd5e-a4b9-40e8-a947-b0e558877431
+langcode: en
+status: true
+dependencies:
+  theme:
+    - bootstrap_italia
+_core:
+  default_config_hash: 6aOgWsNTXjqrDm98TXSAjP6qd2nCijD1xw45MrnbK-Y
+id: bootstrap_italia_page_title
+theme: bootstrap_italia
+region: disabled_blocks
+weight: -5
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Titolo della pagina'
+  label_display: '0'
+  provider: core
+visibility: {  }

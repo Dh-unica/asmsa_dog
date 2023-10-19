@@ -1,0 +1,5 @@
+label: Overlapping
+description: 'If checked, the following content covers a portion of this component. <a href="https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-immagine-e-margine-negativo-per-contenuti-sovrapposti" title="Read the Docs" target="_blank">Docs</a>'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

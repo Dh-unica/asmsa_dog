@@ -1,0 +1,11 @@
+uuid: 14c90438-cc26-4dc7-975b-a58c0b810dee
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.map
+id: block_content.map
+target_entity_type_id: block_content
+target_bundle: map
+default_langcode: site_default
+language_alterable: false

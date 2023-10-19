@@ -1,0 +1,5 @@
+label: 'Accordion item show'
+description: 'Show/hide accordion item, enable to render item expanded.'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

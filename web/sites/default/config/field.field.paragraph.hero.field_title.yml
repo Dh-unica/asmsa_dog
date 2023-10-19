@@ -1,0 +1,21 @@
+uuid: 7e26cd48-a896-4513-920c-2d9e36d0469d
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.hero
+_core:
+  default_config_hash: G8-m57NpUCCLddhthsTyweh203S5iA0qPCguTHFoUdk
+id: paragraph.hero.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: hero
+label: Titolo
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

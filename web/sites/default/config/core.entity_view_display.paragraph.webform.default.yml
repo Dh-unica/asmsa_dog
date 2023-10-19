@@ -1,0 +1,36 @@
+uuid: 0d8280ee-7864-43ea-b2cd-727816a63d8c
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.webform.field_settings
+    - field.field.paragraph.webform.field_webform
+    - paragraphs.paragraphs_type.webform
+  module:
+    - entity_reference_revisions
+    - webform
+_core:
+  default_config_hash: LEu8BctHs_4HxrI1hEvbv2S8tMWEfESPnibnsleTceM
+id: paragraph.webform.default
+targetEntityType: paragraph
+bundle: webform
+mode: default
+content:
+  field_settings:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_webform:
+    type: webform_entity_reference_entity_view
+    label: hidden
+    settings:
+      source_entity: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

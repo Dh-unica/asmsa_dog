@@ -1,0 +1,25 @@
+uuid: 50ef4072-dae0-4805-b282-4134df694f6c
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_display_mode
+    - paragraphs.paragraphs_type.node_reference
+  module:
+    - entity_reference_display
+_core:
+  default_config_hash: zh8a6ve01bAObpLSHp104RBXGnd-ECb7OJz4OGz5svc
+id: paragraph.node_reference.field_display_mode
+field_name: field_display_mode
+entity_type: paragraph
+bundle: node_reference
+label: 'Modalità di visualizzazione'
+description: 'Select display mode for referenced entities'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  exclude: {  }
+  negate: false
+field_type: entity_reference_display

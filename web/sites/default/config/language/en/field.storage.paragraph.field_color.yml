@@ -1,0 +1,60 @@
+settings:
+  allowed_values:
+    -
+      label: Primary
+    -
+      label: Secondary
+    -
+      label: Success
+    -
+      label: Info
+    -
+      label: Warning
+    -
+      label: Danger
+    -
+      label: Blue
+    -
+      label: Indigo
+    -
+      label: Purple
+    -
+      label: Pink
+    -
+      label: Red
+    -
+      label: Orange
+    -
+      label: Yellow
+    -
+      label: Green
+    -
+      label: Teal
+    -
+      label: Cyan
+    -
+      label: 'Gray 100'
+    -
+      label: 'Gray 200'
+    -
+      label: 'Gray 300'
+    -
+      label: 'Gray 400'
+    -
+      label: 'Gray 500'
+    -
+      label: 'Gray 600'
+    -
+      label: 'Gray 700'
+    -
+      label: 'Gray 800'
+    -
+      label: 'Gray 900'
+    -
+      label: Light
+    -
+      label: Dark
+    -
+      label: Black
+    -
+      label: White

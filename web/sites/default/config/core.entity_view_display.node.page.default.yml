@@ -1,0 +1,154 @@
+uuid: 232b4b2e-a31b-4d04-914a-3fa633e51270
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.node.page.body
+    - field.field.node.page.field_date
+    - field.field.node.page.field_location
+    - field.field.node.page.field_media
+    - field.field.node.page.layout_builder__layout
+    - node.type.page
+  module:
+    - datetime
+    - geofield
+    - layout_builder
+    - layout_discovery
+    - text
+    - user
+third_party_settings:
+  layout_builder:
+    enabled: true
+    allow_custom: true
+    sections:
+      -
+        layout_id: layout_onecol
+        layout_settings:
+          label: ''
+        components:
+          b77763d6-2f84-4b93-98bd-3bbe63c748bf:
+            uuid: b77763d6-2f84-4b93-98bd-3bbe63c748bf
+            region: content
+            configuration:
+              id: 'field_block:node:page:body'
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              formatter:
+                type: text_default
+                label: hidden
+                settings: {  }
+                third_party_settings: {  }
+            weight: 0
+            additional: {  }
+          7e141620-6a20-41ec-9da7-c9fc28b7319a:
+            uuid: 7e141620-6a20-41ec-9da7-c9fc28b7319a
+            region: content
+            configuration:
+              id: 'extra_field_block:node:page:links'
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+            weight: 1
+            additional: {  }
+          fabe0949-09ce-4c7f-9cb0-1be593c28833:
+            uuid: fabe0949-09ce-4c7f-9cb0-1be593c28833
+            region: content
+            configuration:
+              id: 'field_block:node:page:field_location'
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              formatter:
+                type: geofield_default
+                label: above
+                settings:
+                  output_format: wkt
+                  output_escape: true
+                third_party_settings: {  }
+            weight: 3
+            additional: {  }
+          92b3b84b-c5b2-4888-87f4-2c6dd5e9e88e:
+            uuid: 92b3b84b-c5b2-4888-87f4-2c6dd5e9e88e
+            region: content
+            configuration:
+              id: 'field_block:node:page:field_date'
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              formatter:
+                type: datetime_default
+                label: above
+                settings:
+                  timezone_override: ''
+                  format_type: medium
+                third_party_settings: {  }
+            weight: 4
+            additional: {  }
+          5ade4a32-fa49-4369-a38f-4cf3ed49cf1e:
+            uuid: 5ade4a32-fa49-4369-a38f-4cf3ed49cf1e
+            region: content
+            configuration:
+              id: 'field_block:node:page:field_media'
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              formatter:
+                type: entity_reference_entity_view
+                label: above
+                settings:
+                  view_mode: default
+                  link: false
+                third_party_settings: {  }
+            weight: 5
+            additional: {  }
+        third_party_settings: {  }
+_core:
+  default_config_hash: M_Y8L5tfmhx7DR143E05YyZSpvgil6VFvqcfBWykalg
+id: node.page.default
+targetEntityType: node
+bundle: page
+mode: default
+content:
+  body:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+  field_date:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
+    weight: 104
+    region: content
+  field_location:
+    type: geofield_default
+    label: above
+    settings:
+      output_format: wkt
+      output_escape: true
+    third_party_settings: {  }
+    weight: 103
+    region: content
+  field_media:
+    type: entity_reference_entity_view
+    label: above
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    weight: 105
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 101
+    region: content
+hidden:
+  langcode: true
+  layout_builder__layout: true

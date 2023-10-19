@@ -1,0 +1,25 @@
+uuid: c3677bc0-3188-4510-ad21-bc0117df4b24
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_hero_image_light
+    - paragraphs.paragraphs_type.hero
+_core:
+  default_config_hash: teDG3mbYzIqpY3eiR81Cp1QN-k1UKMqdFMQxYHWF-ss
+id: paragraph.hero.field_hero_image_light
+field_name: field_hero_image_light
+entity_type: paragraph
+bundle: hero
+label: 'Image Light'
+description: 'Adjust the contrast for light images. <a href="https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-testi-ed-immagine-di-sfondo" title="Read the Docs" target="_blank">Docs</a>'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

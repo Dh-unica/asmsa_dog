@@ -1,0 +1,4 @@
+content:
+  field_background_color:
+    settings:
+      default_colors: '#007a52,#ffffff,#ff3333,#0066cc,#3126ff,#17324d,#0bd9d2,#f73e5a,#ff9900,#00cf86,#17324d,#e6ecf2,#f2f7fc'

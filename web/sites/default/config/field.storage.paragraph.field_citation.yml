@@ -1,0 +1,21 @@
+uuid: 074b5fcb-a64d-4b25-9be0-cb67d22ef7b4
+langcode: it
+status: true
+dependencies:
+  module:
+    - paragraphs
+_core:
+  default_config_hash: VccqNxsaVunMXE6Qx-jeXKHfNCWPt0to8KxBte_qkNM
+id: paragraph.field_citation
+field_name: field_citation
+entity_type: paragraph
+type: string_long
+settings:
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

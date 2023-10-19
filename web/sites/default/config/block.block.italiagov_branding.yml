@@ -1,0 +1,25 @@
+uuid: e1752464-4b40-4c83-a3e8-3ff787eb5b6f
+langcode: it
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - italiagov
+_core:
+  default_config_hash: k-lUDKy16D8StyucVpuC-Vf2mft0LSioMmaVVT2f-d8
+id: italiagov_branding
+theme: italiagov
+region: brand
+weight: -7
+provider: null
+plugin: system_branding_block
+settings:
+  id: system_branding_block
+  label: 'Branding del sito'
+  label_display: '0'
+  provider: system
+  use_site_logo: true
+  use_site_name: true
+  use_site_slogan: true
+visibility: {  }

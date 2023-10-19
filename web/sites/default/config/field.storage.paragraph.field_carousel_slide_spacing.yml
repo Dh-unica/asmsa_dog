@@ -1,0 +1,29 @@
+uuid: a1215d8a-590e-4daf-9738-93527bd4481f
+langcode: it
+status: true
+dependencies:
+  module:
+    - options
+    - paragraphs
+_core:
+  default_config_hash: 6ujGu2X64XM6CS2tdoalBRuBMi7RM4aXxefrrRH4lpk
+id: paragraph.field_carousel_slide_spacing
+field_name: field_carousel_slide_spacing
+entity_type: paragraph
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: slide_track_padding
+      label: 'Automatic padding'
+    -
+      value: slide_lined
+      label: 'Vertical line'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

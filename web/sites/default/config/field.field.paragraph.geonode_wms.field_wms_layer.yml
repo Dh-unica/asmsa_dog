@@ -1,0 +1,19 @@
+uuid: ce60e2f9-3926-43c0-9ede-922c4596b88c
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_wms_layer
+    - paragraphs.paragraphs_type.geonode_wms
+id: paragraph.geonode_wms.field_wms_layer
+field_name: field_wms_layer
+entity_type: paragraph
+bundle: geonode_wms
+label: 'Wms layer'
+description: "Enter the name of a wms layer. This will look something like:\r\ngeonode:layername\r\nYou can also enter more than one separated by commas"
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

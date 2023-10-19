@@ -1,0 +1,21 @@
+widget:
+  version: VERSION
+  js:
+    js/resource_library.widget.js: { }
+  css:
+    theme:
+      css/resource_library.css: { }
+  dependencies:
+    - core/drupal.dialog.ajax
+    - core/once
+    - core/sortable
+
+ui:
+  version: VERSION
+  js:
+    js/resource_library.ui.js: { }
+  dependencies:
+    - core/drupal.ajax
+    - core/drupal.announce
+    - core/once
+    - core/jquery

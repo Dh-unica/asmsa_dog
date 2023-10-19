@@ -1,0 +1,36 @@
+uuid: 7f92171b-f5bd-4849-bb2f-9808e33d75bb
+langcode: it
+status: true
+dependencies:
+  config:
+    - filter.format.basic_html
+    - filter.format.bootstrap_italia_2
+    - filter.format.webform_default
+  module:
+    - comment
+    - contact
+    - file
+    - filter
+    - media
+    - search
+    - shortcut
+    - system
+_core:
+  default_config_hash: cFrlqjtkTfvY3RGccjJkPf1SGIfJ942IrxTLWAO4mgA
+id: authenticated
+label: 'Utente autenticato'
+weight: 1
+is_admin: false
+permissions:
+  - 'access comments'
+  - 'access content'
+  - 'access shortcuts'
+  - 'access site-wide contact form'
+  - 'delete own files'
+  - 'post comments'
+  - 'search content'
+  - 'skip comment approval'
+  - 'use text format basic_html'
+  - 'use text format bootstrap_italia_2'
+  - 'use text format webform_default'
+  - 'view media'

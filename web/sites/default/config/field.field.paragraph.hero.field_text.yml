@@ -1,0 +1,24 @@
+uuid: 80a472f9-6f7b-465b-9a9b-f355a852a444
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text
+    - paragraphs.paragraphs_type.hero
+  module:
+    - text
+_core:
+  default_config_hash: PVMYTMjDILnGdAE9eWh1Yiz7HTcjrE6kqTeuWLBliWc
+id: paragraph.hero.field_text
+field_name: field_text
+entity_type: paragraph
+bundle: hero
+label: Testo
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

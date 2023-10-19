@@ -1,0 +1,7 @@
+/**
+ * By default, the dialog is too narrow to be usable.
+ * @see Drupal.ckeditor5.openDialog()
+ */
+.ui-dialog--narrow.drupal-omeka-resource-library-widget-modal {
+  max-width: 75%;
+}

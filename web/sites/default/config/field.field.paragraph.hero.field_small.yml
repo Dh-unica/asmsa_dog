@@ -1,0 +1,25 @@
+uuid: be8d5db8-47e0-47a4-9ffe-e0eba73cc090
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_small
+    - paragraphs.paragraphs_type.hero
+_core:
+  default_config_hash: PK90RMVw0MC1gnciyTF8hvmGVEcorSn3uK7f9fSRptU
+id: paragraph.hero.field_small
+field_name: field_small
+entity_type: paragraph
+bundle: hero
+label: Piccolo
+description: 'Enable small variant. <a href="https://italia.github.io/bootstrap-italia/docs/componenti/hero/#versione-small" title="Read the Docs" target="_blank">Docs</a>'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

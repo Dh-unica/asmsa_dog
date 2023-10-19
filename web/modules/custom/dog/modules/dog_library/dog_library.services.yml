@@ -1,0 +1,22 @@
+services:
+
+  # Services.
+  dog_library.ui_builder:
+    class: Drupal\dog_library\Service\ResourceLibraryUiBuilder
+    arguments: [ '@entity_type.manager', '@request_stack', '@views.executable' ]
+
+  # Library Opener services.
+  dog_library.opener_resolver:
+    class: Drupal\dog_library\Opener\OpenerResolver
+    calls:
+      - [ setContainer, [ '@service_container' ] ]
+
+  dog_library.opener.field_widget:
+    class: Drupal\dog_library\LibraryOpener\ResourceLibraryFieldWidgetOpener
+    arguments: [ ]
+
+  # Event Subscriber.
+  dog_library.route_subscriber:
+    class: Drupal\dog_library\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }

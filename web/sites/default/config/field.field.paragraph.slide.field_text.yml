@@ -1,0 +1,24 @@
+uuid: eaf8420e-1fa7-4374-9b3b-1f1dfe0248fe
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text
+    - paragraphs.paragraphs_type.slide
+  module:
+    - text
+_core:
+  default_config_hash: vVVv4Tmp9ERbC2P6RzXCM3DG_J3bIQBoJ2s_o6KTQgk
+id: paragraph.slide.field_text
+field_name: field_text
+entity_type: paragraph
+bundle: slide
+label: Testo
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

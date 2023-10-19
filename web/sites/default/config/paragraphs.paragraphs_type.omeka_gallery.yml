@@ -1,0 +1,10 @@
+uuid: baa2bb9a-f9f3-47e5-87e4-bdae6376c39a
+langcode: it
+status: true
+dependencies: {  }
+id: omeka_gallery
+label: 'Omeka Gallery'
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

@@ -1,0 +1,94 @@
+uuid: 997bb204-ce01-4192-b991-29b81f1a51ac
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.omeka_map_timeline
+    - field.storage.block_content.field_omeka_map_timeline
+    - paragraphs.paragraphs_type.omeka_map_timeline
+  module:
+    - entity_reference_revisions
+id: block_content.omeka_map_timeline.field_omeka_map_timeline
+field_name: field_omeka_map_timeline
+entity_type: block_content
+bundle: omeka_map_timeline
+label: 'Omeka map timeline'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      omeka_map_timeline: omeka_map_timeline
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 23
+        enabled: false
+      accordion_item:
+        weight: 24
+        enabled: false
+      attachments:
+        weight: 25
+        enabled: false
+      callout:
+        weight: 26
+        enabled: false
+      carousel:
+        weight: 27
+        enabled: false
+      citation:
+        weight: 28
+        enabled: false
+      content:
+        weight: 29
+        enabled: false
+      gallery:
+        weight: 30
+        enabled: false
+      gallery_item:
+        weight: 31
+        enabled: false
+      geonode_wms:
+        weight: 32
+        enabled: false
+      geonode_wms_timeline:
+        weight: 33
+        enabled: false
+      hero:
+        weight: 34
+        enabled: false
+      map:
+        weight: 35
+        enabled: false
+      node_reference:
+        weight: 36
+        enabled: false
+      omeka_map:
+        weight: 37
+        enabled: false
+      omeka_map_timeline:
+        weight: 38
+        enabled: true
+      section:
+        weight: 39
+        enabled: false
+      settings:
+        weight: 40
+        enabled: false
+      slide:
+        weight: 41
+        enabled: false
+      timeline:
+        weight: 42
+        enabled: false
+      timeline_item:
+        weight: 43
+        enabled: false
+      webform:
+        weight: 44
+        enabled: false
+field_type: entity_reference_revisions

@@ -1,0 +1,20 @@
+uuid: 15ee52b2-1885-483c-9e27-359ce978125b
+langcode: it
+status: true
+dependencies:
+  module:
+    - datetime
+    - paragraphs
+id: paragraph.field_wms_layer_end
+field_name: field_wms_layer_end
+entity_type: paragraph
+type: datetime
+settings:
+  datetime_type: date
+module: datetime
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

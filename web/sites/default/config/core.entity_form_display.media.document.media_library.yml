@@ -1,0 +1,37 @@
+uuid: c0477802-dc48-4662-9343-87c1712ac156
+langcode: it
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.media.media_library
+    - field.field.media.document.field_data
+    - field.field.media.document.field_descrizione
+    - field.field.media.document.field_location
+    - field.field.media.document.field_media_document
+    - field.field.media.document.field_titolo
+    - media.type.document
+_core:
+  default_config_hash: dcpfpqyLXOSGpulacMAJW3H-G34_LeNsjdfxd1_oCfY
+id: media.document.media_library
+targetEntityType: media
+bundle: document
+mode: media_library
+content:
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+hidden:
+  created: true
+  field_data: true
+  field_descrizione: true
+  field_location: true
+  field_media_document: true
+  field_titolo: true
+  name: true
+  path: true
+  status: true
+  uid: true

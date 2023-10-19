@@ -1,0 +1,63 @@
+uuid: 709360ae-2fd0-4290-9f40-89df042a246c
+langcode: it
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.full
+    - field.field.media.audio.field_data
+    - field.field.media.audio.field_location
+    - field.field.media.audio.field_media_audio_file
+    - field.field.media.audio.field_titolo
+    - media.type.audio
+  module:
+    - datetime
+    - file
+    - geofield
+    - layout_builder
+third_party_settings:
+  layout_builder:
+    enabled: false
+    allow_custom: false
+_core:
+  default_config_hash: AS765MdDfNpK6K5eE7WVnBvpynClz_havy1R3bO3gVo
+id: media.audio.full
+targetEntityType: media
+bundle: audio
+mode: full
+content:
+  field_data:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_location:
+    type: geofield_default
+    label: above
+    settings:
+      output_format: wkt
+      output_escape: true
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_media_audio_file:
+    type: file_audio
+    label: hidden
+    settings:
+      controls: true
+      autoplay: false
+      loop: false
+      multiple_file_display_type: tags
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  created: true
+  field_titolo: true
+  langcode: true
+  name: true
+  thumbnail: true
+  uid: true

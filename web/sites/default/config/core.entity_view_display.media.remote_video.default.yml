@@ -1,0 +1,64 @@
+uuid: be8328bd-dc87-41cc-a449-c3cef6c80793
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.media.remote_video.field_data
+    - field.field.media.remote_video.field_location
+    - field.field.media.remote_video.field_media_oembed_video
+    - field.field.media.remote_video.field_titolo
+    - media.type.remote_video
+  module:
+    - datetime
+    - geofield
+    - media
+_core:
+  default_config_hash: ZdPcl2hPxl5pgv3pI-07R7h51OjeUeKJTy-ab1NfM34
+id: media.remote_video.default
+targetEntityType: media
+bundle: remote_video
+mode: default
+content:
+  field_data:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_location:
+    type: geofield_default
+    label: above
+    settings:
+      output_format: wkt
+      output_escape: true
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_media_oembed_video:
+    type: oembed
+    label: hidden
+    settings:
+      max_width: 0
+      max_height: 0
+      loading:
+        attribute: eager
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_titolo:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+hidden:
+  created: true
+  langcode: true
+  name: true
+  thumbnail: true
+  uid: true

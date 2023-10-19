@@ -1,0 +1,5 @@
+label: 'Accordion background active'
+description: 'Adds the primary background to the active element'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

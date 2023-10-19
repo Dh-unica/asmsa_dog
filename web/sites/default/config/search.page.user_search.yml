@@ -1,0 +1,14 @@
+uuid: 2edf30d7-0d73-4040-96f7-eaa72476d108
+langcode: it
+status: true
+dependencies:
+  module:
+    - user
+_core:
+  default_config_hash: k3aUaZXGDuhkek2TZIee0PApOPTvYZLadziekdyHA5A
+id: user_search
+label: Utenti
+path: user
+weight: 0
+plugin: user_search
+configuration: {  }

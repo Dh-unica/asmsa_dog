@@ -1,0 +1,5 @@
+label: 'Enable container'
+description: "If the box is checked, a div with the class \"container\" will be inserted. It is used to automatically manage the empty spaces to the right and left of the paragraph according to the device that displays the site.\r\nIf deactivated, the paragraph will always occupy all the space horizontally.\r\n<strong>This control is activated only if \"full width\" is active.</strong>"
+settings:
+  on_label: 'On'
+  off_label: 'Off'

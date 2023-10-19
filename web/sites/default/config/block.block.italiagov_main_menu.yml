@@ -1,0 +1,27 @@
+uuid: 7119aa60-8098-450d-b563-ff0dcadea002
+langcode: it
+status: true
+dependencies:
+  config:
+    - system.menu.main
+  module:
+    - system
+  theme:
+    - italiagov
+_core:
+  default_config_hash: F8wMEJ_xqJJ36hgcEJeoGYCrsN50kEeaUw3AHn97teE
+id: italiagov_main_menu
+theme: italiagov
+region: header_nav
+weight: -7
+provider: null
+plugin: 'system_menu_block:main'
+settings:
+  id: 'system_menu_block:main'
+  label: 'Navigazione principale'
+  label_display: '0'
+  provider: system
+  level: 1
+  depth: 4
+  expand_all_items: false
+visibility: {  }

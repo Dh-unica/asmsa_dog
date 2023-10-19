@@ -1,0 +1,18 @@
+{#
+/**
+ * @file
+ * Default theme implementation of a container used to wrap the resource library's modal dialog interface.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the containing element.
+ * - content: The content of view table of existing resource items to choose from.
+ *
+ * @see template_preprocess_resource_library_wrapper()
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes }}>
+  {{ menu }}
+  {{ content }}
+</div>

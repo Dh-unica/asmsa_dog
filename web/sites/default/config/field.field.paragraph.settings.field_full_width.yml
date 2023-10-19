@@ -1,0 +1,25 @@
+uuid: 1861a48d-2cbb-4d7c-b4b9-d9c2d482972a
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_full_width
+    - paragraphs.paragraphs_type.settings
+_core:
+  default_config_hash: 28PpbPpyGO_Qrxos9pZWT48TJ5B4exfAZniA0pvKY6c
+id: paragraph.settings.field_full_width
+field_name: field_full_width
+entity_type: paragraph
+bundle: settings
+label: 'Full width'
+description: 'By activating this setting, the line will occupy the entire width of the screen. This is useful when you want to set a background color or a background image. '
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

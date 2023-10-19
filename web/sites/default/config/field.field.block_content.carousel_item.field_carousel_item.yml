@@ -1,0 +1,82 @@
+uuid: 0a888fd9-00f7-4399-9a59-27e3ed5a7d22
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.carousel_item
+    - field.storage.block_content.field_carousel_item
+    - paragraphs.paragraphs_type.slide
+  module:
+    - entity_reference_revisions
+id: block_content.carousel_item.field_carousel_item
+field_name: field_carousel_item
+entity_type: block_content
+bundle: carousel_item
+label: 'Carousel item'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      slide: slide
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 19
+        enabled: false
+      accordion_item:
+        weight: 20
+        enabled: false
+      attachments:
+        weight: 21
+        enabled: false
+      callout:
+        weight: 22
+        enabled: false
+      carousel:
+        weight: 23
+        enabled: false
+      citation:
+        weight: 24
+        enabled: false
+      content:
+        weight: 25
+        enabled: false
+      gallery:
+        weight: 26
+        enabled: false
+      gallery_item:
+        weight: 27
+        enabled: false
+      hero:
+        weight: 28
+        enabled: false
+      map:
+        weight: 29
+        enabled: false
+      node_reference:
+        weight: 30
+        enabled: false
+      section:
+        weight: 31
+        enabled: false
+      settings:
+        weight: 32
+        enabled: false
+      slide:
+        weight: 33
+        enabled: true
+      timeline:
+        weight: 34
+        enabled: false
+      timeline_item:
+        weight: 35
+        enabled: false
+      webform:
+        weight: 36
+        enabled: false
+field_type: entity_reference_revisions

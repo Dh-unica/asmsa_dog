@@ -1,0 +1,100 @@
+uuid: ab899a85-ed8d-4800-b831-f76a425b573c
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.drupal_gallery
+    - field.storage.block_content.field_drupal_gallery
+    - paragraphs.paragraphs_type.drupal_gallery
+  module:
+    - entity_reference_revisions
+id: block_content.drupal_gallery.field_drupal_gallery
+field_name: field_drupal_gallery
+entity_type: block_content
+bundle: drupal_gallery
+label: 'Drupal gallery'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      drupal_gallery: drupal_gallery
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 25
+        enabled: false
+      accordion_item:
+        weight: 26
+        enabled: false
+      attachments:
+        weight: 27
+        enabled: false
+      callout:
+        weight: 28
+        enabled: false
+      carousel:
+        weight: 29
+        enabled: false
+      citation:
+        weight: 30
+        enabled: false
+      content:
+        weight: 31
+        enabled: false
+      drupal_gallery:
+        weight: 32
+        enabled: true
+      gallery:
+        weight: 33
+        enabled: false
+      gallery_item:
+        weight: 34
+        enabled: false
+      geonode_wms:
+        weight: 35
+        enabled: false
+      geonode_wms_timeline:
+        weight: 36
+        enabled: false
+      hero:
+        weight: 37
+        enabled: false
+      map:
+        weight: 38
+        enabled: false
+      node_reference:
+        weight: 39
+        enabled: false
+      omeka_gallery:
+        weight: 40
+        enabled: false
+      omeka_map:
+        weight: 41
+        enabled: false
+      omeka_map_timeline:
+        weight: 42
+        enabled: false
+      section:
+        weight: 43
+        enabled: false
+      settings:
+        weight: 44
+        enabled: false
+      slide:
+        weight: 45
+        enabled: false
+      timeline:
+        weight: 46
+        enabled: false
+      timeline_item:
+        weight: 47
+        enabled: false
+      webform:
+        weight: 48
+        enabled: false
+field_type: entity_reference_revisions

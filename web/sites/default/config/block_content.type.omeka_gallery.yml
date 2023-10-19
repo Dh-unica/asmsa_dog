@@ -1,0 +1,8 @@
+uuid: 78f3faee-a5db-47d5-aab6-43b3f8183926
+langcode: it
+status: true
+dependencies: {  }
+id: omeka_gallery
+label: 'Omeka Gallery'
+revision: 0
+description: ''

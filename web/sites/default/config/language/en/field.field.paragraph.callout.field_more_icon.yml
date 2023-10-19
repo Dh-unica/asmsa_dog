@@ -1,0 +1,5 @@
+label: 'More icon'
+description: 'If you leave it blank, the icon <code>it-download</code> will be used, or you can choose an icon from this <a href="https://italia.github.io/bootstrap-italia/docs/utilities/icone/#lista-delle-icone-disponibili" title="Icon list" target="_blank">list</a>.'
+default_value:
+  -
+    value: it-download

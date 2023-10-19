@@ -1,0 +1,5 @@
+label: 'Image Light'
+description: 'Adjust the contrast for light images. <a href="https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-testi-ed-immagine-di-sfondo" title="Read the Docs" target="_blank">Docs</a>'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

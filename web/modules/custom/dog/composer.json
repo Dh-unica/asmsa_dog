@@ -1,0 +1,9 @@
+{
+    "name": "digitaliststor/dog",
+    "type": "drupal-module",
+    "description": "Provides additional functionality for the site.",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "drupal/views_remote_data": "^1.0"
+    }
+}

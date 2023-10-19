@@ -1,0 +1,22 @@
+uuid: 932c4ad5-8109-448c-9a03-fc96b35570c1
+langcode: it
+status: true
+dependencies:
+  module:
+    - help
+  theme:
+    - italiagov
+_core:
+  default_config_hash: VzBHLdAkDdUhGrFxDyfUPHRIgvQjCPSIc-MTzZScB0c
+id: italiagov_help
+theme: italiagov
+region: help
+weight: -7
+provider: null
+plugin: help_block
+settings:
+  id: help_block
+  label: Aiuto
+  label_display: '0'
+  provider: help
+visibility: {  }

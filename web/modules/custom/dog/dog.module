@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Drupal Omeka Geonode module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function dog_theme($existing, $type, $theme, $path) {
+  return [
+    'dog_omeka_resource' => [
+      'variables' => [
+        'attributes' => [],
+        'omeka_resource_id' => NULL,
+        'omeka_resource_type' => NULL,
+        'omeka_resource_data' => NULL,
+        'view_mode' => 'default',
+      ],
+    ],
+    'dog_omeka_resource__item' => [
+      'base hook' => 'dog_omeka_resource',
+    ],
+  ];
+}
+
+/**
+ * Prepares variables for dog_omeka_resource templates.
+ *
+ * Default template: dog-omeka-resource.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing the data.
+ */
+function template_preprocess_dog_omeka_resource(array &$variables) {
+  assert(isset($variables['omeka_resource_id']), 'Omeka Resource id is required for theme function \'dog_omeka_resource\'');
+  assert(isset($variables['omeka_resource_type']), 'Omeka Resource type is required for theme function \'dog_omeka_resource\'');
+  assert(isset($variables['omeka_resource_data']), 'Omeka Resource data is required for theme function \'dog_omeka_resource\'');
+
+  // Default view mode if not configured.
+  $variables['view_mode'] = empty($variables['view_mode']) ? 'default' : $variables['view_mode'];
+
+  // Classes.
+  $type = str_replace('-', '_', $variables['omeka_resource_type']);
+  $view_mode = str_replace('_', '-', $variables['view_mode']);
+  $variables['attributes']['class'][] = 'omeka-resource--' . $view_mode;
+  $variables['attributes']['class'][] = 'omeka-resource--' . $type;
+  $variables['attributes']['class'][] = 'omeka-resource--' . $view_mode . '--' . $type;
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+function dog_theme_suggestions_dog_omeka_resource(array $variables) {
+  $type = str_replace('-', '_', $variables['omeka_resource_type']);
+  $view_mode = str_replace('-', '_', $variables['view_mode']);
+
+  $suggestions = [];
+  $suggestions[] = 'dog_omeka_resource__' . $type;
+  $suggestions[] = 'dog_omeka_resource__' . $view_mode;
+  $suggestions[] = 'dog_omeka_resource__' . $view_mode . '__' . $type;
+
+  return $suggestions;
+}

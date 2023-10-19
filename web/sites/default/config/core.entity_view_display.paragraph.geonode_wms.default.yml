@@ -1,0 +1,44 @@
+uuid: b6796adb-490c-453f-8ad0-dbe77bb7b57f
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.geonode_wms.field_wms_layer
+    - field.field.paragraph.geonode_wms.field_wms_layer_name
+    - field.field.paragraph.geonode_wms.field_wms_server_link
+    - paragraphs.paragraphs_type.geonode_wms
+  module:
+    - link
+id: paragraph.geonode_wms.default
+targetEntityType: paragraph
+bundle: geonode_wms
+mode: default
+content:
+  field_wms_layer:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_wms_layer_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_wms_server_link:
+    type: link
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

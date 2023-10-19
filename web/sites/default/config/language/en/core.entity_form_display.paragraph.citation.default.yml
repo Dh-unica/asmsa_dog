@@ -1,0 +1,15 @@
+third_party_settings:
+  field_group:
+    group_container:
+      label: Container
+    group_citation:
+      label: Citation
+    group_settings:
+      label: Settings
+    group_behaviours:
+      label: Behaviours
+content:
+  field_settings:
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs

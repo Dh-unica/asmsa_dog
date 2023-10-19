@@ -1,0 +1,21 @@
+uuid: bb50d9b0-70a5-4da5-ab71-8d84e9fb23ea
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_wms_layer_end
+    - paragraphs.paragraphs_type.geonode_wms_timeline
+  module:
+    - datetime
+id: paragraph.geonode_wms_timeline.field_wms_layer_end
+field_name: field_wms_layer_end
+entity_type: paragraph
+bundle: geonode_wms_timeline
+label: 'Wms layer end'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

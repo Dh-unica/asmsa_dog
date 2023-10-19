@@ -1,0 +1,22 @@
+uuid: b8eeaff3-83fb-49d1-833d-c9a038671305
+langcode: it
+status: true
+dependencies:
+  module:
+    - entity_reference_revisions
+    - paragraphs
+_core:
+  default_config_hash: CWhb8uXfvy0IYwl-tGuArKm5wBVffHbMmwxSyOb-Ghc
+id: paragraph.field_slides
+field_name: field_slides
+entity_type: paragraph
+type: entity_reference_revisions
+settings:
+  target_type: paragraph
+module: entity_reference_revisions
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

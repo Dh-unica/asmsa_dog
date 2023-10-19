@@ -1,0 +1,35 @@
+uuid: 2795d39e-916b-428a-ab20-dd25b0a459c4
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_location
+    - paragraphs.paragraphs_type.map
+  module:
+    - geofield
+_core:
+  default_config_hash: myYVFLHgoyjmwgKVFnBuq9ITsIZeg2FEn2TDZob9yv4
+id: paragraph.map.field_location
+field_name: field_location
+entity_type: paragraph
+bundle: map
+label: Posizione
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    title: ''
+    value: 'POINT (16.331606 38.299063)'
+    geo_type: Point
+    lat: 38.299063
+    lon: 16.331606
+    left: 16.331606
+    top: 38.299063
+    right: 16.331606
+    bottom: 38.299063
+    geohash: sqg9gshk4nb1
+    latlon: '38.299063,16.331606'
+default_value_callback: ''
+settings: {  }
+field_type: geofield

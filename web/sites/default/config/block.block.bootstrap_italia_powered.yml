@@ -1,0 +1,22 @@
+uuid: 74b781de-c866-4a4c-ad8d-79b866ec5ed2
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - bootstrap_italia
+_core:
+  default_config_hash: eYL19CLDyinGTWYQfBD1DswWzglEotE_kHnHx3AxTXM
+id: bootstrap_italia_powered
+theme: bootstrap_italia
+region: disabled_blocks
+weight: 0
+provider: null
+plugin: system_powered_by_block
+settings:
+  id: system_powered_by_block
+  label: 'Realizzato con Drupal'
+  label_display: '0'
+  provider: system
+visibility: {  }

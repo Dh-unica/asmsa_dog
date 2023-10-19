@@ -1,0 +1,132 @@
+# Bootstrap-italia library managed from theme setting UI
+#libraries-ui:
+
+# Bootstrap-italia library if you use a vanilla release
+vanilla:
+  css:
+    theme:
+      dist/css/bootstrap-italia.min.css: { minified: true }
+      #dist/css/bootstrap-italia-comuni.min.css: { minified: true }
+  js:
+    custom/js/bootstrap-italia.bundle.min.js: { minified: true }
+    # dist/js/bootstrap-italia.bundle.min.js: { minified: true }
+    # dist/js/bootstrap-italia.min.js: { minified: true }
+  dependencies:
+    - core/drupal
+    - core/jquery
+
+# Bootstrap-italia library if you use a custom compiled library
+custom:
+  css:
+    theme:
+      dist/css/bootstrap-italia.min.css: { minified: true }
+  js:
+    dist/js/bootstrap-italia.min.js: { minified: true }
+  dependencies:
+    - core/drupal
+    - core/jquery
+
+leaflet:
+  css:
+    theme:
+      'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css':
+        type: external
+        minified: true
+        attributes:
+          crossorigin: anonymous
+          integrity: "sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.css':
+        type: external
+        minified: true
+        attributes:
+          crossorigin: anonymous
+          integrity: "sha512-RLEjtaFGdC4iQMJDbMzim/dOvAu+8Qp9sw7QE4wIMYcg2goVoivzwgSZq9CsIxp4xKAZPKh5J2f2lOko2Ze6FQ=="
+      'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.Default.css':
+        type: external
+        minified: true
+        attributes:
+          crossorigin: anonymous
+          integrity: "sha512-BBToHPBStgMiw0lD4AtkRIZmdndhB6aQbXpX7omcrXeG2PauGBl2lzq2xUZTxaLxYz5IDHlmneCZ1IJ+P3kYtQ=="
+  #      'https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css': { type: external, minified: true }
+  js:
+    'src/js/custom/omeka-map.js': {}
+    'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js':
+      type: external
+      minified: true
+      attributes:
+        crossorigin: anonymous
+        integrity: "sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/leaflet.markercluster.js':
+      type: external
+      minified: true
+      attributes:
+        crossorigin: anonymous
+        integrity: "sha512-MQlyPV+ol2lp4KodaU/Xmrn+txc1TP15pOBF/2Sfre7MRsA/pB4Vy58bEqe9u7a7DczMLtU5wT8n7OblJepKbg=="
+#    'https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js': { type: external, minified: true }
+
+remotevideopopup:
+  css:
+    theme:
+      'src/css/remotevideopopup.css': {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+
+timelinejs:
+  css:
+    theme:
+      'src/css/timeline.css': {}
+      'src/css/timeline-custom.css': {}
+  js:
+    'src/js/timeline.js': {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+
+# Bootstrap-italia library if you use a CDN
+cdn:
+  css:
+    theme:
+      https://cdn.jsdelivr.net/npm/bootstrap-italia@2.0.9/dist/css/bootstrap-italia.min.css: { type: external, minified: true }
+      # https://cdn.jsdelivr.net/npm/bootstrap-italia@2.0.9/dist/css/bootstrap-italia-comuni.min.css: { type: external, minified: true }
+  js:
+    https://cdn.jsdelivr.net/npm/bootstrap-italia@2.0.9/dist/js/bootstrap-italia.bundle.min.js: { type: external, minified: true }
+  dependencies:
+    - core/drupal
+    - core/jquery
+
+# Bootstrap-italia library if you use a webpack hot mode.
+# If you need customize host and port, copy `<sub-theme>/webpack.settings.dist.js`
+# in `<sub-theme>/webpack.settings.js` and edit `devServer.allowedHosts`
+# and `devServer.port`.
+hot:
+  css:
+    theme:
+      http://127.0.0.1:8080/css/bootstrap-italia.min.css: { type: external, minified: true }
+  js:
+    http://127.0.0.1:8080/js/bootstrap-italia.min.js: { type: external, minified: true }
+  dependencies:
+    - core/drupal
+    - core/jquery
+
+# Bootstrap-italia library if you use a webpack hot mode with ddev
+# For example, use this tip to expose 8080 port
+# ---
+# <project-name>/.ddev/docker-compose.ports.yaml
+#
+#   version: '3.6'
+#   services:
+#     web:
+#       expose:
+#         - 8080
+#       ports:
+#         - 8080:8080
+ddev:
+  css:
+    theme:
+      http://project-name.ddev.site:8080/css/bootstrap-italia.min.css: { type: external, minified: true }
+  js:
+    http://project-name.ddev.site:8080/js/bootstrap-italia.min.js: { type: external, minified: true }
+  dependencies:
+    - core/drupal
+    - core/jquery

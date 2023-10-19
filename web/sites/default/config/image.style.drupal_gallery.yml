@@ -1,0 +1,15 @@
+uuid: 4ac600bd-4966-4a00-96bc-41da3fedb0e1
+langcode: it
+status: true
+dependencies: {  }
+name: drupal_gallery
+label: 'Drupal Gallery'
+effects:
+  0a0a84ed-3ce7-4f63-869f-50942c377827:
+    uuid: 0a0a84ed-3ce7-4f63-869f-50942c377827
+    id: image_scale_and_crop
+    weight: 1
+    data:
+      width: 800
+      height: 600
+      anchor: center-center

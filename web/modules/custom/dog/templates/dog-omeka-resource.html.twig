@@ -1,0 +1,35 @@
+{#
+/**
+ * @file
+ * Default theme implementation for omeka resource entity.
+ *
+ * Available variables:
+ * - attributes: Attributes for the marguee tag.
+ * - omeka_resource_id: contains the id of omeka resource.
+ * - omeka_resource_type: contains the type of omeka resource.
+ * - omeka_resource_data: contains the properties of omeka resource.
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes }}>
+  <details>
+    <summary>{{ omeka_resource_data['@id'] }}</summary>
+    {{custom}}
+    <table>
+      <tr>
+        <th>Key</th>
+        <th>Value</th>
+      </tr>
+      <tbody>
+      {% for key,row in omeka_resource_data %}
+        <tr>
+          <td>{{ key }}</td>
+          <td><code>{{ row|json_encode() }}</code></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+  </details>
+</div>

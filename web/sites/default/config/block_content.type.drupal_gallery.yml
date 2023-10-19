@@ -1,0 +1,8 @@
+uuid: a8be8938-ddc4-435d-b394-2a486912c79e
+langcode: it
+status: true
+dependencies: {  }
+id: drupal_gallery
+label: 'Drupal Gallery'
+revision: 0
+description: ''

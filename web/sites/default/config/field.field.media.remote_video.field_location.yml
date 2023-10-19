@@ -1,0 +1,21 @@
+uuid: aba7df33-2898-4ff8-824e-c974282012c7
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_location
+    - media.type.remote_video
+  module:
+    - geofield
+id: media.remote_video.field_location
+field_name: field_location
+entity_type: media
+bundle: remote_video
+label: Localizzazione
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: geofield

@@ -1,0 +1,14 @@
+settings:
+  allowed_values:
+    -
+      label: Default
+    -
+      label: Success
+    -
+      label: Warning
+    -
+      label: Danger
+    -
+      label: Important
+    -
+      label: Note

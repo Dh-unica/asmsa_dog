@@ -1,0 +1,19 @@
+uuid: 2aa880eb-a271-4149-9a62-a6869e72ddc1
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_wms_layer_name
+    - paragraphs.paragraphs_type.geonode_wms_timeline
+id: paragraph.geonode_wms_timeline.field_wms_layer_name
+field_name: field_wms_layer_name
+entity_type: paragraph
+bundle: geonode_wms_timeline
+label: 'Wms layer name'
+description: 'Write the name of the layer'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

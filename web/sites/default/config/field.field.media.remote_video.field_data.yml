@@ -1,0 +1,21 @@
+uuid: 6d252c7c-2ab6-4a63-843f-6f1c1cdbcc67
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_data
+    - media.type.remote_video
+  module:
+    - datetime
+id: media.remote_video.field_data
+field_name: field_data
+entity_type: media
+bundle: remote_video
+label: Data
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

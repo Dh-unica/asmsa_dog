@@ -1,0 +1,172 @@
+settings:
+  plugins:
+    ckeditor5_style:
+      styles:
+        -
+          label: Link
+        -
+          label: Abbreviation
+        -
+          label: Initialism
+        -
+          label: Citation
+        -
+          label: 'Citation Center'
+        -
+          label: 'Citation end'
+        -
+          label: 'Citation simple'
+        -
+          label: 'Citation card'
+        -
+          label: 'Citation dark card'
+        -
+          label: 'Image Fluid'
+        -
+          label: 'Image Thumbnail'
+        -
+          label: 'Image Rounded'
+        -
+          label: 'Image left'
+        -
+          label: 'Image right'
+        -
+          label: 'Image center'
+        -
+          label: Figure
+        -
+          label: 'Figure caption'
+        -
+          label: 'Figure caption text right'
+        -
+          label: 'Text bold'
+        -
+          label: 'Text semibold'
+        -
+          label: 'Text normal'
+        -
+          label: 'Text light'
+        -
+          label: 'Text italic'
+        -
+          label: 'Text left'
+        -
+          label: 'Text center'
+        -
+          label: 'Text right'
+        -
+          label: 'Text small'
+        -
+          label: 'Text sans serif'
+        -
+          label: 'Text serif'
+        -
+          label: 'Text monospace'
+        -
+          label: 'Text highlight'
+        -
+          label: 'Text lead'
+        -
+          label: 'Text mark'
+        -
+          label: 'Text muted'
+        -
+          label: 'Text lowercase'
+        -
+          label: 'Text uppercase'
+        -
+          label: 'Text Capitalize'
+        -
+          label: 'Table Responsive'
+        -
+          label: 'Table striped'
+        -
+          label: 'Table hover'
+        -
+          label: 'Table bordered'
+        -
+          label: 'Table bordeless'
+        -
+          label: 'Table small'
+        -
+          label: 'Table primary'
+        -
+          label: 'Table secondary'
+        -
+          label: 'Table success'
+        -
+          label: 'Table danger'
+        -
+          label: 'Table warning'
+        -
+          label: 'Table info'
+        -
+          label: 'Table light'
+        -
+          label: 'Table dark'
+        -
+          label: 'Table align top'
+        -
+          label: 'Table align middle'
+        -
+          label: 'Table align bottom'
+        -
+          label: 'Table caption top'
+        -
+          label: 'THead Light'
+        -
+          label: 'THead Dark'
+        -
+          label: 'Row align top'
+        -
+          label: 'Row align middle'
+        -
+          label: 'Row align bottom'
+        -
+          label: 'Row active'
+        -
+          label: 'Row primary'
+        -
+          label: 'Row secondary'
+        -
+          label: 'Row success'
+        -
+          label: 'Row danger'
+        -
+          label: 'Row warning'
+        -
+          label: 'Row info'
+        -
+          label: 'Row light'
+        -
+          label: 'Row dark'
+        -
+          label: 'Ceil align top'
+        -
+          label: 'Ceil align middle'
+        -
+          label: 'Ceil align bottom'
+        -
+          label: 'Ceil active'
+        -
+          label: 'Ceil primary'
+        -
+          label: 'Ceil secondary'
+        -
+          label: 'Ceil success'
+        -
+          label: 'Ceil danger'
+        -
+          label: 'Ceil warning'
+        -
+          label: 'Ceil info'
+        -
+          label: 'Ceil light'
+        -
+          label: 'Ceil dark'
+        -
+          label: 'List unstyled'
+        -
+          label: 'List inline'
+        -
+          label: 'List inline item'

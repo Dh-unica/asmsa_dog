@@ -1,0 +1,16 @@
+uuid: bcb1b9cc-5c7c-4d02-aaa3-45fd3d2a3f4f
+langcode: it
+status: true
+dependencies:
+  enforced:
+    module:
+      - webform
+_core:
+  default_config_hash: WRpxpwYpfcO_i0so7BV4QXxXlbPiSVppYmAV6DAz4c0
+id: sex
+label: Sesso
+category: Demographic
+likert: false
+options: |
+  Male: Male
+  Female: Female

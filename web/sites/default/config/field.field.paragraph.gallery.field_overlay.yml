@@ -1,0 +1,25 @@
+uuid: 236a38c0-a138-4c9d-adce-ecfcb67b3042
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_overlay
+    - paragraphs.paragraphs_type.gallery
+_core:
+  default_config_hash: Sbehh-mwO-zfQDL4dPWwQ2SH8AgaRwVxWFAsvXe8g2Y
+id: paragraph.gallery.field_overlay
+field_name: field_overlay
+entity_type: paragraph
+bundle: gallery
+label: 'Enable overlay'
+description: 'If checked enables the overlay on all items.'
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

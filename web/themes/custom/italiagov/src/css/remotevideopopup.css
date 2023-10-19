@@ -1,0 +1,47 @@
+.custom-popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5); /* semi-transparent black */
+    z-index: 5000;
+}
+
+.omeka-map-timeline-wrapper .custom-popup {
+    bottom: 200px;
+}
+
+.custom-popup-content {
+    background: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    width: 90%;
+    height: 80%;
+}
+
+.hidden {
+    display: none;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.omeka-map-timeline-wrapper {
+    position: relative;
+}
+
+[id^="timeline-embed-timeline-"] {
+    height: 200px!important;
+}
+  

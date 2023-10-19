@@ -1,0 +1,8 @@
+uuid: 00754753-0d0b-4439-a59f-f1bf7a7f3372
+langcode: it
+status: true
+dependencies: {  }
+id: omeka_map
+label: 'Omeka map'
+revision: 1
+description: 'Allows you to insert Omeka items into a map'

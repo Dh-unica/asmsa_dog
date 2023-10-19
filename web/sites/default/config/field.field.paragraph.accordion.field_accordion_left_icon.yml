@@ -1,0 +1,25 @@
+uuid: 74bc4adb-3afd-4453-b4ef-76c22e810b99
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_accordion_left_icon
+    - paragraphs.paragraphs_type.accordion
+_core:
+  default_config_hash: z_JJjaE4duExmia3_-NIB2pvTva0epMc0l2AjaG0270
+id: paragraph.accordion.field_accordion_left_icon
+field_name: field_accordion_left_icon
+entity_type: paragraph
+bundle: accordion
+label: 'Accordion left icon'
+description: 'Show the icon on the left instead of on the right'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

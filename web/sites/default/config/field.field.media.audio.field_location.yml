@@ -1,0 +1,21 @@
+uuid: 645f7004-5efd-4721-b1f2-f4f1edc4edf1
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_location
+    - media.type.audio
+  module:
+    - geofield
+id: media.audio.field_location
+field_name: field_location
+entity_type: media
+bundle: audio
+label: Localizzazione
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: geofield

@@ -1,0 +1,32 @@
+uuid: 399ed7ce-8b39-40c6-a8bc-713db10d658a
+langcode: it
+status: true
+dependencies:
+  module:
+    - options
+    - paragraphs
+_core:
+  default_config_hash: NJUgRcxgy2zVoRowRh06R9C32sJB2-eCq_JjLovku7w
+id: paragraph.field_callout_display
+field_name: field_callout_display
+entity_type: paragraph
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: standard
+      label: Standard
+    -
+      value: highlight
+      label: Highlight
+    -
+      value: more
+      label: Altro
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

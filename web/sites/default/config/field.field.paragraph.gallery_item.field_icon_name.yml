@@ -1,0 +1,21 @@
+uuid: 2b9e9a75-2f52-46c8-b388-5c9f817b0d40
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_icon_name
+    - paragraphs.paragraphs_type.gallery_item
+_core:
+  default_config_hash: '-MZfCnfPUKYbEHl-6IMjjCzz2o_JTdv8AtUK0j5Qxgw'
+id: paragraph.gallery_item.field_icon_name
+field_name: field_icon_name
+entity_type: paragraph
+bundle: gallery_item
+label: 'Icon name'
+description: 'Choose an icon from this <a href="https://italia.github.io/bootstrap-italia/docs/utilities/icone/#lista-delle-icone-disponibili" title="Icon list" target="_blank">list</a>.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,5 @@
+label: 'Full width'
+description: 'By activating this setting, the line will occupy the entire width of the screen. This is useful when you want to set a background color or a background image. '
+settings:
+  on_label: 'On'
+  off_label: 'Off'

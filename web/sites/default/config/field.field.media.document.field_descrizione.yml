@@ -1,0 +1,19 @@
+uuid: 4dc986d2-c924-486b-b4c6-a4012f981c1b
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_descrizione
+    - media.type.document
+id: media.document.field_descrizione
+field_name: field_descrizione
+entity_type: media
+bundle: document
+label: Descrizione
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

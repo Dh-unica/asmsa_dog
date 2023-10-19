@@ -1,0 +1,13 @@
+third_party_settings:
+  field_group:
+    group_container:
+      label: Container
+    group_webform:
+      label: Webform
+    group_settings:
+      label: Settings
+content:
+  field_settings:
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs

@@ -1,0 +1,63 @@
+uuid: 9855b215-2740-42e2-8f9a-bf10f889ed62
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_settings
+    - paragraphs.paragraphs_type.citation
+    - paragraphs.paragraphs_type.settings
+  module:
+    - entity_reference_revisions
+_core:
+  default_config_hash: GsB1_zL2VR3apMY2TqUOtiXuzgjcMMDwgm-JO38A-5c
+id: paragraph.citation.field_settings
+field_name: field_settings
+entity_type: paragraph
+bundle: citation
+label: Impostazioni
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      settings: settings
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 12
+        enabled: false
+      accordion_item:
+        weight: 13
+        enabled: false
+      attachments:
+        weight: 14
+        enabled: false
+      callout:
+        weight: 15
+        enabled: false
+      carousel:
+        weight: 16
+        enabled: false
+      citation:
+        weight: 17
+        enabled: false
+      content:
+        weight: 18
+        enabled: false
+      map:
+        weight: 19
+        enabled: false
+      settings:
+        weight: 20
+        enabled: true
+      slide:
+        weight: 21
+        enabled: false
+      webform:
+        weight: 22
+        enabled: false
+field_type: entity_reference_revisions

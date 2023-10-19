@@ -1,0 +1,6 @@
+services:
+
+  # Library Opener services.
+  dog_ckeditor5.opener.field_widget:
+    class: Drupal\dog_ckeditor5\LibraryOpener\ResourceLibraryEditorOpener
+    arguments: [ '@entity_type.manager', '@dog.omeka_resource_fetcher' ]

@@ -1,0 +1,5 @@
+label: 'Enable overlay'
+description: 'If checked enables the overlay on all items.'
+settings:
+  on_label: 'On'
+  off_label: 'Off'

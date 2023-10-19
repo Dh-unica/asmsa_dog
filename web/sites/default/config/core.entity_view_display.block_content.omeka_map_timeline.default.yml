@@ -1,0 +1,25 @@
+uuid: 9b3a1cd0-e94c-4c5a-9b5e-de64d74fb6f1
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.omeka_map_timeline
+    - field.field.block_content.omeka_map_timeline.field_omeka_map_timeline
+  module:
+    - entity_reference_revisions
+id: block_content.omeka_map_timeline.default
+targetEntityType: block_content
+bundle: omeka_map_timeline
+mode: default
+content:
+  field_omeka_map_timeline:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  langcode: true

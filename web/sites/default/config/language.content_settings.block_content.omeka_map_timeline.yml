@@ -1,0 +1,11 @@
+uuid: 34aeb33e-26ed-4dce-bf34-f88a3f1db06d
+langcode: it
+status: true
+dependencies:
+  config:
+    - block_content.type.omeka_map_timeline
+id: block_content.omeka_map_timeline
+target_entity_type_id: block_content
+target_bundle: omeka_map_timeline
+default_langcode: site_default
+language_alterable: false

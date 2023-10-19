@@ -1,0 +1,23 @@
+uuid: 4c4af03f-1c3b-4a8b-a426-153a9d6a1e04
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_omeka_item
+    - node.type.article
+  module:
+    - dog
+id: node.article.field_omeka_item
+field_name: field_omeka_item
+entity_type: node
+bundle: article
+label: omeka_item
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  type:
+    items: items
+field_type: dog_omeka_resource

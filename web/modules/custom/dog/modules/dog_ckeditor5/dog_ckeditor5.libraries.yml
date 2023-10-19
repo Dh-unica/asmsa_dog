@@ -1,0 +1,14 @@
+drupal_omeka_resource:
+  css:
+    theme:
+      css/drupal_omeka_resource.css: { }
+  js:
+    js/build/drupalOmekaResource.js: { preprocess: false, minified: true }
+  dependencies:
+    - core/ckeditor5
+    - editor/drupal.editor.dialog
+
+admin.drupal_omeka_resource:
+  css:
+    theme:
+      css/drupal_omeka_resource.admin.css: { }

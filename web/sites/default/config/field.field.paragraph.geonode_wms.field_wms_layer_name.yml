@@ -1,0 +1,19 @@
+uuid: 7b10a713-c4c8-4ff3-b665-75efb6155c29
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_wms_layer_name
+    - paragraphs.paragraphs_type.geonode_wms
+id: paragraph.geonode_wms.field_wms_layer_name
+field_name: field_wms_layer_name
+entity_type: paragraph
+bundle: geonode_wms
+label: 'Wms layer name'
+description: 'Write the name of the layer'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

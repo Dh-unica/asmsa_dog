@@ -1,0 +1,367 @@
+<?php
+
+/**
+ * @file
+ * Theme file for Bootstrap Italia.
+ */
+
+use Drupal\bootstrap_italia\Helper\Libraries;
+use Drupal\image\Entity\ImageStyle;
+use Drupal\media\Entity;
+use Drupal\core\Url;
+
+/**
+ * Implements theme_library_info_build().
+ */
+function italiagov_library_info_build(): array {
+  return Libraries::setLibraries();
+}
+
+function italiagov_preprocess_dog_omeka_resource(array &$variables) {
+  $variables['custom'] = 'pippo';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for block.html.twig.
+ */
+function italiagov_preprocess_block(&$variables) {
+  $omeka_utils = \Drupal::service('omeka_utils.utils');
+  // Add the block ID as custom attribute to block content, this will be used
+  // for menu template suggestions.
+  if (isset($variables['elements']['#id'])) {
+    $variables['content']['#attributes']['block'] = $variables['elements']['#id'];
+  }
+
+  if (isset($variables['elements']['#id'])) {
+    $variables['content']['#attributes']['block'] = $variables['elements']['#id'];
+  }
+
+  $variables['base_path'] = base_path();
+
+  $variables['#attached']['drupalSettings']['popopo'] = $variables['elements']['content'];
+
+  if (isset($variables['elements']['content']['#block_content'])) {
+    $block = $variables['elements']['content']['#block_content'];
+    $variables['#attached']['drupalSettings'][$variables['plugin_id']] = $variables['plugin_id'];
+    if ($variables['plugin_id'] == "inline_block:hero" || $variables['plugin_id'] == "inline_block:homepage_top") {
+      if ($block->hasField('field_immagine_sfondo')) {
+        if (!$block->get('field_immagine_sfondo')->isEmpty()) {
+          $mid = $block->field_immagine_sfondo[0]->getValue()['target_id'];
+          $fid = Media::load($mid)->field_media_image[0]->getValue()['target_id'];
+          $file = File::load($fid);
+          $variables['immagine_sfondo'] = $file->url();
+        }
+      }
+    }
+
+    if ($variables['plugin_id'] == "inline_block:omeka_map_timeline") {
+      // field_omeka_map_timeline: Paragraph
+        // field_omeka_item : Omeka Resource
+        // field_wms_server_timeline: Paragraph
+          // field_wms_layer : text
+          // field_wms_layer_name : text
+          // field_wms_layer_start : date
+          // field_wms_layer_end : date
+          // field_wms_server_link : link
+
+      $omeka_map_timeline = $block->get('field_omeka_map_timeline')->referencedEntities()[0];
+
+      $omeka_items = $omeka_map_timeline->get('field_omeka_item')->getValue(); // objectDrupal\Core\Field\FieldItemList
+
+      /** PRENDO I NODI DRUPAL  */
+      $drupal_items = [];
+      $nodes = $omeka_map_timeline->get('field_basic_page')->referencedEntities();
+      foreach ($nodes as $single_node) {
+        $image = $single_node->get('field_media')->getValue();
+        $url_baloon = '';
+        if (!empty($image)) {
+          $media = \Drupal::entityTypeManager()->getStorage('media')->load($image[0]['target_id']);
+          $immagine = $media->get('field_media_image')->getValue();
+          $file = \Drupal\file\Entity\File::load($immagine[0]['target_id']);
+          $uri = $file->getFileUri();
+          $url_baloon = ImageStyle::load('medium')->buildUrl($uri);
+        }
+
+        $drupal_items[] = [
+          'title' => $single_node->label(),
+          'geoloc' => $single_node->get('field_location')->getValue(),
+          'data' => $single_node->get('field_date')->getValue(),
+          'id' => $single_node->id(),
+          'type' => $single_node->bundle(),
+          'resource_url' => $single_node->toUrl('canonical', array('absolute' => TRUE))->toString(),
+          'image' => $url_baloon,
+        ];
+      }
+
+      /** PRENDO I MEDIA DRUPAL */
+      $media_items = [];
+      $medias= $omeka_map_timeline->get('field_media')->referencedEntities();
+      foreach ($medias as $media) {
+        $description = '';
+        $url_document = '';
+        $image_baloon = '';
+        $title = $media->get('field_titolo')->getValue();
+        $video_url = '';
+        $audio_player = '';
+        $video_player = '';
+
+        if ($media->bundle() == 'document') {
+          $description = $media->get('field_descrizione')->getValue();
+          $documento = $media->get('field_media_document')->getValue();
+          $file = \Drupal\file\Entity\File::load($documento[0]['target_id']);
+          $url_document = $file->createFileUrl(FALSE);
+        }
+
+        if ($media->bundle() == 'image') {
+          //$media = \Drupal::entityTypeManager()->getStorage('media')->load($image[0]['target_id']);
+          $immagine = $media->get('field_media_image')->getValue();
+          $file = \Drupal\file\Entity\File::load($immagine[0]['target_id']);
+          $uri = $file->getFileUri();
+          $image_baloon = ImageStyle::load('medium')->buildUrl($uri);
+        }
+
+        if ($media->bundle() == 'remote_video') {
+          $video_url = $media->get('field_media_oembed_video')->getValue();
+          $build = $media->field_media_oembed_video->view('full');
+          $video_player = \Drupal::service('renderer')->renderPlain($build)->jsonSerialize();
+        }
+
+        if ($media->bundle() == 'audio') {
+          $build = $media->field_media_audio_file->view('full');
+          $audio_player = \Drupal::service('renderer')->renderPlain($build)->jsonSerialize();
+        }
+
+        $media_items[] = [
+          'geoloc' => $media->get('field_location')->getValue(),
+          'data' => $media->get('field_data')->getValue(),
+          'title' => $title,
+          'id' => $media->id(),
+          'resource_url' => $media->toUrl('canonical', array('absolute' => TRUE))->toString(),
+          'type' => $media->bundle(),
+          'description' => $description,
+          'url_document' => $url_document,
+          'image' => $image_baloon,
+          'video_url' => $video_url,
+          'video_player' => $video_player,
+          'audio_player' => $audio_player,
+        ];
+      }
+
+      /** PRENDO GLI OGGETTI OMEKA */
+      $items_ids = [];
+      // extract all id from $omeka_items
+      foreach ($omeka_items as $omeka_item) {
+        $omeka_id = $omeka_item['id'];
+        $items_ids[] = $omeka_id;
+        $full_items[] = $omeka_utils->getItem($omeka_id);
+      }
+
+      $wms = [];
+      $omeka_wms = $omeka_map_timeline->get('field_wms_server_timeline')->referencedEntities();
+      foreach($omeka_wms as $omeka_wms_single) {
+        $wms[] = [
+          'layer' => $omeka_wms_single->get('field_wms_layer')->getValue()[0]['value'],
+          'layer_name' => $omeka_wms_single->get('field_wms_layer_name')->getValue()[0]['value'],
+          'layer_start' => $omeka_wms_single->get('field_wms_layer_start')->getValue()[0]['value'],
+          'layer_end' => $omeka_wms_single->get('field_wms_layer_end')->getValue()[0]['value'],
+          'server_link' => $omeka_wms_single->get('field_wms_server_link')->getValue()[0]['uri'],
+        ];
+      }
+
+      $variables['#attached']['drupalSettings']['is_omeka_timeline'] = true;
+
+      $key_id = 'omeka_map_timeline_' . $block->id();
+
+
+      $variables['#attached']['drupalSettings']['omeka_map_timeline'][$key_id] = [
+        'block_id' => $block->id(),
+        'omeka_items' => $full_items,
+        'items_ids' => $items_ids,
+        'media_items' => $media_items,
+        'drupal_items' => $drupal_items,
+        'wms' => $wms,
+      ];
+    }
+
+    if ($variables['plugin_id'] == "inline_block:omeka_map") {
+      // echo block id
+      // echo $block->id();
+      // http://localhost:8000/it/admin/structure/paragraphs_type/omeka_map/fields
+      // field_omeka_item
+      // field_wms_link
+      $omeka_map = $block->get('field_omeka_map')->referencedEntities()[0];
+
+
+      // http://localhost:8000/it/admin/structure/paragraphs_type/geonode_wms/fields
+      // field_wms_layer text
+      // field_wms_layer_name text
+      // field_wms_server_link link
+
+      $wms = [];
+      $omeka_wms = $omeka_map->get('field_wms_server')->referencedEntities();
+      foreach($omeka_wms as $omeka_wms_single) {
+        $wms[] = [
+          'layer' => $omeka_wms_single->get('field_wms_layer')->getValue()[0]['value'],
+          'layer_name' => $omeka_wms_single->get('field_wms_layer_name')->getValue()[0]['value'],
+          'server_link' => $omeka_wms_single->get('field_wms_server_link')->getValue()[0]['uri'],
+        ];
+      }
+
+      $omeka_items = $omeka_map->get('field_omeka_item')->getValue(); // objectDrupal\Core\Field\FieldItemList
+
+      $items_ids = [];
+
+      /** PRENDO I NODI DRUPAL  */
+      $drupal_items = [];
+      $nodes = $omeka_map->get('field_basic_page')->referencedEntities();
+      foreach ($nodes as $single_node) {
+        $image = $single_node->get('field_media')->getValue();
+        $image_baloon = '';
+        if (!empty($image)) {
+          $media = \Drupal::entityTypeManager()->getStorage('media')->load($image[0]['target_id']);
+          $immagine = $media->get('field_media_image')->getValue();
+          $file = \Drupal\file\Entity\File::load($immagine[0]['target_id']);
+          $uri = $file->getFileUri();
+          $image_baloon = ImageStyle::load('medium')->buildUrl($uri);
+        }
+
+        $drupal_items[] = [
+          'title' => $single_node->label(),
+          'geoloc' => $single_node->get('field_location')->getValue(),
+          'data' => $single_node->get('field_date')->getValue(),
+          'id' => $single_node->id(),
+          'type' => $single_node->bundle(),
+          'resource_url' => $single_node->toUrl('canonical', array('absolute' => TRUE))->toString(),
+          'image' => $image_baloon,
+        ];
+      }
+
+      /** PRENDO I MEDIA DRUPAL */
+      $media_items = [];
+      $medias= $omeka_map->get('field_media')->referencedEntities();
+      foreach ($medias as $media) {
+        $description = '';
+        $url_document = '';
+        $image_baloon = '';
+        $title = $media->get('field_titolo')->getValue();
+        $video_url = '';
+        $audio_player = '';
+        $video_player = '';
+
+        if ($media->bundle() == 'document') {
+          $description = $media->get('field_descrizione')->getValue();
+          $documento = $media->get('field_media_document')->getValue();
+          $file = \Drupal\file\Entity\File::load($documento[0]['target_id']);
+          $url_document = $file->createFileUrl(FALSE);
+        }
+
+        if ($media->bundle() == 'image') {
+          //$media = \Drupal::entityTypeManager()->getStorage('media')->load($image[0]['target_id']);
+          $immagine = $media->get('field_media_image')->getValue();
+          $file = \Drupal\file\Entity\File::load($immagine[0]['target_id']);
+          $uri = $file->getFileUri();
+          $image_baloon = ImageStyle::load('medium')->buildUrl($uri);
+        }
+
+        if ($media->bundle() == 'remote_video') {
+          $video_url = $media->get('field_media_oembed_video')->getValue();
+          $build = $media->field_media_oembed_video->view('full');
+          $video_player = \Drupal::service('renderer')->renderPlain($build)->jsonSerialize();
+        }
+
+        if ($media->bundle() == 'audio') {
+          $build = $media->field_media_audio_file->view('full');
+          $audio_player = \Drupal::service('renderer')->renderPlain($build)->jsonSerialize();
+        }
+
+        $media_items[] = [
+          'geoloc' => $media->get('field_location')->getValue(),
+          'data' => $media->get('field_data')->getValue(),
+          'title' => $title,
+          'id' => $media->id(),
+          'resource_url' => $media->toUrl('canonical', array('absolute' => TRUE))->toString(),
+          'type' => $media->bundle(),
+          'description' => $description,
+          'url_document' => $url_document,
+          'image' => $image_baloon,
+          'video_url' => $video_url,
+          'audio_player' => $audio_player,
+          'video_player' => $video_player,
+        ];
+      }
+
+      /** prendo oggetti omeka */
+      // extract all id from $omeka_items
+      foreach ($omeka_items as $omeka_item) {
+        $omeka_id = $omeka_item['id'];
+        $full_items[] = $omeka_utils->getItem($omeka_id);
+        $items_ids[] = $omeka_id;
+      }
+
+      $variables['#attached']['drupalSettings']['is_omeka_map'] = true;
+
+      // create a key like 'omeka_map_'+ block_id
+      $key_id = 'omeka_map_' . $block->id();
+
+      // push data to $variables['#attached']['drupalSettings']['omeka_map']
+      $variables['#attached']['drupalSettings']['omeka_map'][$key_id] = [
+        'block_id' => $block->id(),
+        'omeka_items' => $full_items,
+        'items_ids' => $items_ids,
+        'media_items' => $media_items,
+        'drupal_items' => $drupal_items,
+        'wms' => $wms,
+      ];
+
+      // per testare una thumb aggiungi questo id
+      // https://www.digitaliststor.it/risorse/api/items/1226
+      return;
+    }
+  }
+
+  /** BLOCCO DRUPAL GALLERY */
+  if ($variables['plugin_id'] == "inline_block:drupal_gallery") {
+    $gallery_images = $block->get('field_drupal_gallery')->referencedEntities();
+    foreach ($gallery_images as $media_image) {
+      // titolo
+      $title = $media_image->get('field_title')->getValue();
+      $gallery_object[$media_image->id()]['title'] = $title[0]['value'];
+
+      // link
+      $link_value = $media_image->get('field_link')->getValue();
+      if (empty($link_value)) {
+        $link = FALSE;
+      } else  {
+        $link_original = $link_value[0]['uri'];
+        $link = Url::fromUri($link_original)->toString();
+      }
+      $gallery_object[$media_image->id()]['link_url'] = $link;
+
+      // immagine
+      $immagine_media = $media_image->get('field_media')->referencedEntities();
+      $immagine = $immagine_media[0]->get('field_media_image')->getValue();
+      $file = \Drupal\file\Entity\File::load($immagine[0]['target_id']);
+      $uri = $file->getFileUri();
+      $image_url = ImageStyle::load('drupal_gallery')->buildUrl($uri);
+      $gallery_object[$media_image->id()]['image_url'] = $image_url;
+    }
+
+    $variables['immagini_galleria'] = $gallery_object;
+  }
+  /** FINE BLOCCO DRUPAL GALLERY */
+
+  /** BLOCCO OMEKA GALLERY */
+  if ($variables['plugin_id'] == "inline_block:omeka_gallery") {
+    $omeka_gallery = $block->get('field_omeka_gallery')->referencedEntities()[0];
+    $omeka_ids= $omeka_gallery->get('field_omeka_item')->getValue();
+    $omeka_images = [];
+    foreach ($omeka_ids as $omeka_id) {
+      $omeka_object = $omeka_utils->getItem($omeka_id['id']);
+      $omeka_images[$omeka_id['id']]['title'] = $omeka_utils->getTitle($omeka_object);
+      $omeka_images[$omeka_id['id']]['url'] = $omeka_utils->getItemUrl($omeka_object);
+      $omeka_images[$omeka_id['id']]['image'] = $omeka_utils->getImage($omeka_object);
+    }
+    $variables['omeka_images'] = $omeka_images;
+  }
+
+}

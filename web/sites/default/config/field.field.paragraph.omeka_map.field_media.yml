@@ -1,0 +1,35 @@
+uuid: 48cf6782-4ede-4c34-9aff-ab03d14ffb58
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_media
+    - media.type.audio
+    - media.type.document
+    - media.type.image
+    - media.type.remote_video
+    - paragraphs.paragraphs_type.omeka_map
+id: paragraph.omeka_map.field_media
+field_name: field_media
+entity_type: paragraph
+bundle: omeka_map
+label: Media
+description: 'Inserisci media (immagini, audio, documenti, video remoti).'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      audio: audio
+      document: document
+      image: image
+      remote_video: remote_video
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: audio
+field_type: entity_reference
