@@ -79,7 +79,7 @@ services:
     volumes:
     - ./:/var/www/html:cached
     ports:
-    - "8000:80"
+    - "7000:80"
 ## Alternative for macOS users: Mutagen https://wodby.com/docs/stacks/drupal/local#docker-for-mac
 #    - drupal:/var/www/html
 #    labels:
