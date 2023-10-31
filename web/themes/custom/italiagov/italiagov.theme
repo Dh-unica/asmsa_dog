@@ -153,7 +153,14 @@ function italiagov_preprocess_block(&$variables) {
       foreach ($omeka_items as $omeka_item) {
         $omeka_id = $omeka_item['id'];
         $items_ids[] = $omeka_id;
-        $full_items[] = $omeka_utils->getItem($omeka_id);
+        $omeka_item_full = $omeka_utils->getItem($omeka_id);
+        $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
+        $marker = $omeka_item_full->{'o-module-mapping:marker'};
+        if (empty($marker['0']->{'@id'})) {
+          continue;
+        }
+        $marker_object = json_decode(file_get_contents($marker['0']->{'@id'}));
+        $full_items[$omeka_item['id']]['location'] = $marker_object;
       }
 
       $wms = [];
@@ -294,8 +301,16 @@ function italiagov_preprocess_block(&$variables) {
       // extract all id from $omeka_items
       foreach ($omeka_items as $omeka_item) {
         $omeka_id = $omeka_item['id'];
-        $full_items[] = $omeka_utils->getItem($omeka_id);
         $items_ids[] = $omeka_id;
+        $omeka_item_full = $omeka_utils->getItem($omeka_id);
+        $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
+        $marker = $omeka_item_full->{'o-module-mapping:marker'};
+        // if $marker['0']->{'@id'} is empty
+        if (empty($marker['0']->{'@id'})) {
+          continue;
+        }
+        $marker_object = json_decode(file_get_contents($marker['0']->{'@id'}));
+        $full_items[$omeka_item['id']]['location'] = $marker_object;
       }
 
       $variables['#attached']['drupalSettings']['is_omeka_map'] = true;

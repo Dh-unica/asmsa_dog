@@ -34,6 +34,10 @@ function formatDate(dateObj) {
 
 
 const convertDateFormat = (dateStr) => {
+  // if there are only four digits, it's a year, so return 01/01/YYYY
+  if (dateStr.length === 4) {
+      return `01/01/${dateStr}`;
+  }
   if (!dateStr) return null;
   const [year, month, day] = dateStr.split('-');
   if (year && month && day) {
@@ -88,15 +92,12 @@ function init_omeka_timeline(finalData, timeline_selector, store, callback) {
         selectedMarker.openPopup();
     }
 
-    // console.log(selectedData)
 
     var selectedDateStr = formatDate(selectedData.start_date.data.date_obj);
     var matchingLayer = null;
 
-    // console.log(selectedDateStr);
 
     store.confs.wms.forEach(function(wmsLayer) {
-      // console.log(wmsLayer.layer_start, wmsLayer.layer_end)
         if (selectedDateStr >= wmsLayer.layer_start && selectedDateStr <= wmsLayer.layer_end) {
             matchingLayer = wmsLayer;
         }
@@ -138,9 +139,9 @@ function init_omeka_map(map_selector, store, data, callback) {
   
   
           // Create a base layer with tiles from Stamen
-          var basemap = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
-            subdomains: 'abcd',
-            minZoom: 0,
+          var basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            // subdomains: 'abcd',
+            // minZoom: 0,
             maxZoom: 18,
             ext: 'png',
           });
@@ -169,7 +170,6 @@ function init_omeka_map(map_selector, store, data, callback) {
   
           // Create the layer control with the WMS layers only (excluding Terreno)
           store.layerControl = L.control.layers({}, store.wmsLayers).addTo(store.map);
-          // console.log(store)
           if (!callback) {
             if ("wms" in store.confs) {
               for (var i = 0; i < store.confs.wms.length; i++) {
@@ -204,9 +204,9 @@ function init_omeka_map(map_selector, store, data, callback) {
           const markerData = [];
 
           var finalData = [];
-          debugger;
-
-          store.confs.omeka_items.forEach(itemData => {
+          for (itemID of itemIDs) {
+            itemData = store.confs.omeka_items[itemID].full_item;
+            locationData = store.confs.omeka_items[itemID].location;
             finalData.push({
               id: itemData["o:id"],
               title: itemData["dcterms:title"] && itemData["dcterms:title"][0]["@value"],
@@ -221,9 +221,9 @@ function init_omeka_map(map_selector, store, data, callback) {
               researchArea: itemData["vivo:hasResearchArea"] && itemData["vivo:hasResearchArea"][0]["@value"],
               archivalHistory: itemData["http://culturalis.org/oad#:archivalHistory"] && itemData["http://culturalis.org/oad#:archivalHistory"][0]["@value"],
               location: itemData["oc:location"] && itemData["oc:location"][0]["@value"],
-              date: itemData["dcterms:created"]?.[0]["@value"] || null,
-              latitude: itemData["geo:lat"]?.[0]["@value"] || null,
-              longitude: itemData["geo:long"]?.[0]["@value"] || null,
+              date: convertDateFormat(itemData["dcterms:date"]?.[0]["@value"]) || null,
+              latitude: locationData['o-module-mapping:lat'] || null,
+              longitude: locationData['o-module-mapping:lng'] || null,
               type: "omeka",
               thumbnail: {
                 large: itemData["thumbnail_display_urls"]?.large || null,
@@ -231,10 +231,9 @@ function init_omeka_map(map_selector, store, data, callback) {
                 square: itemData["thumbnail_display_urls"]?.square || null,
               },
             });
-          });
+          } 
 
           let drupalsItems = store.confs.drupal_items;
-          debugger;
           
           drupalsItems.forEach((item) => {
             finalData.push({
@@ -255,7 +254,6 @@ function init_omeka_map(map_selector, store, data, callback) {
         });
 
         let mediaItems = store.confs.media_items;
-        debugger;
         mediaItems.forEach(item => {
           finalData.push({
               id: item.id,
@@ -274,11 +272,10 @@ function init_omeka_map(map_selector, store, data, callback) {
               video_url: item.video_url && item.video_url[0].value,
               audio_player: item.audio_player,
               url_document: item.url_document,
-              description: item.description
+              description: item.description,
+              video_player: item.video_player,
           });
       });
-      console.log("finalData")
-      console.log(finalData);
           
           
 
@@ -302,7 +299,6 @@ function init_omeka_map(map_selector, store, data, callback) {
               fillOpacity: 0.8,
               title: item.title,
           });
-          console.log("type", item.type)
           let popupContent = "";
           if (item.type == "omeka") {
             // Construct the popup content
@@ -334,8 +330,12 @@ function init_omeka_map(map_selector, store, data, callback) {
               <strong>${item.title}</strong><br>
               <img src="${item.image}" alt="${item.title}" style="width:200px;height:auto;">
             `;
+          } else if (item.type == "remote_video") {
+            popupContent = `
+              <strong>${item.title}</strong><br>
+            `;
+            popupContent += item.video_player;
           }
-          console.log("popupContent", popupContent)
 
             if (popupContent) {
               // Bind the popup to the marker
@@ -359,24 +359,23 @@ function init_omeka_map(map_selector, store, data, callback) {
                   store.timeline.goToId(unique_id);
               }
 
-              if(item.type == "remote_video") {
-                  console.log("remote_video")
-                  let popup = document.createElement('div');
-                  popup.innerHTML = `
-                      <div class="custom-popup">
-                          <div class="custom-popup-content">
-                              <button class="close-btn">X</button>
-                              <h3 class="video-title">${item.title}</h3>
-                              <iframe class="video-frame" width="100%" height="315" src="${item.video_url}" frameborder="0" allowfullscreen></iframe>
-                          </div>
-                      </div>
-                  `;
-                  document.body.appendChild(popup);
+              // if(item.type == "remote_video") {
+              //     let popup = document.createElement('div');
+              //     popup.innerHTML = `
+              //         <div class="custom-popup">
+              //             <div class="custom-popup-content">
+              //                 <button class="close-btn">X</button>
+              //                 <h3 class="video-title">${item.title}</h3>
+              //                 <iframe class="video-frame" width="100%" height="315" src="${item.video_url}" frameborder="0" allowfullscreen></iframe>
+              //             </div>
+              //         </div>
+              //     `;
+              //     document.body.appendChild(popup);
                   
-                  popup.querySelector('.close-btn').addEventListener('click', function() {
-                      popup.remove();
-                  });
-              }
+              //     popup.querySelector('.close-btn').addEventListener('click', function() {
+              //         popup.remove();
+              //     });
+              // }
             });
 
         
