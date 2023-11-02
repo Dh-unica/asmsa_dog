@@ -6,7 +6,7 @@ vanilla:
   css:
     theme:
       dist/css/bootstrap-italia.min.css: { minified: true }
-      #custom/css/custom.css { minified: true }
+      custom/css/custom.css: { minified: true }
       #dist/css/bootstrap-italia-comuni.min.css: { minified: true }
   js:
     custom/js/bootstrap-italia.bundle.min.js: { minified: true }

@@ -1,4 +1,4 @@
 div.it-brand-wrapper > a > img {
-    width: auto;
+    width: auto !important;
     height: auto;
 }

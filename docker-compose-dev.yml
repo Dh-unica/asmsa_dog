@@ -1,6 +1,10 @@
 services:
  # mariadb:
  #   image: wodby/mariadb:10.4-3.13.21
+
+  nginx:
+    ports:
+      - '7001:80'
   php:
     environment:
       PHP_XDEBUG: 1
@@ -9,8 +13,8 @@ services:
       PHP_XDEBUG_USE_COMPRESSION: false
       PHP_IDE_CONFIG: serverName=my-ide
       PHP_XDEBUG_IDEKEY: "my-ide"
-      PHP_XDEBUG_CLIENT_HOST: 172.17.0.1 # Linux
-#      PHP_XDEBUG_CLIENT_HOST: host.docker.internal # Docker 18.03+ Mac/Win
+#     PHP_XDEBUG_CLIENT_HOST: 172.17.0.1 # Linux
+      PHP_XDEBUG_CLIENT_HOST: host.docker.internal # Docker 18.03+ Mac/Win
 #      PHP_XDEBUG_CLIENT_HOST: 10.0.75.1 # Windows, Docker < 18.03
 #      PHP_XDEBUG_LOG: /tmp/php-xdebug.log
 #      # PHPUnit Drupal testing configurations
