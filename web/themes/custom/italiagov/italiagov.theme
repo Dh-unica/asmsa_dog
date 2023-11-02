@@ -82,15 +82,17 @@ function italiagov_preprocess_block(&$variables) {
           $url_baloon = ImageStyle::load('medium')->buildUrl($uri);
         }
 
-        $drupal_items[] = [
-          'title' => $single_node->label(),
-          'geoloc' => $single_node->get('field_location')->getValue(),
-          'data' => $single_node->get('field_date')->getValue(),
-          'id' => $single_node->id(),
-          'type' => $single_node->bundle(),
-          'resource_url' => $single_node->toUrl('canonical', array('absolute' => TRUE))->toString(),
-          'image' => $url_baloon,
-        ];
+        if (!$single_node->get('field_location')->isEmpty() && !$single_node->get('field_date')->isEmpty()) {
+          $drupal_items[] = [
+            'title' => $single_node->label(),
+            'geoloc' => $single_node->get('field_location')->getValue(),
+            'data' => $single_node->get('field_date')->getValue(),
+            'id' => $single_node->id(),
+            'type' => $single_node->bundle(),
+            'resource_url' => $single_node->toUrl('canonical', array('absolute' => TRUE))->toString(),
+            'image' => $url_baloon,
+          ];
+        }
       }
 
       /** PRENDO I MEDIA DRUPAL */
@@ -131,36 +133,42 @@ function italiagov_preprocess_block(&$variables) {
           $audio_player = \Drupal::service('renderer')->renderPlain($build)->jsonSerialize();
         }
 
-        $media_items[] = [
-          'geoloc' => $media->get('field_location')->getValue(),
-          'data' => $media->get('field_data')->getValue(),
-          'title' => $title,
-          'id' => $media->id(),
-          'resource_url' => $media->toUrl('canonical', array('absolute' => TRUE))->toString(),
-          'type' => $media->bundle(),
-          'description' => $description,
-          'url_document' => $url_document,
-          'image' => $image_baloon,
-          'video_url' => $video_url,
-          'video_player' => $video_player,
-          'audio_player' => $audio_player,
-        ];
+        if (!$media->get('field_location')->isEmpty() && !$media->get('field_data')->isEmpty()) {
+          $media_items[] = [
+            'geoloc' => $media->get('field_location')->getValue(),
+            'data' => $media->get('field_data')->getValue(),
+            'title' => $title,
+            'id' => $media->id(),
+            'resource_url' => $media->toUrl('canonical', array('absolute' => TRUE))->toString(),
+            'type' => $media->bundle(),
+            'description' => $description,
+            'url_document' => $url_document,
+            'image' => $image_baloon,
+            'video_url' => $video_url,
+            'video_player' => $video_player,
+            'audio_player' => $audio_player,
+          ];
+        }
       }
 
       /** PRENDO GLI OGGETTI OMEKA */
+      $full_items = [];
       $items_ids = [];
-      // extract all id from $omeka_items
       foreach ($omeka_items as $omeka_item) {
         $omeka_id = $omeka_item['id'];
-        $items_ids[] = $omeka_id;
         $omeka_item_full = $omeka_utils->getItem($omeka_id);
-        $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
-        $marker = $omeka_item_full->{'o-module-mapping:marker'};
-        if (empty($marker['0']->{'@id'})) {
+        $marker_key = 'o-module-mapping:marker';
+        $date_key = 'dcterms:date';
+        if (!empty($omeka_item_full->$marker_key) && !empty($omeka_item_full->$date_key)) {
+          $items_ids[] = $omeka_id;
+          $marker = $omeka_item_full->{'o-module-mapping:marker'};
+          // if $marker['0']->{'@id'} is empty
+          $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
+          $marker_object = json_decode(file_get_contents($marker['0']->{'@id'}));
+          $full_items[$omeka_item['id']]['location'] = $marker_object;
+        } else {
           continue;
         }
-        $marker_object = json_decode(file_get_contents($marker['0']->{'@id'}));
-        $full_items[$omeka_item['id']]['location'] = $marker_object;
       }
 
       $wms = [];
@@ -232,15 +240,17 @@ function italiagov_preprocess_block(&$variables) {
           $image_baloon = ImageStyle::load('medium')->buildUrl($uri);
         }
 
-        $drupal_items[] = [
-          'title' => $single_node->label(),
-          'geoloc' => $single_node->get('field_location')->getValue(),
-          'data' => $single_node->get('field_date')->getValue(),
-          'id' => $single_node->id(),
-          'type' => $single_node->bundle(),
-          'resource_url' => $single_node->toUrl('canonical', array('absolute' => TRUE))->toString(),
-          'image' => $image_baloon,
-        ];
+        if (!$single_node->get('field_location')->isEmpty()) {
+          $drupal_items[] = [
+            'title' => $single_node->label(),
+            'geoloc' => $single_node->get('field_location')->getValue(),
+            'data' => $single_node->get('field_date')->getValue(),
+            'id' => $single_node->id(),
+            'type' => $single_node->bundle(),
+            'resource_url' => $single_node->toUrl('canonical', array('absolute' => TRUE))->toString(),
+            'image' => $image_baloon,
+          ];
+        }
       }
 
       /** PRENDO I MEDIA DRUPAL */
@@ -281,40 +291,46 @@ function italiagov_preprocess_block(&$variables) {
           $audio_player = \Drupal::service('renderer')->renderPlain($build)->jsonSerialize();
         }
 
-        $media_items[] = [
-          'geoloc' => $media->get('field_location')->getValue(),
-          'data' => $media->get('field_data')->getValue(),
-          'title' => $title,
-          'id' => $media->id(),
-          'resource_url' => $media->toUrl('canonical', array('absolute' => TRUE))->toString(),
-          'type' => $media->bundle(),
-          'description' => $description,
-          'url_document' => $url_document,
-          'image' => $image_baloon,
-          'video_url' => $video_url,
-          'audio_player' => $audio_player,
-          'video_player' => $video_player,
-        ];
+        if (!$media->get('field_location')->isEmpty()) {
+          $media_items[] = [
+            'geoloc' => $media->get('field_location')->getValue(),
+            'data' => $media->get('field_data')->getValue(),
+            'title' => $title,
+            'id' => $media->id(),
+            'resource_url' => $media->toUrl('canonical', array('absolute' => TRUE))->toString(),
+            'type' => $media->bundle(),
+            'description' => $description,
+            'url_document' => $url_document,
+            'image' => $image_baloon,
+            'video_url' => $video_url,
+            'audio_player' => $audio_player,
+            'video_player' => $video_player,
+          ];
+        }
       }
 
       /** prendo oggetti omeka */
       // extract all id from $omeka_items
+      $full_items = [];
+      $items_ids = [];
       foreach ($omeka_items as $omeka_item) {
         $omeka_id = $omeka_item['id'];
-        $items_ids[] = $omeka_id;
         $omeka_item_full = $omeka_utils->getItem($omeka_id);
-        $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
-        $marker = $omeka_item_full->{'o-module-mapping:marker'};
-        // if $marker['0']->{'@id'} is empty
-        if (empty($marker['0']->{'@id'})) {
+        $marker_key = 'o-module-mapping:marker';
+        $date_key = 'dcterms:date';
+        if (!empty($omeka_item_full->$marker_key) && !empty($omeka_item_full->$date_key)) {
+          $items_ids[] = $omeka_id;
+          $marker = $omeka_item_full->{'o-module-mapping:marker'};
+          // if $marker['0']->{'@id'} is empty
+          $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
+          $marker_object = json_decode(file_get_contents($marker['0']->{'@id'}));
+          $full_items[$omeka_item['id']]['location'] = $marker_object;
+        } else {
           continue;
         }
-        $marker_object = json_decode(file_get_contents($marker['0']->{'@id'}));
-        $full_items[$omeka_item['id']]['location'] = $marker_object;
       }
 
       $variables['#attached']['drupalSettings']['is_omeka_map'] = true;
-
       // create a key like 'omeka_map_'+ block_id
       $key_id = 'omeka_map_' . $block->id();
 
@@ -331,6 +347,8 @@ function italiagov_preprocess_block(&$variables) {
       // per testare una thumb aggiungi questo id
       // https://www.digitaliststor.it/risorse/api/items/1226
       return;
+
+
     }
   }
 
