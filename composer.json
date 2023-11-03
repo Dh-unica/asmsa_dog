@@ -38,6 +38,7 @@
         "drupal/layout_builder_restrictions": "^2.19",
         "drupal/leaflet": "^10.0",
         "drupal/paragraphs": "^1.15",
+        "drupal/pathauto": "^1.12",
         "drupal/select2": "^1.15",
         "drupal/smtp": "^1.2",
         "drupal/ui_patterns": "^1.7",

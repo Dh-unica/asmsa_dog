@@ -105,6 +105,7 @@ module:
   webform: 0
   webform_ui: 0
   ds: 1
+  pathauto: 1
   webform_bootstrap: 1
   ds_extras: 2
   views: 10
