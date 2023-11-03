@@ -65,7 +65,7 @@ content:
           zoomFiner: 0
         scroll_zoom_enabled: 1
       input:
-        show: true
+        show: false
         readonly: false
       toolbar:
         position: topright
