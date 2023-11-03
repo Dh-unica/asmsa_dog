@@ -2,10 +2,6 @@ uuid: 1d88315d-89c1-4c40-bbd0-27df28157b7b
 langcode: it
 status: true
 dependencies:
-  content:
-    - 'block_content:carousel_item:3b6a17a4-b002-490a-af7f-eba33e183524'
-  module:
-    - block_content
   theme:
     - italiagov
 id: italiagov_caousel1

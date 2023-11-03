@@ -1,0 +1,25 @@
+uuid: 0c5090dc-6ae7-466c-b781-4388c1d96976
+langcode: it
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:026157dd-b677-4eb8-bc92-8c7be8ac35f9'
+  module:
+    - block_content
+  theme:
+    - italiagov
+id: italiagov_logodx1
+theme: italiagov
+region: footer_third
+weight: 0
+provider: null
+plugin: 'block_content:026157dd-b677-4eb8-bc92-8c7be8ac35f9'
+settings:
+  id: 'block_content:026157dd-b677-4eb8-bc92-8c7be8ac35f9'
+  label: 'logo dx 1'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }

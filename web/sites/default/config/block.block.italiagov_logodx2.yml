@@ -1,0 +1,25 @@
+uuid: 847168c9-6def-4473-bd73-a2118a22b056
+langcode: it
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:dc7477f2-8aff-4ce6-82ab-5249a064458c'
+  module:
+    - block_content
+  theme:
+    - italiagov
+id: italiagov_logodx2
+theme: italiagov
+region: footer_fourth
+weight: 0
+provider: null
+plugin: 'block_content:dc7477f2-8aff-4ce6-82ab-5249a064458c'
+settings:
+  id: 'block_content:dc7477f2-8aff-4ce6-82ab-5249a064458c'
+  label: 'Logo dx 2'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }
