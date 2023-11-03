@@ -166,6 +166,7 @@ function italiagov_preprocess_block(&$variables) {
           $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
           $marker_object = json_decode(file_get_contents($marker['0']->{'@id'}));
           $full_items[$omeka_item['id']]['location'] = $marker_object;
+          $full_items[$omeka_item['id']]['absolute_url'] = $omeka_utils->getItemUrl($omeka_item_full);
         } else {
           continue;
         }
