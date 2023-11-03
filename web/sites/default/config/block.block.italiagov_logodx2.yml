@@ -1,9 +1,9 @@
-uuid: 847168c9-6def-4473-bd73-a2118a22b056
+uuid: 3dcca7d5-4af5-4d68-ba1c-1a8be90dd649
 langcode: it
 status: true
 dependencies:
   content:
-    - 'block_content:basic:dc7477f2-8aff-4ce6-82ab-5249a064458c'
+    - 'block_content:basic:5b16548f-3eb6-42fc-8e67-f4d98c705e1d'
   module:
     - block_content
   theme:
@@ -13,9 +13,9 @@ theme: italiagov
 region: footer_fourth
 weight: 0
 provider: null
-plugin: 'block_content:dc7477f2-8aff-4ce6-82ab-5249a064458c'
+plugin: 'block_content:5b16548f-3eb6-42fc-8e67-f4d98c705e1d'
 settings:
-  id: 'block_content:dc7477f2-8aff-4ce6-82ab-5249a064458c'
+  id: 'block_content:5b16548f-3eb6-42fc-8e67-f4d98c705e1d'
   label: 'Logo dx 2'
   label_display: '0'
   provider: block_content

@@ -1,9 +1,9 @@
-uuid: a7c89386-ae47-4eb5-ac8b-c431a9420986
+uuid: fa42b395-6967-4b36-8856-fe82dc7360cd
 langcode: it
 status: true
 dependencies:
   content:
-    - 'block_content:basic:b59a6692-7221-45d7-93b9-db98acfdad7f'
+    - 'block_content:basic:d22a5947-46d8-4b46-b636-e140be9b728e'
   module:
     - block_content
   theme:
@@ -13,9 +13,9 @@ theme: italiagov
 region: footer_second
 weight: 0
 provider: null
-plugin: 'block_content:b59a6692-7221-45d7-93b9-db98acfdad7f'
+plugin: 'block_content:d22a5947-46d8-4b46-b636-e140be9b728e'
 settings:
-  id: 'block_content:b59a6692-7221-45d7-93b9-db98acfdad7f'
+  id: 'block_content:d22a5947-46d8-4b46-b636-e140be9b728e'
   label: 'Logo centro'
   label_display: '0'
   provider: block_content
