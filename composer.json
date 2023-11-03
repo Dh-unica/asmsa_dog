@@ -39,6 +39,7 @@
         "drupal/leaflet": "^10.0",
         "drupal/paragraphs": "^1.15",
         "drupal/select2": "^1.15",
+        "drupal/smtp": "^1.2",
         "drupal/ui_patterns": "^1.7",
         "drupal/ui_patterns_settings": "^2.0@RC",
         "drupal/views_bulk_operations": "^4.2",
