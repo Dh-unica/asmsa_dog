@@ -56,8 +56,8 @@ content:
         map_position:
           force: false
           center:
-            lat: 0.0
-            lon: 0.0
+            lat: 39.1986402
+            lon: 9.1566963
           zoomControlPosition: topleft
           zoom: 3
           minZoom: 1
