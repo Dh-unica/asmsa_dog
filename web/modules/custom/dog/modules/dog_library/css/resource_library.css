@@ -154,7 +154,7 @@
 
 @media screen and (min-width: 60em) {
   .resource-library-item--grid {
-    width: 25%;
+    width: 10%;
   }
 
   .resource-library-selection .resource-library-item--grid {
@@ -168,7 +168,7 @@
   }
 
   .resource-library-selection .resource-library-item--grid {
-    width: 25%;
+    width: 10%;
   }
 }
 
