@@ -11,8 +11,8 @@ features:
 logo:
   path: 'public://logo_asmsa.png'
   use_default: false
-header_shadow: 1
-slim_header_container_type: container-fluid
+header_shadow: 0
+slim_header_container_type: container
 slim_header_light: 0
 government_entity_name: 'Università degli Studi di Cagliari'
 government_entity_url: 'https://www.unica.it'
@@ -51,12 +51,12 @@ navigation_header_light_desktop: 0
 navigation_header_dark_mobile: 0
 navigation_header_sticky: 1
 navigation_header_show_link_description: 0
-navigation_header_active_items_large: 1
+navigation_header_active_items_large: 0
 navigation_header_active_items_bold: 0
 navigation_header_verbose_classes: 0
 navigation_header_data_attribute: ''
-navigation_header_megamenu_columns_lg: col-lg-3
-navigation_header_megamenu_columns_xl: col-xl-2
+navigation_header_megamenu_columns_lg: ''
+navigation_header_megamenu_columns_xl: ''
 navigation_header_sticky_menu_name: main
 back_to_top_enable: 1
 back_to_top_small: 0
