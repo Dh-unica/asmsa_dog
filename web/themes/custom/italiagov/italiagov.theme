@@ -319,7 +319,7 @@ function italiagov_preprocess_block(&$variables) {
         $omeka_item_full = $omeka_utils->getItem($omeka_id);
         $marker_key = 'o-module-mapping:marker';
         $date_key = 'dcterms:date';
-        if (!empty($omeka_item_full->$marker_key) && !empty($omeka_item_full->$date_key)) {
+        if (!empty($omeka_item_full->$marker_key)) {
           $items_ids[] = $omeka_id;
           $marker = $omeka_item_full->{'o-module-mapping:marker'};
           // if $marker['0']->{'@id'} is empty

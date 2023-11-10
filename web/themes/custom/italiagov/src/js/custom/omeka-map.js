@@ -295,7 +295,7 @@ function init_omeka_map(map_selector, store, data, callback) {
             let marker = L.circleMarker([item.latitude, item.longitude], {
               radius: 10,
               fillColor: "#c4c4c4",
-              color: "#c4c4c4",
+              color: "#ff0000",
               weight: 1,
               opacity: 1,
               fillOpacity: 0.8,
