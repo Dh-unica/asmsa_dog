@@ -34,6 +34,7 @@ function formatDate(dateObj) {
 
 
 const convertDateFormat = (dateStr) => {
+  if (!dateStr) return null;
   // if there are only four digits, it's a year, so return 01/01/YYYY
   if (dateStr.length === 4) {
       return `01/01/${dateStr}`;
