@@ -17,6 +17,7 @@
     "require": {
         "composer/installers": "^2.0",
         "drupal/admin_toolbar": "^3.4",
+        "drupal/advagg": "^6.0@alpha",
         "drupal/bootstrap_italia": "2.x",
         "drupal/color_field": "^3.0",
         "drupal/components": "^3.0@beta",

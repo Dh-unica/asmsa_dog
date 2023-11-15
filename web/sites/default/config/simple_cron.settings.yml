@@ -5,5 +5,5 @@ cron:
 queue:
   override_enabled: false
 base:
-  max_execution_time: 240
+  max_execution_time: 600
   lock_timeout: 900
