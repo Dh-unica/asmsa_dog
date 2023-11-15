@@ -20,13 +20,13 @@ class Utils {
   public function getItem($id) {
     $omeka_id = $this->url . $id;
     $cacheId = 'omeka_item_' . $id;
-    if ($cache = \Drupal::cache()->get($cacheId)) {
+    if ($cache = \Drupal::cache('omeka')->get($cacheId)) {
       return $cache->data;
     }
     else {
       $omeka_item_source = file_get_contents($omeka_id);
       $omeka_item = json_decode($omeka_item_source);
-      \Drupal::cache()->set($cacheId, $omeka_item, $this->expire);
+      \Drupal::cache('omeka')->set($cacheId, $omeka_item, $this->expire);
       return $omeka_item;
     }
   }
@@ -88,13 +88,13 @@ class Utils {
     $marker_url = $item->{'o-module-mapping:marker'};
     $marker_id = $marker_url[0]->{'o:id'};
     $cacheId = 'omeka_marker_' . $marker_id;
-    if ($cache = \Drupal::cache()->get($cacheId)) {
+    if ($cache = \Drupal::cache('omeka')->get($cacheId)) {
       return $cache->data;
     }
     else {
       $marker_object = file_get_contents($marker_url[0]->{'@id'});
       $marker = json_decode($marker_object);
-      \Drupal::cache()->set($cacheId, $marker, $this->expire);
+      \Drupal::cache('omeka')->set($cacheId, $marker, $this->expire);
       return $marker;
     }
   }
@@ -120,7 +120,7 @@ class Utils {
 
   public function getSiteUrl($item) {
     $cacheId = 'omeka_site_' . $item->{'o:id'};
-    if ($cache = \Drupal::cache()->get($cacheId)) {
+    if ($cache = \Drupal::cache('omeka')->get($cacheId)) {
       return $cache->data;
     }
     else {
@@ -131,7 +131,7 @@ class Utils {
       $slug = $site->{'o:slug'};
       $site_url = $this->base_url . 's/' . $slug;
       $expire = strtotime('now +1 week');
-      \Drupal::cache()->set($cacheId, $site_url, $expire);
+      \Drupal::cache('omeka')->set($cacheId, $site_url, $expire);
       return $site_url;
     }
   }

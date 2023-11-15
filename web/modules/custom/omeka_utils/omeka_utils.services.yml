@@ -1,4 +1,10 @@
 services:
   omeka_utils.utils:
     class: Drupal\omeka_utils\Utils
+  cache.omeka:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory: cache_factory:get
+    arguments: [ omeka ]
 
