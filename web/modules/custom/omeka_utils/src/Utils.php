@@ -11,6 +11,7 @@ class Utils {
     $config = \Drupal::config('dog.settings');
     $this->base_url = $config->get('base_url');
     $this->url = $this->base_url . 'api/items/';
+    $this->expire = strtotime('now +1 week');
   }
 
   /**
@@ -25,8 +26,7 @@ class Utils {
     else {
       $omeka_item_source = file_get_contents($omeka_id);
       $omeka_item = json_decode($omeka_item_source);
-      $expire = '604800'; // One week
-      \Drupal::cache()->set($cacheId, $omeka_item);
+      \Drupal::cache()->set($cacheId, $omeka_item, $this->expire);
       return $omeka_item;
     }
   }
@@ -94,7 +94,7 @@ class Utils {
     else {
       $marker_object = file_get_contents($marker_url[0]->{'@id'});
       $marker = json_decode($marker_object);
-      \Drupal::cache()->set($cacheId, $marker);
+      \Drupal::cache()->set($cacheId, $marker, $this->expire);
       return $marker;
     }
   }
@@ -130,11 +130,10 @@ class Utils {
       $site = json_decode($site_source);
       $slug = $site->{'o:slug'};
       $site_url = $this->base_url . 's/' . $slug;
-      $expire = '604800'; // One week
-      \Drupal::cache()->set($cacheId, $site_url);
+      $expire = strtotime('now +1 week');
+      \Drupal::cache()->set($cacheId, $site_url, $expire);
       return $site_url;
     }
   }
-
 }
 
