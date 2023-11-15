@@ -1,0 +1,14 @@
+uuid: ff23e922-6674-4cc4-b04e-e99d0d7854c7
+langcode: it
+status: true
+dependencies:
+  module:
+    - webform
+id: cron.webform
+crontab: '*/15 * * * *'
+plugin: cron
+type: webform
+configuration: {  }
+provider: webform
+single: false
+weight: 0

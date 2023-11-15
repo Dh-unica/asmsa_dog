@@ -1,0 +1,14 @@
+uuid: ed80b08a-c739-48aa-9165-47382bcadb6e
+langcode: it
+status: true
+dependencies:
+  module:
+    - warmer
+id: cron.warmer
+crontab: '*/15 * * * *'
+plugin: cron
+type: warmer
+configuration: {  }
+provider: warmer
+single: false
+weight: 0

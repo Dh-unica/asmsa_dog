@@ -1,0 +1,14 @@
+uuid: 67519f14-04a2-49b5-8f36-cbd9936ee080
+langcode: it
+status: true
+dependencies:
+  module:
+    - simple_sitemap
+id: cron.simple_sitemap
+crontab: '*/15 * * * *'
+plugin: cron
+type: simple_sitemap
+configuration: {  }
+provider: simple_sitemap
+single: false
+weight: 0

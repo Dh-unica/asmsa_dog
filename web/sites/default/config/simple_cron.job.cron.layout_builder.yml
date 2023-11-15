@@ -1,0 +1,14 @@
+uuid: bbfcb288-bfb6-44e1-82d7-d5c6ab880cad
+langcode: it
+status: true
+dependencies:
+  module:
+    - layout_builder
+id: cron.layout_builder
+crontab: '*/15 * * * *'
+plugin: cron
+type: layout_builder
+configuration: {  }
+provider: layout_builder
+single: false
+weight: 0

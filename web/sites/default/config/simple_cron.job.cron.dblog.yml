@@ -1,0 +1,14 @@
+uuid: 02e14864-e550-40b5-9648-793d33c606db
+langcode: it
+status: true
+dependencies:
+  module:
+    - dblog
+id: cron.dblog
+crontab: '*/15 * * * *'
+plugin: cron
+type: dblog
+configuration: {  }
+provider: dblog
+single: false
+weight: 0

@@ -1,0 +1,14 @@
+uuid: f661ad60-dadc-4b4b-a0b4-13b6deb93618
+langcode: it
+status: true
+dependencies:
+  module:
+    - field
+id: cron.field
+crontab: '*/15 * * * *'
+plugin: cron
+type: field
+configuration: {  }
+provider: field
+single: false
+weight: 0
