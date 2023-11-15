@@ -1,0 +1,28 @@
+_core:
+  default_config_hash: wLhhL58IKPWkAbhxcI6gpCna7d431Q7kM0y-Om92BUQ
+langcode: it
+warmers:
+  sitemap:
+    id: sitemap
+    frequency: 3600
+    batchSize: 50
+    minPriority: 0.0
+    sitemaps:
+      - /sitemaps/index/sitemap.xml
+    headers: {  }
+    verify: true
+    maxConcurrentRequests: 10
+  cdn:
+    id: cdn
+    frequency: 300
+    batchSize: 50
+    urls: {  }
+    headers: {  }
+    verify: true
+    maxConcurrentRequests: 10
+  entity:
+    id: entity
+    frequency: 300
+    batchSize: 50
+    entity_types: {  }
+    published_only: false
