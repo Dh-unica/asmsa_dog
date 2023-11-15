@@ -12,17 +12,30 @@ div.it-brand-wrapper img {
 
 .it-footer-main {
   background-color: #b1b1b3;
-} 
+}
 
 .it-header-slim-wrapper {
   background: #09124A;
-} 
+}
 
 .it-header-center-wrapper {
   background: #0F1E7D;
-}  
+}
 
 .figcaption > a {
   color: white;
 }
+
+/* On screens that are 992px or less, set the background color to blue */
+@media screen and (max-width: 992px) {
+  div.it-brand-wrapper img {
+    width: 40px !important;
+    height: auto;
+  }
+
+  .it-brand-title {
+    font-size: 1rem !important;
+  }
+}
+
 
