@@ -164,7 +164,7 @@ function italiagov_preprocess_block(&$variables) {
           $marker = $omeka_item_full->{'o-module-mapping:marker'};
           // if $marker['0']->{'@id'} is empty
           $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
-          $marker_object = json_decode(file_get_contents($marker['0']->{'@id'}));
+          $marker_object = $marker_object = $omeka_utils->getLocation($omeka_item_full);
           $full_items[$omeka_item['id']]['location'] = $marker_object;
           $full_items[$omeka_item['id']]['absolute_url'] = $omeka_utils->getItemUrl($omeka_item_full);
         } else {
@@ -324,7 +324,7 @@ function italiagov_preprocess_block(&$variables) {
           $marker = $omeka_item_full->{'o-module-mapping:marker'};
           // if $marker['0']->{'@id'} is empty
           $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
-          $marker_object = json_decode(file_get_contents($marker['0']->{'@id'}));
+          $marker_object = $omeka_utils->getLocation($omeka_item_full);
           $full_items[$omeka_item['id']]['location'] = $marker_object;
           $full_items[$omeka_item['id']]['absolute_url'] = $omeka_utils->getItemUrl($omeka_item_full);
         } else {

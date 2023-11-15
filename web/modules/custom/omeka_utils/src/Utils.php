@@ -26,7 +26,7 @@ class Utils {
       $omeka_item_source = file_get_contents($omeka_id);
       $omeka_item = json_decode($omeka_item_source);
       $expire = '604800'; // One week
-      \Drupal::cache()->set($cacheId, $omeka_item, $expire);
+      \Drupal::cache()->set($cacheId, $omeka_item);
       return $omeka_item;
     }
   }
@@ -84,6 +84,21 @@ class Utils {
     return $values;
   }
 
+  public function getLocation($item) {
+    $marker_url = $item->{'o-module-mapping:marker'};
+    $marker_id = $marker_url[0]->{'o:id'};
+    $cacheId = 'omeka_marker_' . $marker_id;
+    if ($cache = \Drupal::cache()->get($cacheId)) {
+      return $cache->data;
+    }
+    else {
+      $marker_object = file_get_contents($marker_url[0]->{'@id'});
+      $marker = json_decode($marker_object);
+      \Drupal::cache()->set($cacheId, $marker);
+      return $marker;
+    }
+  }
+
   public function getResourceName($resource_id) {
     $resources = [
       '1' => 'Base Resource',
@@ -116,7 +131,7 @@ class Utils {
       $slug = $site->{'o:slug'};
       $site_url = $this->base_url . 's/' . $slug;
       $expire = '604800'; // One week
-      \Drupal::cache()->set($cacheId, $site_url, $expire);
+      \Drupal::cache()->set($cacheId, $site_url);
       return $site_url;
     }
   }
