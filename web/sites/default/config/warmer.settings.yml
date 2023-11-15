@@ -8,7 +8,7 @@ warmers:
     batchSize: 50
     minPriority: 0.0
     sitemaps:
-      - /sitemaps/index/sitemap.xml
+      - 'http://51.77.137.57:7000/sitemaps/index/sitemap.xml'
     headers: {  }
     verify: true
     maxConcurrentRequests: 10
