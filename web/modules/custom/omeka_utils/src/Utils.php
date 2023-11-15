@@ -1,10 +1,12 @@
 <?php
 
 namespace Drupal\omeka_utils;
-use Drupal\Core\Cache\Cache;
-#[\AllowDynamicProperties]
 
+use Drupal\Core\Cache\Cache;
+
+#[\AllowDynamicProperties]
 class Utils {
+
   function __construct() {
     $config = \Drupal::config('dog.settings');
     $this->base_url = $config->get('base_url');
@@ -15,9 +17,18 @@ class Utils {
    *$omeka = \Drupal::service('dh_omeka.utils');
    */
   public function getItem($id) {
-    $omeka_item_source = file_get_contents($this->url. $id);
-    $omeka_item = json_decode($omeka_item_source);
-    return $omeka_item;
+    $omeka_id = $this->url . $id;
+    $cacheId = 'omeka_item_' . $id;
+    if ($cache = \Drupal::cache()->get($cacheId)) {
+      return $cache->data;
+    }
+    else {
+      $omeka_item_source = file_get_contents($omeka_id);
+      $omeka_item = json_decode($omeka_item_source);
+      $expire = '604800'; // One week
+      \Drupal::cache()->set($cacheId, $omeka_item, $expire);
+      return $omeka_item;
+    }
   }
 
   public function getDescription($item) {
@@ -96,7 +107,8 @@ class Utils {
     $cacheId = 'omeka_site_' . $item->{'o:id'};
     if ($cache = \Drupal::cache()->get($cacheId)) {
       return $cache->data;
-    } else {
+    }
+    else {
       $cacheId = 'omeka_site_' . $item->{'o:id'};
       $site_id = $item->{'o:site'};
       $site_source = file_get_contents($site_id[0]->{'@id'});
@@ -108,5 +120,6 @@ class Utils {
       return $site_url;
     }
   }
+
 }
 
