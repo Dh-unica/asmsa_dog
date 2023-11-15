@@ -27,24 +27,42 @@
  * @ingroup themeable
  */
 #}
-<div class="it-grid-list-wrapper it-image-label-grid">
-  <div class="grid-row">
-    {% for key,value in omeka_images %}
-      <div class="col-6 col-lg-4">
-        <div class="it-grid-item-wrapper">
-            <div class="img-responsive-wrapper">
-              <div class="img-responsive">
-                <div class="img-wrapper"><img src="{{ value['image'] }}" alt="{{ value['title'] }}"></div>
+{% apply spaceless %}
+  {% set id_block = 'it-' ~ attributes.id %}
+  {% set classes = [
+    'block',
+    'block-' ~ configuration.provider|clean_class,
+    'block-' ~ plugin_id|clean_class,
+  ] %}
+
+  <div{{ attributes.addClass(classes).setAttribute('id', id_block) }}>
+    {{ title_prefix }}
+    {% if label %}
+      <h2{{ title_attributes }}>{{ label }}</h2>
+    {% endif %}
+    {{ title_suffix }}
+
+    <div class="it-grid-list-wrapper it-image-label-grid">
+      <div class="grid-row">
+        {% for key,value in omeka_images %}
+          <div class="col-6 col-lg-4">
+            <div class="it-grid-item-wrapper">
+              <div class="img-responsive-wrapper">
+                <div class="img-responsive">
+                  <div class="img-wrapper"><img src="{{ value['image'] }}" alt="{{ value['title'] }}"></div>
+                </div>
               </div>
-            </div>
-            <span class="it-griditem-text-wrapper">
+              <span class="it-griditem-text-wrapper">
               <span class="it-griditem-text"><a href="{{ value['url'] }}">{{ value['title'] }}</a></span>
             <svg class="icon">
               <use href="/bootstrap-italia/dist/svg/sprites.svg#it-code-circle"></use>
             </svg>
           </span>
-        </div>
+            </div>
+          </div>
+        {% endfor %}
       </div>
-    {% endfor %}
+    </div>
+
   </div>
-</div>
+{% endapply %}
