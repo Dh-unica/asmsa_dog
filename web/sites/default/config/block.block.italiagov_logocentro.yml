@@ -1,0 +1,25 @@
+uuid: fa42b395-6967-4b36-8856-fe82dc7360cd
+langcode: it
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:d22a5947-46d8-4b46-b636-e140be9b728e'
+  module:
+    - block_content
+  theme:
+    - italiagov
+id: italiagov_logocentro
+theme: italiagov
+region: footer_second
+weight: 0
+provider: null
+plugin: 'block_content:d22a5947-46d8-4b46-b636-e140be9b728e'
+settings:
+  id: 'block_content:d22a5947-46d8-4b46-b636-e140be9b728e'
+  label: 'Logo centro'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }

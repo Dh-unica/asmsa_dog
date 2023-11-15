@@ -1,0 +1,25 @@
+uuid: 97a06c9f-a4b4-483e-8a08-57db4a9b3292
+langcode: it
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:818c84d3-cc0d-4da8-a673-267e1f6dd121'
+  module:
+    - block_content
+  theme:
+    - italiagov
+id: italiagov_logosx
+theme: italiagov
+region: footer_first
+weight: 0
+provider: null
+plugin: 'block_content:818c84d3-cc0d-4da8-a673-267e1f6dd121'
+settings:
+  id: 'block_content:818c84d3-cc0d-4da8-a673-267e1f6dd121'
+  label: 'Logo sx'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }

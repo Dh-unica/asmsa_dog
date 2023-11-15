@@ -34,6 +34,7 @@ function formatDate(dateObj) {
 
 
 const convertDateFormat = (dateStr) => {
+  if (!dateStr) return null;
   // if there are only four digits, it's a year, so return 01/01/YYYY
   if (dateStr.length === 4) {
       return `01/01/${dateStr}`;
@@ -60,7 +61,7 @@ function init_omeka_timeline(finalData, timeline_selector, store, callback) {
   store.timelineData = convertToTimelineFormat(finalData); // assuming markersData is your data
   // filter out element without date
   store.timelineData.events = store.timelineData.events.filter(item => item !== undefined);
-  
+
   store.timeline = new TL.Timeline(
       timeline_selector,
       store.timelineData
@@ -71,7 +72,7 @@ function init_omeka_timeline(finalData, timeline_selector, store, callback) {
     const selectedData = data.target.config.event_dict[data.unique_id];
 
     // Find the corresponding marker on the map
-    let selectedMarker; // 
+    let selectedMarker; //
     store.markers.eachLayer(function(marker) {
         if (marker.options.title === selectedData.text.headline) {
             selectedMarker = marker;
@@ -86,7 +87,7 @@ function init_omeka_timeline(finalData, timeline_selector, store, callback) {
             selectedMarker.openPopup();
           });
       }
-      
+
 
         // Open the marker's popup
         selectedMarker.openPopup();
@@ -126,7 +127,7 @@ function init_omeka_map(map_selector, store, data, callback) {
           }
 
 
-  
+
           // confs.wms => l'url del WMS (in teoria possono essere più di uno, per ora è solo uno)
           // confs.items => array con lat/lon/label per gli oggetti
           // Mappa su tutta la Sardegna come fallback assenza punti
@@ -136,8 +137,8 @@ function init_omeka_map(map_selector, store, data, callback) {
           } catch (error) {
             return;
           }
-  
-  
+
+
           // Create a base layer with tiles from Stamen
           var basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             // subdomains: 'abcd',
@@ -145,12 +146,12 @@ function init_omeka_map(map_selector, store, data, callback) {
             maxZoom: 18,
             ext: 'png',
           });
-  
+
           // Create an object to hold the additional WMS layers
           store.wmsLayers = {};
-  
+
           // confs.wms.push({layer: 'geonode:colonie1', layer_name: 'Pippo', server_link: 'https://geonode.dh.unica.it/geoserver/ows?service=WMS&version=1.1.1&request=GetCapabilities'})
-          
+
           // Add the WMS layers to the store.wmsLayers object
           if ("wms" in store.confs) {
             for (var i = 0; i < store.confs.wms.length; i++) {
@@ -164,10 +165,10 @@ function init_omeka_map(map_selector, store, data, callback) {
               }
             }
           }
-  
+
           // Add the base layer to the map
           basemap.addTo(store.map);
-  
+
           // Create the layer control with the WMS layers only (excluding Terreno)
           store.layerControl = L.control.layers({}, store.wmsLayers).addTo(store.map);
           if (!callback) {
@@ -181,26 +182,26 @@ function init_omeka_map(map_selector, store, data, callback) {
             }
           }
 
-          const PLACEHOLDER_IMAGE = 'https://placehold.co/200x200';          
-  
+          const PLACEHOLDER_IMAGE = 'https://placehold.co/200x200';
+
           let itemIDs = store.confs.items_ids;
           // add id '1226'
           // itemIDs.push('1226');
-  
+
           const fetchDataForItem = async (id) => {
             // If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
-            
+
             const itemResponse = await fetch(`${baseURL}items/${id}`);
             const itemData = await itemResponse.json();
-  
+
             const markerId = itemData["o-module-mapping:marker"][0]["o:id"];
             const markerResponse = await fetch(`${baseURL}mapping_markers/${markerId}`);
             const markerData = await markerResponse.json();
-  
+
             return [itemData, markerData];
           }
-  
-  
+
+
           const markerData = [];
 
           var finalData = [];
@@ -230,11 +231,12 @@ function init_omeka_map(map_selector, store, data, callback) {
                 medium: itemData["thumbnail_display_urls"]?.medium || null,
                 square: itemData["thumbnail_display_urls"]?.square || null,
               },
+              absolute_url: store.confs.omeka_items[itemID].absolute_url
             });
-          } 
+          }
 
           let drupalsItems = store.confs.drupal_items;
-          
+
           drupalsItems.forEach((item) => {
             finalData.push({
                 id: item.id,
@@ -262,9 +264,9 @@ function init_omeka_map(map_selector, store, data, callback) {
               latitude: item.geoloc && item.geoloc[0].lat,
               longitude: item.geoloc && item.geoloc[0].lon,
               thumbnail: {
-                  large: null, 
+                  large: null,
                   medium: null,
-                  square: null, 
+                  square: null,
               },
               type: item.type,
               resource_url: item.resource_url,
@@ -276,8 +278,8 @@ function init_omeka_map(map_selector, store, data, callback) {
               video_player: item.video_player,
           });
       });
-          
-          
+
+
 
           store.markers = L.markerClusterGroup(
             // {
@@ -293,7 +295,7 @@ function init_omeka_map(map_selector, store, data, callback) {
             let marker = L.circleMarker([item.latitude, item.longitude], {
               radius: 10,
               fillColor: "#c4c4c4",
-              color: "#c4c4c4",
+              color: "#ff0000",
               weight: 1,
               opacity: 1,
               fillOpacity: 0.8,
@@ -303,8 +305,9 @@ function init_omeka_map(map_selector, store, data, callback) {
           if (item.type == "omeka") {
             // Construct the popup content
             popupContent = `
+                <a href="${item.absolute_url}" target="_blank">
                 <strong>${item.title}</strong><br>
-                <img src="${item.thumbnail.square || PLACEHOLDER_IMAGE}" alt="${item.title}" style="width:200px;height:auto;">
+                <img src="${item.thumbnail.square || PLACEHOLDER_IMAGE}" alt="${item.title}" style="width:200px;height:auto;"></a>
             `;
           } else if (item.type == "drupal") {
             // Construct the popup content
@@ -371,14 +374,14 @@ function init_omeka_map(map_selector, store, data, callback) {
               //         </div>
               //     `;
               //     document.body.appendChild(popup);
-                  
+
               //     popup.querySelector('.close-btn').addEventListener('click', function() {
               //         popup.remove();
               //     });
               // }
             });
 
-        
+
             // Add the marker to the markers cluster group
             store.markers.addLayer(marker);
         });
@@ -389,7 +392,7 @@ function init_omeka_map(map_selector, store, data, callback) {
         // Timeline stuff
 
         callback && callback(finalData);
-          
+
 }
 
 
@@ -411,7 +414,7 @@ function init_omeka_map(map_selector, store, data, callback) {
             }
             // get the wrapper
             var wrapper = omeka_map_wrapper[index];
-            
+
             // Construct the popup using a plain string
             var popupHTML = '<div class="custom-popup hidden">' +
             '<div class="custom-popup-content">' +
@@ -420,14 +423,14 @@ function init_omeka_map(map_selector, store, data, callback) {
             '<iframe class="video-frame" width="100%" height="315" src="" frameborder="0" allowfullscreen></iframe>' +
             '</div>' +
             '</div>';
-            
+
             // Convert the string to a DOM element
             var div_popup = document.createElement('div');
             div_popup.innerHTML = popupHTML;
-            
+
             // Append the constructed DOM element to your wrapper
             wrapper.appendChild(div_popup);
-            
+
             // make a div with the id like <div id="omeka-mappa-ID" style="height: 400px;"></div>
 
             var div = document.createElement('div');
@@ -466,7 +469,7 @@ function init_omeka_map(map_selector, store, data, callback) {
             '<iframe class="video-frame" width="100%" height="315" src="" frameborder="0" allowfullscreen></iframe>' +
             '</div>' +
             '</div>';
-            
+
             // Convert the string to a DOM element
             wrapper.innerHTML += popupHTML;
 
@@ -477,7 +480,7 @@ function init_omeka_map(map_selector, store, data, callback) {
             // append the div to the wrapper
             wrapper.appendChild(div);
 
-            // make a div with the id like <div id="timeline-embed-timeline-ID" style="width: 100%; height: 600px;"></div> 
+            // make a div with the id like <div id="timeline-embed-timeline-ID" style="width: 100%; height: 600px;"></div>
             var div_timeline = document.createElement('div');
             div_timeline.id = 'timeline-embed-timeline-' + id;
             div_timeline.style.width = '100%';
@@ -497,7 +500,7 @@ function init_omeka_map(map_selector, store, data, callback) {
 
           });
         }
-  
+
       }
     };
   })(jQuery, Drupal);
