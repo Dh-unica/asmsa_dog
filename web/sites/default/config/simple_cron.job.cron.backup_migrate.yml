@@ -1,0 +1,14 @@
+uuid: bea9828b-1291-46a5-aef2-ce3ab73e5bf3
+langcode: it
+status: true
+dependencies:
+  module:
+    - backup_migrate
+id: cron.backup_migrate
+crontab: '*/15 * * * *'
+plugin: cron
+type: backup_migrate
+configuration: {  }
+provider: backup_migrate
+single: false
+weight: 0
