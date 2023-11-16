@@ -14,7 +14,7 @@ entity_type: paragraph
 bundle: omeka_map
 label: 'Wms server'
 description: 'Enter the connection data of a WMS server'
-required: true
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
@@ -46,6 +46,9 @@ settings:
       content:
         weight: 27
         enabled: false
+      drupal_gallery:
+        weight: 32
+        enabled: false
       gallery:
         weight: 28
         enabled: false
@@ -55,6 +58,9 @@ settings:
       geonode_wms:
         weight: 30
         enabled: true
+      geonode_wms_timeline:
+        weight: 36
+        enabled: false
       hero:
         weight: 31
         enabled: false
@@ -64,8 +70,14 @@ settings:
       node_reference:
         weight: 33
         enabled: false
+      omeka_gallery:
+        weight: 40
+        enabled: false
       omeka_map:
         weight: 34
+        enabled: false
+      omeka_map_timeline:
+        weight: 42
         enabled: false
       section:
         weight: 35
