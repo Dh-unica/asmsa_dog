@@ -1,6 +1,6 @@
 uuid: b39a8f5b-278a-4792-8a7a-7665e48e55df
 langcode: it
-status: false
+status: true
 dependencies:
   config:
     - system.menu.slim-top
