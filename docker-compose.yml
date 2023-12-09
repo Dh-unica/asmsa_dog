@@ -47,6 +47,7 @@ services:
 #      MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu","--headless"]}}, "http://chrome:9515"]'
     volumes:
     - ./:/var/www/html:cached
+    - ./web:/var/www/html/asmsa
 ## Alternative for macOS users: Mutagen https://wodby.com/docs/stacks/drupal/local#docker-for-mac
 #    - drupal:/var/www/html
 ## For XHProf and Xdebug profiler traces
@@ -64,22 +65,22 @@ services:
 ## Alternative for macOS users: Mutagen https://wodby.com/docs/stacks/drupal/local#docker-for-mac
 #    - drupal:/var/www/html
 
-  nginx:
-    image: wodby/nginx:$NGINX_TAG
-    container_name: "${PROJECT_NAME}_nginx"
-    depends_on:
-    - php
-    environment:
-      NGINX_STATIC_OPEN_FILE_CACHE: "off"
-      NGINX_ERROR_LOG_LEVEL: error
-      NGINX_BACKEND_HOST: php
-      NGINX_SERVER_ROOT: /var/www/html/web
-      NGINX_VHOST_PRESET: $NGINX_VHOST_PRESET
+#  nginx:
+#    image: wodby/nginx:$NGINX_TAG
+#    container_name: "${PROJECT_NAME}_nginx"
+#    depends_on:
+#    - php
+#    environment:
+#      NGINX_STATIC_OPEN_FILE_CACHE: "off"
+#      NGINX_ERROR_LOG_LEVEL: error
+#      NGINX_BACKEND_HOST: php
+#      NGINX_SERVER_ROOT: /var/www/html/web
+#      NGINX_VHOST_PRESET: $NGINX_VHOST_PRESET
     #      NGINX_DRUPAL_FILE_PROXY_URL: http://example.com
-    volumes:
-    - ./:/var/www/html:cached
-    ports:
-    - "7000:80"
+#    volumes:
+#    - ./:/var/www/html:cached
+#    ports:
+#    - "7000:80"
 ## Alternative for macOS users: Mutagen https://wodby.com/docs/stacks/drupal/local#docker-for-mac
 #    - drupal:/var/www/html
 #    labels:
@@ -92,21 +93,24 @@ services:
 #    - "traefik.http.services.${PROJECT_NAME}_mailhog.loadbalancer.server.port=8025"
 #    - "traefik.http.routers.${PROJECT_NAME}_mailhog.rule=Host(`mailhog.${PROJECT_BASE_URL}`)"
 
+  apache:
+    image: wodby/apache:latest
+    container_name: "${PROJECT_NAME}_apache"
+    depends_on:
+      - php
+    environment:
+      APACHE_LOG_LEVEL: error
+      APACHE_BACKEND_HOST: php
+      APACHE_VHOST_PRESET: php
+      APACHE_DOCUMENT_ROOT: /var/www/html/
+    volumes:
+       - ./web:/var/www/html/asmsa
+       - ./:/var/www/html
 
-#  apache:
-#    image: wodby/apache:$APACHE_TAG
-#    container_name: "${PROJECT_NAME}_apache"
-#    depends_on:
-#    - php
-#    environment:
-#      APACHE_LOG_LEVEL: debug
-#      APACHE_BACKEND_HOST: php
-#      APACHE_VHOST_PRESET: php
-#      APACHE_DOCUMENT_ROOT: /var/www/html/web
-#    volumes:
-#    - ./:/var/www/html:cached
-## Alternative for macOS users: Mutagen https://wodby.com/docs/stacks/drupal/local#docker-for-mac
-#    - drupal:/var/www/html
+
+
+
+
 
 #    labels:
 #    - "traefik.http.routers.${PROJECT_NAME}_apache.rule=Host(`${PROJECT_BASE_URL}`)"
