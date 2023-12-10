@@ -17,41 +17,20 @@ services:
     image: wodby/drupal-php:$PHP_TAG
     container_name: "${PROJECT_NAME}_php"
     environment:
-      SSMTP_MAILHUB: mailhog:1025
-#      SSMTP_MAILHUB: opensmtpd:25
-      PHP_SENDMAIL_PATH: '"/usr/bin/dos2unix -u | /usr/sbin/ssmtp -t -f"'
-#      DB_HOST: $DB_HOST
-#      DB_PORT: $DB_PORT
-#      DB_USER: $DB_USER
-#      DB_PASSWORD: $DB_PASSWORD
-#      DB_NAME: $DB_NAME
-#      DB_DRIVER: $DB_DRIVER
-#      DRUSH_OPTIONS_URI: "http://${PROJECT_BASE_URL}:${PROJECT_PORT}"
-#      PHP_FPM_USER: wodby
-#      PHP_FPM_GROUP: wodby
-#      COLUMNS: 80 # Set 80 columns for docker exec -it.
-#      # Read instructions at https://wodby.com/docs/stacks/php/local/#xdebug
-#      PHP_XDEBUG: 1
-#      PHP_XDEBUG_MODE: debug
-#      PHP_XDEBUG_MODE: profile
-#      PHP_XDEBUG_USE_COMPRESSION: false
-#      PHP_IDE_CONFIG: serverName=my-ide
-#      PHP_XDEBUG_IDEKEY: "my-ide"
-#      PHP_XDEBUG_CLIENT_HOST: 172.17.0.1 # Linux
-#      PHP_XDEBUG_CLIENT_HOST: host.docker.internal # Docker 18.03+ Mac/Win
-#      PHP_XDEBUG_CLIENT_HOST: 10.0.75.1 # Windows, Docker < 18.03
-#      PHP_XDEBUG_LOG: /tmp/php-xdebug.log
-#      # PHPUnit Drupal testing configurations
-#      SIMPLETEST_BASE_URL: "http://nginx"
-#      SIMPLETEST_DB: "${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}#tests_"
-#      MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu","--headless"]}}, "http://chrome:9515"]'
+      PHP_SENDMAIL_PATH: /usr/sbin/sendmail -t -i -S mailhog:1025
+#      PHP_SENDMAIL_PATH: /usr/sbin/sendmail -t -i -S opensmtpd:25
+      DB_HOST: $DB_HOST
+      DB_PORT: $DB_PORT
+      DB_USER: $DB_USER
+      DB_PASSWORD: $DB_PASSWORD
+      DB_NAME: $DB_NAME
+      DB_DRIVER: $DB_DRIVER
+      PHP_FPM_USER: wodby
+      PHP_FPM_GROUP: wodby
+      COLUMNS: 80 # Set 80 columns for docker exec -it.
     volumes:
-    - ./:/var/www/html:cached
-    - ./web:/var/www/html/asmsa
-## Alternative for macOS users: Mutagen https://wodby.com/docs/stacks/drupal/local#docker-for-mac
-#    - drupal:/var/www/html
-## For XHProf and Xdebug profiler traces
-#    - files:/mnt/files
+      - ./:/var/www/html
+      - ./web:/var/www/html/asmsa
 
   crond:
     init: true
@@ -96,6 +75,7 @@ services:
   apache:
     image: wodby/apache:latest
     container_name: "${PROJECT_NAME}_apache"
+    restart: always
     depends_on:
       - php
     environment:
@@ -106,6 +86,8 @@ services:
     volumes:
        - ./web:/var/www/html/asmsa
        - ./:/var/www/html
+    ports:
+       - "6000:80"
 
 
 

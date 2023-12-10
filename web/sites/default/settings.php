@@ -794,3 +794,13 @@ if (file_exists(__DIR__ . '/settings.ddev.php') && getenv('IS_DDEV_PROJECT') == 
 if (file_exists($app_root . '/modules/contrib/dev_mode/settings.dev_mode.php')) {
   include $app_root . '/modules/contrib/dev_mode/settings.dev_mode.php';
 }
+
+$settings['cookie_domain'] = '.storia.dh.unica.it';
+$settings['cookie_path'] = '/asmsa';
+
+$settings['trusted_host_patterns'] = [
+  '^storia\.dh\.unica\.it$',
+  '^400\.unica\.it$',
+  '^nginx$',
+  '^localhost$',
+];
