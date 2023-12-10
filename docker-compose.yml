@@ -89,11 +89,6 @@ services:
     ports:
        - "6000:80"
 
-
-
-
-
-
 #    labels:
 #    - "traefik.http.routers.${PROJECT_NAME}_apache.rule=Host(`${PROJECT_BASE_URL}`)"
 
@@ -275,8 +270,3 @@ services:
 #          defaultOwner: "id:501"
 #          defaultGroup: "id:20"
 
-volumes:
-## For macOS users (Mutagen)
-#  drupal:
-# For Xdebug profiler
-  files:

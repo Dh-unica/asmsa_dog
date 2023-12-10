@@ -800,6 +800,7 @@ $settings['cookie_path'] = '/asmsa';
 
 $settings['trusted_host_patterns'] = [
   '^storia\.dh\.unica\.it$',
+  '^asmsadog\.ddev\.site$',
   '^400\.unica\.it$',
   '^nginx$',
   '^localhost$',
