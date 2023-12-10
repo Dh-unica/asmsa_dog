@@ -6,6 +6,7 @@
 # Drupal facts
 /mariadb-init/*.sql
 /mariadb-init/*.zip
+/mariadb-init/*.tar.gz
 web/core
 web/libraries
 web/modules/contrib
