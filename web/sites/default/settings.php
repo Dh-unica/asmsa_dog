@@ -795,6 +795,8 @@ if (file_exists($app_root . '/modules/contrib/dev_mode/settings.dev_mode.php')) 
   include $app_root . '/modules/contrib/dev_mode/settings.dev_mode.php';
 }
 
+ini_set('memory_limit', '1024M');
+
 $settings['cookie_domain'] = '.storia.dh.unica.it';
 $settings['cookie_path'] = '/asmsa';
 
