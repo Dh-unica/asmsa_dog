@@ -115,7 +115,7 @@ libraries_cdn_css: ''
 libraries_cdn_js: ''
 libraries_cdn_minified: 1
 libraries_cdn_fonts: ''
-libraries_cdn_icons: ''
+libraries_cdn_icons: '/asmsa/themes/custom/italiagov/dist/svg/sprites.svg'
 figma: ''
 mastodon: ''
 pinterest: ''
