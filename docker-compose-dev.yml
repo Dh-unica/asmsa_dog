@@ -2,6 +2,9 @@ services:
  # mariadb:
  #   image: wodby/mariadb:10.4-3.13.21
 
+  apache:
+    ports:
+      - '7001:80'
   php:
     environment:
       PHP_XDEBUG: 1
