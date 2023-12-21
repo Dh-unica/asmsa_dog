@@ -377,6 +377,12 @@ $settings['update_free_access'] = FALSE;
  */
 # $settings['reverse_proxy'] = TRUE;
 
+
+$settings['reverse_proxy'] = TRUE;
+$settings['reverse_proxy_addresses'] = [
+  $_SERVER['REMOTE_ADDR'],
+];
+
 /**
  * Specify every reverse proxy IP address in your environment.
  * This setting is required if $settings['reverse_proxy'] is TRUE.

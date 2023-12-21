@@ -37,6 +37,7 @@ settings:
       - code
       - codeBlock
       - sourceEditing
+      - horizontalLine
   plugins:
     ckeditor5_alignment:
       enabled_alignments:

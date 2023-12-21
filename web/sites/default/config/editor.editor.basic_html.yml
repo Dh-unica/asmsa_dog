@@ -28,6 +28,7 @@ settings:
       - code
       - '|'
       - sourceEditing
+      - horizontalLine
   plugins:
     ckeditor5_heading:
       enabled_headings:
