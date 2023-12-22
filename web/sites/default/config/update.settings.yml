@@ -10,5 +10,5 @@ fetch:
   timeout: 30
 notification:
   emails:
-    - admin@example.com
+    - alessandrocapra@gmail.com
   threshold: all
