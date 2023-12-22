@@ -8,3 +8,9 @@ definitions:
     parent: ''
     expanded: false
     weight: 0
+  standard__front_page:
+    menu_name: main
+    parent: ''
+    weight: -50
+    expanded: false
+    enabled: true
