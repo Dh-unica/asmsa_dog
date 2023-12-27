@@ -100,6 +100,8 @@ $databases['default']['default'] = array (
 );
 $settings['config_sync_directory'] = 'sites/default/config';
 
+$settings['rebuild_access'] = TRUE;
+
 /**
  * Customizing database settings.
  *
