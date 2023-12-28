@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c9fd29c6d1ca6a374dfa4f82810f18c3",
+    "content-hash": "b36226cdb97260d4091027c22c1beb6b",
     "packages": [
         {
             "name": "algolia/places",
@@ -3682,6 +3682,52 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/leaflet",
                 "issues": "https://www.drupal.org/project/issues/leaflet"
+            }
+        },
+        {
+            "name": "drupal/msqrole",
+            "version": "1.0.11",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/msqrole.git",
+                "reference": "1.0.11"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/msqrole-1.0.11.zip",
+                "reference": "1.0.11",
+                "shasum": "602bfa20415218672d923d0d54c6aace89e698b8"
+            },
+            "require": {
+                "drupal/core": "^9.4 || ^10",
+                "drupal/token": "~1",
+                "php": ">=7.4"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "1.0.11",
+                    "datestamp": "1696844688",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "RandalV",
+                    "homepage": "https://www.drupal.org/user/3612901"
+                }
+            ],
+            "description": "Allows the user to masquerade as certain roles rather than specific users.",
+            "homepage": "https://www.drupal.org/project/msqrole",
+            "support": {
+                "source": "https://git.drupalcode.org/project/msqrole"
             }
         },
         {
