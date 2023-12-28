@@ -1,0 +1,28 @@
+uuid: 50b657df-b698-4cbd-9646-5535f825956a
+langcode: it
+status: true
+dependencies: {  }
+id: G-KF9DEFNFWK.658d3b762b81a4.31107505
+label: G-KF9DEFNFWK
+weight: 0
+tag_container_ids:
+  - G-KF9DEFNFWK
+advanced_settings: {  }
+dimensions_metrics:
+  -
+    type: metric
+    name: ''
+    value: ''
+    remove: Elimina
+conditions: {  }
+events:
+  generate_lead:
+    value: ''
+    currency: ''
+  login:
+    method: CMS
+  webform_purchase: {  }
+  search: {  }
+  custom: {  }
+  sign_up:
+    method: CMS
