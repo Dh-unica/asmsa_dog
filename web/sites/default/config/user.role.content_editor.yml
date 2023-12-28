@@ -38,6 +38,7 @@ permissions:
   - 'access media overview'
   - 'access toolbar'
   - 'access tour'
+  - 'administer menu'
   - 'administer url aliases'
   - 'configure all page node layout overrides'
   - 'configure editable page node layout overrides'

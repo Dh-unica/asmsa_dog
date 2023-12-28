@@ -8,5 +8,6 @@ _core:
   default_config_hash: Xv9k40Y2V1b1FbEMuVvz5rA9drmBAjZ4jhDoftmN6I4
 id: node.gallery
 label: Gallery
+description: ''
 targetEntityType: node
 cache: true

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b96b153fc9470cdbd356deb502e0a5b8",
+    "content-hash": "c9fd29c6d1ca6a374dfa4f82810f18c3",
     "packages": [
         {
             "name": "algolia/places",
@@ -1843,6 +1843,50 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/bootstrap_italia",
                 "issues": "https://drupal.org/project/issues/bootstrap_italia"
+            }
+        },
+        {
+            "name": "drupal/cdn",
+            "version": "4.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/cdn.git",
+                "reference": "4.0.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/cdn-4.0.2.zip",
+                "reference": "4.0.2",
+                "shasum": "1ce03cafb90d9505785e56fb050c0862a162c0ce"
+            },
+            "require": {
+                "drupal/core": "^9.4 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "4.0.2",
+                    "datestamp": "1703245236",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Wim Leers",
+                    "homepage": "https://www.drupal.org/user/99777"
+                }
+            ],
+            "description": "Serves files (CSS, JS, images …) from a CDN.",
+            "homepage": "https://www.drupal.org/project/cdn",
+            "support": {
+                "source": "https://git.drupalcode.org/project/cdn"
             }
         },
         {
