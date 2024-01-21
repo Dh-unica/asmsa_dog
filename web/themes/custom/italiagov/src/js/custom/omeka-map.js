@@ -215,14 +215,14 @@ function init_omeka_map(map_selector, store, data, callback) {
               surname: itemData["foaf:surname"] && itemData["foaf:surname"][0]["@value"],
               gender: itemData["foaf:gender"] && itemData["foaf:gender"][0]["@value"],
               birthPlace: itemData["person:placeOfBirth"] && itemData["person:placeOfBirth"][0]["@value"],
-              birthDate: itemData["dcterms:date"] && itemData["dcterms:date"][0]["@value"],
+              birthDate: itemData["dcterms:created"] && itemData["dcterms:created"][0]["@value"],
               country: itemData["edm:country"] && itemData["edm:country"][0]["@value"],
               profession: itemData["san:professione"] && itemData["san:professione"][0]["@value"],
               membership: itemData["foaf:membershipClass"] && itemData["foaf:membershipClass"][0]["@value"],
               researchArea: itemData["vivo:hasResearchArea"] && itemData["vivo:hasResearchArea"][0]["@value"],
               archivalHistory: itemData["http://culturalis.org/oad#:archivalHistory"] && itemData["http://culturalis.org/oad#:archivalHistory"][0]["@value"],
               location: itemData["oc:location"] && itemData["oc:location"][0]["@value"],
-              date: convertDateFormat(itemData["dcterms:date"]?.[0]["@value"]) || null,
+              date: convertDateFormat(itemData["dcterms:created"]?.[0]["@value"]) || null,
               latitude: locationData['o-module-mapping:lat'] || null,
               longitude: locationData['o-module-mapping:lng'] || null,
               type: "omeka",
@@ -295,7 +295,7 @@ function init_omeka_map(map_selector, store, data, callback) {
             let marker = L.circleMarker([item.latitude, item.longitude], {
               radius: 10,
               fillColor: "#c4c4c4",
-              color: "#ff0000",
+              color: "#c4c4c4",
               weight: 1,
               opacity: 1,
               fillOpacity: 0.8,
@@ -403,6 +403,12 @@ function init_omeka_map(map_selector, store, data, callback) {
 
         if (drupalSettings.is_omeka_map) {
           var omeka_map_ids = Object.keys(drupalSettings.omeka_map); // ['omeka_map_18', 'omeka_map_17']
+          omeka_map_ids.sort(function(a, b) {
+            // get last _ and get the number
+            var a_id = parseInt(a.split('_').pop());
+            var b_id = parseInt(b.split('_').pop());
+            return a_id - b_id;
+          });
           var omeka_map_wrapper = document.querySelectorAll('.omeka-map-wrapper');
           omeka_map_ids.forEach(function(omeka_map_id, index) {
             // extract the id from the string
@@ -449,6 +455,14 @@ function init_omeka_map(map_selector, store, data, callback) {
 
         if (drupalSettings.is_omeka_timeline) {
           var omeka_map_timeline_ids = Object.keys(drupalSettings.omeka_map_timeline); // ['omeka_map_timeline_18', 'omeka_map_timeline_17']
+          // ex. omeka_map_timeline_38, omeka_map_timeline_39
+          // sort omeka_map_timeline_ids
+          omeka_map_timeline_ids.sort(function(a, b) {
+            // get last _ and get the number
+            var a_id = parseInt(a.split('_').pop());
+            var b_id = parseInt(b.split('_').pop());
+            return a_id - b_id;
+          });
           var omeka_map_timeline_wrapper = document.querySelectorAll('.omeka-map-timeline-wrapper');
           omeka_map_timeline_ids.forEach(function(omeka_map_timeline_id, index) {
             // extract the id from the string
