@@ -403,12 +403,12 @@ function init_omeka_map(map_selector, store, data, callback) {
 
         if (drupalSettings.is_omeka_map) {
           var omeka_map_ids = Object.keys(drupalSettings.omeka_map); // ['omeka_map_18', 'omeka_map_17']
-          omeka_map_ids.sort(function(a, b) {
+          // omeka_map_ids.sort(function(a, b) {
             // get last _ and get the number
-            var a_id = parseInt(a.split('_').pop());
-            var b_id = parseInt(b.split('_').pop());
-            return a_id - b_id;
-          });
+          //  var a_id = parseInt(a.split('_').pop());
+          //  var b_id = parseInt(b.split('_').pop());
+          //  return a_id - b_id;
+          //});
           var omeka_map_wrapper = document.querySelectorAll('.omeka-map-wrapper');
           omeka_map_ids.forEach(function(omeka_map_id, index) {
             // extract the id from the string
@@ -457,12 +457,12 @@ function init_omeka_map(map_selector, store, data, callback) {
           var omeka_map_timeline_ids = Object.keys(drupalSettings.omeka_map_timeline); // ['omeka_map_timeline_18', 'omeka_map_timeline_17']
           // ex. omeka_map_timeline_38, omeka_map_timeline_39
           // sort omeka_map_timeline_ids
-          omeka_map_timeline_ids.sort(function(a, b) {
+          //omeka_map_timeline_ids.sort(function(a, b) {
             // get last _ and get the number
-            var a_id = parseInt(a.split('_').pop());
-            var b_id = parseInt(b.split('_').pop());
-            return a_id - b_id;
-          });
+          //  var a_id = parseInt(a.split('_').pop());
+          //  var b_id = parseInt(b.split('_').pop());
+          //  return a_id - b_id;
+          //});
           var omeka_map_timeline_wrapper = document.querySelectorAll('.omeka-map-timeline-wrapper');
           omeka_map_timeline_ids.forEach(function(omeka_map_timeline_id, index) {
             // extract the id from the string
