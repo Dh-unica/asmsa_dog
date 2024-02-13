@@ -1,0 +1,14 @@
+uuid: 78add132-5247-484d-b1b5-0726a69e232f
+langcode: it
+status: true
+dependencies:
+  module:
+    - advagg
+id: cron.advagg
+crontab: '*/15 * * * *'
+plugin: cron
+type: advagg
+configuration: {  }
+provider: advagg
+single: false
+weight: 0

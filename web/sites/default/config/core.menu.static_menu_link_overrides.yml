@@ -3,11 +3,11 @@ _core:
 langcode: it
 definitions:
   contact__site_page:
-    enabled: false
     menu_name: footer
     parent: ''
-    expanded: false
     weight: 0
+    expanded: false
+    enabled: false
   standard__front_page:
     menu_name: main
     parent: ''
