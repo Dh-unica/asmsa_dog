@@ -75,7 +75,7 @@ services:
   apache:
     image: wodby/apache:latest
     container_name: "${PROJECT_NAME}_apache"
-    restart: always
+#    restart: always
     depends_on:
       - php
     environment:
