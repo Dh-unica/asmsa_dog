@@ -1,11 +1,11 @@
 _core:
   default_config_hash: LYs_s2QdJ4ivdf6ERxvWa1ZRSKecbSoLKA85NkzrSkw
-langcode: it
 region_blocks: {  }
 fields_extra: false
 fields_extra_list: {  }
 field_permissions: false
 switch_field: false
+switch_field_prefix: node--view-mode-
 hidden_region: false
 region_to_block: false
 override_node_revision: false

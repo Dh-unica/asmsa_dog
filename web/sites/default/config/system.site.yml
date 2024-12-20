@@ -3,7 +3,7 @@ _core:
 langcode: it
 uuid: ed88e372-52b8-4172-98fe-024d4a4dba74
 name: 'Atlante Storia MArittima della SArdegna'
-mail: alessandrocapra@gmail.com
+mail: studoc_asuca@unica.it
 slogan: 'DH UNICA | Centro interdipartimentale di umanistica digitale'
 page:
   403: ''
@@ -12,3 +12,4 @@ page:
 admin_compact_mode: false
 weight_select_max: 100
 default_langcode: it
+mail_notification: null

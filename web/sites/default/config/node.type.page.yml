@@ -7,7 +7,7 @@ _core:
 name: 'Pagina base'
 type: page
 description: "Utilizza <em>pagine di base</em> per i tuoi contenuti statici come ad esempio per una pagina 'Chi siamo'."
-help: ''
+help: null
 new_revision: true
 preview_mode: 1
 display_submitted: false

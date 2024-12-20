@@ -4,5 +4,5 @@ status: true
 dependencies: {  }
 id: drupal_gallery
 label: 'Drupal Gallery'
-revision: 0
+revision: false
 description: ''

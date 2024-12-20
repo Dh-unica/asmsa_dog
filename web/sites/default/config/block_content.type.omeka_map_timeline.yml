@@ -4,5 +4,5 @@ status: true
 dependencies: {  }
 id: omeka_map_timeline
 label: 'Omeka map timeline'
-revision: 1
+revision: true
 description: 'It allows to insert Omeka Items in a map and in a timeline'

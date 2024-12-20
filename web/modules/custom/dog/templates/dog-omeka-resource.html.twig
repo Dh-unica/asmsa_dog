@@ -12,6 +12,8 @@
  * @ingroup themeable
  */
 #}
+
+
 <div{{ attributes }}>
   <details>
     <summary>{{ omeka_resource_data['@id'] }}</summary>
@@ -32,4 +34,9 @@
     </table>
 
   </details>
+</div>
+
+
+<div{{ attributes }}>
+  <img src="{{ omeka_resource_data['thumbnail_display_urls']['medium'] }}" alt="Thumbnail Image">
 </div>

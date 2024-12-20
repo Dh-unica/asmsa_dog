@@ -1,1 +1,4 @@
 label: Location
+default_value:
+  -
+    value: 'POINT (16.331606 38.299063)'

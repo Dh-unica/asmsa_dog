@@ -4,5 +4,5 @@ status: true
 dependencies: {  }
 id: carousel
 label: Carousel
-revision: 1
+revision: true
 description: ''

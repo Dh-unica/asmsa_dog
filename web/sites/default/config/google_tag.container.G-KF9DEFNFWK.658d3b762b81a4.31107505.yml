@@ -7,7 +7,7 @@ label: G-KF9DEFNFWK
 weight: 0
 tag_container_ids:
   - G-KF9DEFNFWK
-advanced_settings: {  }
+advanced_settings: null
 dimensions_metrics:
   -
     type: metric

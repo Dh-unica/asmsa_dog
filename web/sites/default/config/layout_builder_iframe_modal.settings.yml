@@ -1,6 +1,5 @@
 _core:
   default_config_hash: tJO9CHUE9fjHxuA709DoypnN9M6oSeFiIaMOdsX5Aqg
-langcode: it
 layout_builder_iframe_routes:
   - layout_builder.configure_section
   - layout_builder.remove_section

@@ -4,5 +4,5 @@ status: true
 dependencies: {  }
 id: omeka_gallery
 label: 'Omeka Gallery'
-revision: 0
+revision: false
 description: ''
