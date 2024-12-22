@@ -5,3 +5,26 @@
 .ui-dialog--narrow.drupal-omeka-resource-library-widget-modal {
   max-width: 75%;
 }
+
+.drupal-omeka-resource.align-left {
+  margin: 0 10px 10px 0;
+}
+
+.drupal-omeka-resource.text-align-right {
+  float: right;
+  text-align: left;
+  margin: 0 0 10px 10px;
+}
+
+.omeka-resource-wrapper-link {
+  width: 165px;
+  display: inline-block;
+  padding: 5px;
+  text-decoration: none;
+  background-color: #ededed;
+  color: #000;
+}
+
+.omeka-resource-wrapper-link p {
+  margin: 5px 0 0;
+}

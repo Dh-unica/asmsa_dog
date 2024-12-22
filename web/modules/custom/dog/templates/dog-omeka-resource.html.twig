@@ -12,10 +12,8 @@
  * @ingroup themeable
  */
 #}
-
-
-<div{{ attributes }}>
-  <details>
+<div{{attributes}}>
+  {# <details>
     <summary>{{ omeka_resource_data['@id'] }}</summary>
     {{custom}}
     <table>
@@ -24,19 +22,19 @@
         <th>Value</th>
       </tr>
       <tbody>
-      {% for key,row in omeka_resource_data %}
-        <tr>
-          <td>{{ key }}</td>
-          <td><code>{{ row|json_encode() }}</code></td>
-        </tr>
-      {% endfor %}
+        {% for key,row in omeka_resource_data %}
+          <tr>
+            <td>{{ key }}</td>
+            <td>
+              <code>{{ row|json_encode() }}</code>
+            </td>
+          </tr>
+        {% endfor %}
       </tbody>
     </table>
-
-  </details>
-</div>
-
-
-<div{{ attributes }}>
-  <img src="{{ omeka_resource_data['thumbnail_display_urls']['medium'] }}" alt="Thumbnail Image">
+  </details> #}
+  <a class="omeka-resource-wrapper-link" href="{{ omeka_resource_data['o:media'][0]['@id'] }}">
+    <img src="{{ omeka_resource_data['thumbnail_display_urls']['medium'] }}" alt="Thumbnail Image">
+    <p>{{ omeka_resource_data['o:title'] }}</p>
+  </a>
 </div>

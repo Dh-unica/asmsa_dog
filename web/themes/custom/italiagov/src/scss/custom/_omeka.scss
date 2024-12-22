@@ -1,0 +1,35 @@
+.omeka-resource {
+  &,
+  &--default {
+    &.align-left {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    &.text-align-right {
+      float: right;
+      margin-left: 10px;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+  }
+
+  &-wrapper-link {
+    width: 165px;
+    display: inline-block;
+    padding: 5px;
+    text-decoration: none;
+    background-color: #ededed;
+    color: #000;
+
+    img {
+      display: block;
+    }
+
+    p,
+    .text {
+      margin: 5px 0 0;
+      font-size: 14px;
+    }
+  }
+}
