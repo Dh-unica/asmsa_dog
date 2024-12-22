@@ -46,7 +46,7 @@ content:
     third_party_settings: {  }
   field_location:
     type: geofield_map
-    weight: 122
+    weight: 123
     region: content
     settings:
       html5_geolocation: false
@@ -82,6 +82,10 @@ content:
       map_geocoder:
         control: 0
         settings:
+          providers:
+            googlemaps:
+              weight: 0
+              checked: false
           min_terms: 4
           delay: 800
           options: ''

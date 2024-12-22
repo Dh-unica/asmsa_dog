@@ -1,0 +1,15 @@
+uuid: 50f06f91-9471-4e24-aa83-0db84313ce36
+langcode: it
+status: true
+dependencies: {  }
+id: googlemaps
+label: GoogleMaps
+plugin: googlemaps
+configuration:
+  throttle:
+    period: 3600
+    limit: 200
+  geocoder:
+    locale: ''
+  apiKey: AIzaSyDguBUSbw7h53kM1M376MBugvswNEIeT4g
+  region: ''
