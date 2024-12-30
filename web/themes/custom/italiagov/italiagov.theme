@@ -157,16 +157,23 @@ function italiagov_preprocess_block(&$variables) {
       foreach ($omeka_items as $omeka_item) {
         $omeka_id = $omeka_item['id'];
         $omeka_item_full = $omeka_utils->getItem($omeka_id);
-        $marker_key = 'o-module-mapping:marker';
+        $marker_key = 'o-module-mapping:feature';
         $date_key = 'dcterms:date';
         if (!empty($omeka_item_full->$marker_key) && !empty($omeka_item_full->$date_key)) {
+          // var_dump('Timeline');
           $items_ids[] = $omeka_id;
-          $marker = $omeka_item_full->{'o-module-mapping:marker'};
-          // if $marker['0']->{'@id'} is empty
+          $marker = $omeka_item_full->{'o-module-mapping:feature'};
           $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
-          $marker_object = $marker_object = $omeka_utils->getLocation($omeka_item_full);
+          $marker_object = $omeka_utils->getLocation($omeka_item_full);
           $full_items[$omeka_item['id']]['location'] = $marker_object;
           $full_items[$omeka_item['id']]['absolute_url'] = $omeka_utils->getItemUrl($omeka_item_full);
+
+          // Extract coordinates
+          if (!empty($marker[0]->{'o-module-mapping:geography-coordinates'})) {
+            $coordinates = $marker[0]->{'o-module-mapping:geography-coordinates'};
+            $full_items[$omeka_item['id']]['latitude'] = $coordinates[1];
+            $full_items[$omeka_item['id']]['longitude'] = $coordinates[0];
+          }
         } else {
           continue;
         }
@@ -317,16 +324,23 @@ function italiagov_preprocess_block(&$variables) {
       foreach ($omeka_items as $omeka_item) {
         $omeka_id = $omeka_item['id'];
         $omeka_item_full = $omeka_utils->getItem($omeka_id);
-        $marker_key = 'o-module-mapping:marker';
+        $marker_key = 'o-module-mapping:feature';
         $date_key = 'dcterms:date';
         if (!empty($omeka_item_full->$marker_key)) {
           $items_ids[] = $omeka_id;
-          $marker = $omeka_item_full->{'o-module-mapping:marker'};
+          $marker = $omeka_item_full->{'o-module-mapping:feature'};
           // if $marker['0']->{'@id'} is empty
           $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
           $marker_object = $omeka_utils->getLocation($omeka_item_full);
           $full_items[$omeka_item['id']]['location'] = $marker_object;
           $full_items[$omeka_item['id']]['absolute_url'] = $omeka_utils->getItemUrl($omeka_item_full);
+
+          // Extract coordinates
+          if (!empty($marker[0]->{'o-module-mapping:geography-coordinates'})) {
+            $coordinates = $marker[0]->{'o-module-mapping:geography-coordinates'};
+            $full_items[$omeka_item['id']]['latitude'] = $coordinates[1];
+            $full_items[$omeka_item['id']]['longitude'] = $coordinates[0];
+          }
         } else {
           continue;
         }

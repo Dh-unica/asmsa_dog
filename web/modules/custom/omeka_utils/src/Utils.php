@@ -84,18 +84,23 @@ class Utils {
     return $values;
   }
 
-  public function getLocation($item) {
-    $marker_url = $item->{'o-module-mapping:marker'};
-    $marker_id = $marker_url[0]->{'o:id'};
-    $cacheId = 'omeka_marker_' . $marker_id;
-    if ($cache = \Drupal::cache('omeka')->get($cacheId)) {
-      return $cache->data;
+  public function getLocation($omeka_item_full) {
+    $location_url = $omeka_item_full->{'o-module-mapping:feature'}[0]->{'@id'} ?? '';
+    if (empty($location_url)) {
+      throw new \ValueError('Path cannot be empty');
     }
-    else {
-      $marker_object = file_get_contents($marker_url[0]->{'@id'});
-      $marker = json_decode($marker_object);
-      \Drupal::cache('omeka')->set($cacheId, $marker, $this->expire);
-      return $marker;
+    $location_data = file_get_contents($location_url);
+    $location_json = json_decode($location_data, true);
+
+    // Extract coordinates from the JSON
+    $coordinates = $location_json['o-module-mapping:geography-coordinates'] ?? null;
+    if ($coordinates) {
+      return [
+        'latitude' => $coordinates[1],
+        'longitude' => $coordinates[0],
+      ];
+    } else {
+      throw new \Exception('Coordinates not found in the JSON response');
     }
   }
 
@@ -135,5 +140,8 @@ class Utils {
       return $site_url;
     }
   }
+
+  // JavaScript code removed
+
 }
 
