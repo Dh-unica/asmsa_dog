@@ -60,3 +60,42 @@ div.it-brand-wrapper img {
 .block-field-blocknodepagebody {
   overflow: auto;
 }
+
+/* Correggo il padding degli oggetti omeka nel corpo del testo */
+
+.align-left {
+  float: left; /* Mantiene l'allineamento a sinistra */
+  margin: 0 15px 15px 0; /* Aggiunge spaziature attorno al contenitore */
+}
+
+.align-left img {
+  display: block; /* Rimuove eventuali spazi bianchi sotto l'immagine */
+  max-width: 100%; /* Rende l'immagine responsiva */
+  margin-bottom: 5px; /* Spazio tra immagine e testo */
+}
+
+.align-left p {
+  margin: 0; /* Rimuove margini indesiderati */
+  font-size: 14px; /* Regola la dimensione del font */
+  line-height: 1.5; /* Migliora la leggibilità del testo */
+  text-align: left; /* Allinea il testo a sinistra */
+}
+
+.text-align-right {
+  float: right; /* Allinea il contenitore a destra */
+  margin: 0 0 15px 15px; /* Aggiunge spaziature attorno al contenitore */
+}
+
+.text-align-right img {
+  display: block; /* Rimuove eventuali spazi bianchi sotto l'immagine */
+  max-width: 100%; /* Rende l'immagine responsiva */
+  margin-bottom: 5px; /* Spazio tra immagine e testo */
+}
+
+.text-align-right p {
+  margin: 0; /* Rimuove margini indesiderati */
+  font-size: 14px; /* Regola la dimensione del font */
+  line-height: 1.5; /* Migliora la leggibilità del testo */
+  text-align: left; /* Mantiene il testo allineato a sinistra */
+}
+
