@@ -5,6 +5,10 @@ services:
     class: Drupal\dog\Service\OmekaResourceFetcher
     arguments: [ '@config.factory', '@http_client_factory', '@logger.factory' ]
 
+  dog.omeka_url:
+    class: Drupal\dog\Service\OmekaUrlService
+    arguments: ['@http_client', '@cache.default']
+
   dog.omeka_resource_view_builder:
     class: Drupal\dog\Service\OmekaResourceViewBuilder
     arguments: [ '@dog.omeka_resource_fetcher' ]

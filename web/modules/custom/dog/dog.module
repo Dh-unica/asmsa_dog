@@ -50,6 +50,18 @@ function template_preprocess_dog_omeka_resource(array &$variables) {
 }
 
 /**
+ * Implements hook_preprocess_HOOK() for dog-omeka-resource templates.
+ */
+function dog_preprocess_dog_omeka_resource(&$variables) {
+  if (isset($variables['omeka_resource_data']['o:media'][0]['@id'])) {
+    /** @var \Drupal\dog\Service\OmekaUrlService $url_service */
+    $url_service = \Drupal::service('dog.omeka_url');
+    $api_url = $variables['omeka_resource_data']['o:media'][0]['@id'];
+    $variables['public_url'] = $url_service->transformApiUrl($api_url);
+  }
+}
+
+/**
  * Implements hook_theme_suggestions_HOOK().
  */
 function dog_theme_suggestions_dog_omeka_resource(array $variables) {

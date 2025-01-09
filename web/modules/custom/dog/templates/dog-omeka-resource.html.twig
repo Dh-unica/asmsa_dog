@@ -8,32 +8,13 @@
  * - omeka_resource_id: contains the id of omeka resource.
  * - omeka_resource_type: contains the type of omeka resource.
  * - omeka_resource_data: contains the properties of omeka resource.
+ * - public_url: The public URL for the media (transformed from API URL).
  *
  * @ingroup themeable
  */
 #}
 <div{{attributes}}>
-  {# <details>
-    <summary>{{ omeka_resource_data['@id'] }}</summary>
-    {{custom}}
-    <table>
-      <tr>
-        <th>Key</th>
-        <th>Value</th>
-      </tr>
-      <tbody>
-        {% for key,row in omeka_resource_data %}
-          <tr>
-            <td>{{ key }}</td>
-            <td>
-              <code>{{ row|json_encode() }}</code>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </details> #}
-  <a class="omeka-resource-wrapper-link" href="{{ omeka_resource_data['o:media'][0]['@id'] }}">
+  <a class="omeka-resource-wrapper-link" href="{{ public_url|default(omeka_resource_data['o:media'][0]['@id']) }}" target="_blank" rel="noopener noreferrer">
     <img src="{{ omeka_resource_data['thumbnail_display_urls']['medium'] }}" alt="Thumbnail Image">
     <p>{{ omeka_resource_data['o:title'] }}</p>
   </a>
