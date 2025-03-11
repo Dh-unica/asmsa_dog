@@ -104,6 +104,70 @@ class OmekaUrlService {
   }
 
   /**
+   * Transforms an Omeka-S API media URL to its parent item's public URL.
+   *
+   * @param string $api_url
+   *   The original media API URL (e.g., https://s[base-url]/api/media/3422).
+   *
+   * @return string
+   *   The transformed public item URL or the original API URL if transformation fails.
+   */
+  public function transformToItemUrl($api_url) {
+    // Extract media ID from the API URL.
+    if (!preg_match('#/api/media/(\d+)#', $api_url, $matches)) {
+      return $api_url;
+    }
+    $media_id = $matches[1];
+
+    // Try to get from cache first.
+    $cache_key = 'dog:omeka_item_url:' . $media_id;
+    if ($cache = $this->cache->get($cache_key)) {
+      return $cache->data;
+    }
+
+    try {
+      // 1. Get parent item data from media.
+      $media_data = $this->makeApiRequest($api_url);
+      if (!isset($media_data['o:item']['@id'])) {
+        return $api_url;
+      }
+
+      // Get item data
+      $item_data = $this->makeApiRequest($media_data['o:item']['@id']);
+      if (!isset($item_data['o:id'])) {
+        return $api_url;
+      }
+      $item_id = $item_data['o:id'];
+
+      // Get site data
+      if (!isset($item_data['o:site']) || !is_array($item_data['o:site']) || empty($item_data['o:site'])) {
+        return $api_url;
+      }
+      $site_data = $this->makeApiRequest($item_data['o:site'][0]['@id']);
+      if (!isset($site_data['o:slug'])) {
+        return $api_url;
+      }
+
+      // Construct the public URL.
+      $base_url = preg_replace('#^(https?://[^/]+/[^/]+).*$#', '$1', $api_url);
+      $public_url = sprintf(
+        '%s/s/%s/item/%s',
+        $base_url,
+        $site_data['o:slug'],
+        $item_id
+      );
+
+      // Cache the result
+      $this->cache->set($cache_key, $public_url, time() + static::CACHE_LIFETIME);
+
+      return $public_url;
+    }
+    catch (GuzzleException $e) {
+      return $api_url;
+    }
+  }
+
+  /**
    * Makes an API request to Omeka-S.
    *
    * @param string $url
