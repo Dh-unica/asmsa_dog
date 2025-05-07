@@ -383,6 +383,11 @@ $settings['reverse_proxy_addresses'] = [
   $_SERVER['REMOTE_ADDR'],
 ];
 
+
+// $settings['rebuild_access'] = FALSE;
+
+
+
 /**
  * Specify every reverse proxy IP address in your environment.
  * This setting is required if $settings['reverse_proxy'] is TRUE.
