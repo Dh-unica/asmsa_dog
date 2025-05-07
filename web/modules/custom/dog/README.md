@@ -1,0 +1,156 @@
+# DOG (Drupal Omeka Geonode) Module
+
+## Overview
+DOG is a Drupal module that integrates Omeka resources into Drupal, providing a seamless way to fetch, display and manage Omeka resources within Drupal. The module is composed of several submodules that handle different aspects of the integration.
+
+## Architecture
+
+### Core Module (dog)
+- **Purpose**: Core functionality for Omeka integration
+- **Key Components**:
+  - ResourceFetcherInterface/OmekaResourceFetcher: Handles API communication with Omeka
+  - OmekaResourceViewBuilder: Renders Omeka resources 
+  - OmekaUrlService: Manages URL transformations between API and public URLs
+  - Event Subscribers for Views integration with remote data
+
+### Submodules
+
+#### dog_library
+- **Purpose**: Provides a media library-style UI for browsing and selecting Omeka resources
+- **Key Components**:
+  - ResourceLibraryState: Manages the state of the resource library dialog
+  - ResourceLibraryUiBuilder: Builds the UI for resource selection
+  - Views integration for resource browsing
+  - Widget for entity reference fields
+
+#### dog_ckeditor5
+- **Purpose**: CKEditor 5 integration for inserting Omeka resources into content
+- **Key Components**:
+  - Custom CKEditor 5 plugin
+  - Resource embedding filter
+  - Dialog integration with dog_library
+
+## Performance Considerations
+
+### Current Performance Bottlenecks
+
+1. **API Communication**:
+   - All resource fetching goes through OmekaResourceFetcher
+   - No built-in caching for API responses
+   - Sequential fetching of resources
+
+2. **Views Integration**:
+   - Remote data queries may be inefficient
+   - Limited pagination support
+   - No result caching
+
+3. **Resource Rendering**:
+   - Each resource render requires fresh API call
+   - No render caching strategy
+
+### Optimization Recommendations
+
+1. **Implement Caching Layer**:
+```php
+// Example implementation in OmekaResourceFetcher:
+protected function getFromCache($id, $type) {
+  $cid = "dog:resource:{$type}:{$id}";
+  if ($cached = \Drupal::cache()->get($cid)) {
+    return $cached->data;
+  }
+  return NULL;
+}
+```
+
+2. **Batch Processing**:
+   - Implement batch fetching for multiple resources
+   - Use Promise/Pool pattern for parallel requests
+   - Consider implementing queue for large imports
+
+3. **Views Optimization**:
+   - Add result caching
+   - Implement proper pagination headers
+   - Consider local storage for frequently accessed resources
+
+4. **Resource Rendering**:
+   - Implement render caching
+   - Add view mode specific caching
+   - Consider implementing lazy loading
+
+## Configuration Best Practices
+
+1. **API Settings**:
+   ```yaml
+   dog.settings:
+     base_url: 'https://omeka-instance.com/api'
+     key_identity: 'your-key'
+     key_credential: 'your-secret'
+     cache_ttl: 3600  # Add cache time to live
+     batch_size: 50   # Add batch processing size
+   ```
+
+2. **Performance Settings**:
+   - Configure proper cache backends
+   - Set appropriate cache tags
+   - Configure batch processing limits
+
+## Development Guidelines
+
+1. **Adding New Resource Types**:
+   - Extend ResourceFetcherInterface
+   - Implement proper view builders
+   - Add necessary Views plugins
+
+2. **Custom Renderers**:
+   - Use theme suggestions
+   - Implement proper cache contexts
+   - Follow Drupal render API best practices
+
+3. **API Extensions**:
+   - Follow OmekaApiResponse pattern
+   - Implement proper error handling
+   - Add retry mechanisms
+
+## Testing and Monitoring
+
+1. **Performance Testing**:
+   - Monitor API response times
+   - Track cache hit/miss ratios
+   - Profile resource rendering
+
+2. **Error Handling**:
+   - Implement proper logging
+   - Monitor API failures
+   - Set up alerts for critical issues
+
+## Future Improvements
+
+1. **Caching Layer**:
+   - Implement advanced caching strategies
+   - Add cache warmers
+   - Consider implementing cache tags from Omeka
+
+2. **API Communication**:
+   - Add retry mechanisms
+   - Implement circuit breaker
+   - Add request queuing
+
+3. **Resource Management**:
+   - Add local resource indexing
+   - Implement resource synchronization
+   - Add resource validation
+
+4. **User Interface**:
+   - Improve resource browser performance
+   - Add drag-and-drop support
+   - Implement better preview mechanisms
+
+## Contributing
+
+When contributing to this module:
+
+1. Follow Drupal coding standards
+2. Add proper documentation
+3. Include performance considerations
+4. Add appropriate tests
+5. Update cache implementations
