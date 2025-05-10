@@ -1,84 +1,142 @@
 # Requisiti del progetto "Ottimizzazione performance sito"
 
 ## Descrizione del problema
-Il modulo `dog` recupera risorse Omeka da un'API esterna REST per consentire ai redattori di costruire pagine con questi oggetti. Tuttavia, esistono problemi di performance quando il numero di oggetti supera i 20. Attualmente, ogni volta che viene richiesta una risorsa, viene invocato un metodo che chiama in tempo reale l'API per recuperare le informazioni.
-Le pagine sono costruite attraverso l'uso del modulo layout builder che consente di includere facilmente blocchi realizzati con il modulo pragraph. In particolare le pagine più lente sono quelle costruite con i blocchi "Omeka map" e "Omeka map timeline" che usano rispettivamente il template block--omeka-map.html.twig e block--omeka-map-timeline.html.twig. 
+Il sito è costituito da una serie di pagine che contengono blocchi realizzati con il modulo pragraph. In particolare le pagine più lente sono quelle costruite con i blocchi "Omeka map" e "Omeka map timeline" che usano rispettivamente il template block--omeka-map.html.twig e block--omeka-map-timeline.html.twig. 
+Il modulo `dog` recupera risorse Omeka da un'API esterna REST per consentire ai redattori di costruire pagine con questi oggetti. Tuttavia, esistono problemi di performance quando il numero di oggetti supera i 20 oggetti omeka. Attualmente, ogni volta che viene richiesta una risorsa, sia nella fase di costruzione della pagina attraverso la selezione di singoli oggetti omeka sia nella fase di visualizzazione dei nodi con blocchi nei quali sono stati aggiunti oggetti omeka, viene invocato un metodo che chiama in tempo reale l'API per recuperare le informazioni, rallentando moltissimo tutta l'interfaccia e l'interazione con la stessa.
 
 ## Obiettivo
-Migliorare sensibilmente le performance del sito sia nella visualizzazione delle pagine che contengono i blocchi omeka map e omeka map timeline che usano rispettivamente il template block--omeka-map.html.twig e block--omeka-map-timeline.html.twig. sia nella redazione della pagina stessa attarversio layout builder e la selezione dei singoli oggetti omeka nel blocchi sopra citati.
+Migliorare sensibilmente le performance del sito sia nella visualizzazione delle pagine che contengono i blocchi omeka map e omeka map timeline che usano rispettivamente il template block--omeka-map.html.twig e block--omeka-map-timeline.html.twig. sia nella redazione della pagina stessa attarverso layout builder e la selezione dei singoli oggetti omeka nel blocchi sopra citati.
 
 
-## Piano di lavoro (DA MIGLIOARRE)
+## Piano di lavoro aggiornato
 
-Implementare un sistema di caching che:
-- Esegua il prefetch di tutte le risorse in un momento separato
-- Utilizzi sempre la cache invece di chiamare l'API in tempo reale
-- Fornisca feedback agli utenti quando i dati non sono disponibili in cache
+### 1. Sistema di Caching Multi-Livello
 
-### 1. Cache Batch Update
-Creare un processo che si esegue una volta al giorno:
-- Recupererà tutti i dati da Omeka
-- Li memorizzerà in una cache persistente
-- Esegue un aggiornamento completo ogni 24 ore
+Creare un sistema di caching a tre livelli:
+- **Livello 1 (Cache Batch)**: 
+  - Processo giornaliero che preleva tutti i dati da Omeka
+  - Utilizza il servizio `dog.omeka_resource_fetcher` con cache manager
+  - Cache persistente in tabella cache Drupal con chiavi:
+    - `dog:resource:{type}:{id}` per risorse singole
+    - `dog:all_resources:{type}` per elenchi completi
 
-### 2. Cache Storage
-Utilizzare la tabella cache di Drupal con la seguente struttura:
-- `dog:resource:{type}:{id}` per risorse singole
-- `dog:all_resources:{type}` per l'elenco completo di risorse
+- **Livello 2 (Cache Views)**:
+  - Implementare caching dei risultati delle viste `resource_library`
+  - Utilizzare cache tags specifici per le risorse Omeka
+  - Supporto per paginazione efficiente
 
-### 3. Modifiche al ResourceFetcher
+- **Livello 3 (Cache UI)**:
+  - Implementare caching lato client per risorse già visualizzate
+  - Ridurre chiamate AJAX duplicate
+  - Migliorare gestione stati UI per evitare ricaricamenti non necessari
+
+### 2. Ottimizzazione ResourceFetcher
+
 Modificare `OmekaResourceFetcher` per:
-- RICERCA SEMPRE SOLO NELLA CACHE
-- Se non trovato, RESTITUISCE NULL
-- MAI CHIAMARE LA RISORSA ESTERNA IN TEMPO REALE
+- Ricerca SEMPRE nella cache prima di qualsiasi altra operazione
+- Se non trovato in cache, RESTITUISCE NULL
+- MAI chiamare l'API in tempo reale direttamente
+- Implementare cache tags per invalidazione selettiva
 
-### 4. Cron Job
-Implementare un `hook_cron` che esegue l'aggiornamento completo, configurabile tramite `settings.yml` per:
-- Orario di esecuzione
-- Tipi di risorse da aggiornare
-- Batch size per evitare timeout
+### 3. Gestione Cache per Moduli Specifici
 
-### 5. Cache Invalidation
-Aggiungere un meccanismo per forzare l'aggiornamento della cache con:
-- Interfaccia di amministrazione per trigger manuale
-- Possibilità di invalidazione parziale o totale
+- **Modulo DOG Library**:
+  - Modificare widget per leggere sempre dalla cache batch
+  - Implementare feedback visivi quando la cache è vuota
+  - Ottimizzare template per ridurre richieste duplicate
 
-### 6. Gestione Errori
-Se la cache è vuota (prima esecuzione o problemi):
-- Restituire un messaggio di errore
-- Non cercare di recuperare i dati in tempo reale
-- Suggestere di attendere il prossimo aggiornamento
+- **Modulo Omeka Utils**:
+  - Integrare completamente con sistema di cache DOG
+  - Rimuovere fallback a `file_get_contents()`
+  - Utilizzare HTTP client di Drupal per gestione efficiente delle connessioni
 
-### 7. Monitoraggio
-Aggiungere logging per monitorare:
-- Successo/fallimento degli aggiornamenti
-- Tempo di esecuzione
-- Numero di risorse processate
+### 4. Cron Job e Batch Processing
 
-### 8. Configurazione
+Implementare:
+- `hook_cron` configurabile per:
+  - Orario di esecuzione
+  - Tipi di risorse da aggiornare
+  - Batch size per evitare timeout
+  - Timeout massimo per l'aggiornamento
+
+- Sistema di queue per grandi importazioni
+- Retry mechanism per chiamate fallite
+- Circuit breaker per prevenire failure a cascata
+
+### 5. Sistema di Cache Invalidation
+
+Aggiungere:
+- Interfaccia di amministrazione per:
+  - Vedere lo stato della cache
+  - Forzare aggiornamento manuale
+  - Invalidazione parziale o totale
+  - Monitoraggio hit/miss ratio
+
+- Cache tags specifici per:
+  - Tipi di risorse
+  - Template di risorse
+  - URL pubblici
+
+### 6. Monitoraggio e Logging
+
+Implementare:
+- Logging dettagliato per:
+  - Successo/fallimento degli aggiornamenti
+  - Tempo di esecuzione
+  - Numero di risorse processate
+  - Stato della cache
+
+- Metriche di performance:
+  - Tempi di risposta API
+  - Ratio cache hit/miss
+  - Utilizzo memoria
+  - Tempo di rendering UI
+
+### 7. Configurazione e Tuning
+
 Aggiungere variabili di configurazione per:
-- Orario di esecuzione
+- Orario di esecuzione cron
 - Tipi di risorse da monitorare
 - Batch size
-- Timeout massimo per l'aggiornamento
+- Timeout massimo
+- TTL della cache
+- Limite massimo di risorse per batch
 
-### 9. Interfaccia Ammin
-Aggiungere una pagina di amministrazione per:
-- Vedere lo stato della cache
-- Forzare un aggiornamento manuale
-- Vedere gli ultimi log
+### 8. Sistema di Backup Cache
 
-### 10. Backup
-Implementare un sistema di backup della cache con:
-- Possibilità di ripristinare una cache precedente in caso di problemi
-- Storico delle versioni della cache
+Implementare:
+- Backup giornaliero della cache
+- Storico versioni
+- Ripristino selettivo
+- Verifica integrità dati
+
+### 9. Ottimizzazioni UI
+
+Per il modulo `dog_library`:
+- Implementare lazy loading per le risorse
+- Ottimizzare rendering griglia/tabella
+- Ridurre richieste AJAX
+- Migliorare feedback utente durante caricamento
+
+### 10. Testing e Verifica
+
+Implementare:
+- Test di performance
+- Test di carico
+- Test di resilienza
+- Test di integrazione con tutti i moduli
+- Benchmarking prima/dopo implementazione
 
 ## Risultati attesi
+
 Questa versione:
 - Garantisce sempre risposta dalla cache
 - Mai chiamata in tempo reale alla risorsa esterna
 - Gestisce correttamente gli errori
 - Fornisce strumenti di monitoraggio e amministrazione
+- Ottimizza l'interazione UI
+- Migliora significativamente i tempi di risposta
+- Riduce il carico sul server Omeka
+- Fornisce feedback utente più informativo
+- Supporta scalabilità per grandi collezioni di risorse
 
-## Approvazione
-Vuoi che proceda con l'implementazione di questa strategia?
