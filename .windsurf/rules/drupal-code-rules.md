@@ -54,6 +54,7 @@ trigger: always_on
 - Sfruttare il sistema di dependency injection
 - Implementare correttamente gli hooks necessari
 - Fornire instruzioni per l'installazione e la configurazione
+- Creare i menu per l'accesso ai form di configurazione dei moduli quando presenti
 
 ### 3. Sviluppo dei Temi
 - Utilizzare Twig in modo efficiente con i pattern di Drupal 10

@@ -1,0 +1,14 @@
+uuid: d7cbbdf4-245c-4b63-a7ea-c07db2b7e530
+langcode: it
+status: true
+dependencies:
+  module:
+    - dog
+id: cron.dog
+crontab: '*/15 * * * *'
+plugin: cron
+type: dog
+configuration: {  }
+provider: dog
+single: false
+weight: 0
