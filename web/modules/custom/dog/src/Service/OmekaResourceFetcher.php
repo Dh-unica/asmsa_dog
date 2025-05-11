@@ -2,6 +2,8 @@
 
 namespace Drupal\dog\Service;
 
+use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Http\ClientFactory;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
@@ -54,6 +56,13 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
   protected $logger;
 
   /**
+   * The cache backend.
+   *
+   * @var \Drupal\Core\Cache\CacheBackendInterface
+   */
+  protected $cacheBackend;
+
+  /**
    * Constructs a OmekaResourceFetcher object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
@@ -62,11 +71,14 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    *   The client factory.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger channel factory.
+   * @param \Drupal\Core\Cache\CacheBackendInterface $cache_backend
+   *   The cache backend for Omeka API data.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, ClientFactory $factory, LoggerChannelFactoryInterface $logger_factory) {
+  public function __construct(ConfigFactoryInterface $config_factory, ClientFactory $factory, LoggerChannelFactoryInterface $logger_factory, CacheBackendInterface $cache_backend) {
     $this->config = $config_factory->get('dog.settings');
     $this->factory = $factory;
     $this->logger = $logger_factory->get('dog');
+    $this->cacheBackend = $cache_backend;
   }
 
   /**
@@ -94,7 +106,16 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    * {@inheritDoc}
    */
   public function retrieveResource(string $id, string $resource_type): ?array {
-    // Run request.
+    // Verifica se i dati sono già in cache.
+    $cache_key = 'resource:' . $resource_type . ':' . $id;
+    $cache_data = $this->cacheBackend->get($cache_key);
+    
+    if ($cache_data && !empty($cache_data->data)) {
+      // Recupera i dati dalla cache.
+      return $cache_data->data;
+    }
+    
+    // Se non sono in cache, esegui la richiesta all'API.
     $uri = sprintf("api/%s/%s", $resource_type, $id);
     $result = $this->request('GET', $uri);
 
@@ -106,6 +127,14 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
     $data = $result->getContent();
     $data['id'] = $id;
     $data['type'] = $resource_type;
+    
+    // Salva i dati in cache con durata permanente.
+    $this->cacheBackend->set(
+      $cache_key, 
+      $data, 
+      Cache::PERMANENT, 
+      ['omeka_api_resource', 'omeka_api_resource_' . $resource_type . '_' . $id]
+    );
 
     return $data;
   }
@@ -148,6 +177,18 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    * {@inheritDoc}
    */
   public function search(string $resource_type, array $parameters = [], int $page = 0, int $items_per_page = 10, int &$total_results = 0): array {
+    // Crea una chiave di cache basata sui parametri di ricerca.
+    $cache_key = 'search:' . $resource_type . ':' . md5(serialize($parameters) . ':' . $page . ':' . $items_per_page);
+    $cache_data = $this->cacheBackend->get($cache_key);
+    
+    if ($cache_data && !empty($cache_data->data)) {
+      // Recupera i dati dalla cache.
+      $cached_data = $cache_data->data;
+      $total_results = $cached_data['total_results'];
+      return $cached_data['results'];
+    }
+    
+    // Se non sono in cache, esegui la richiesta all'API.
     // Build the query params.
     foreach ($parameters as $name => $value) {
       $query[$name] = $value;
@@ -191,8 +232,18 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
 
         unset($results[$pos]);
       }
-
     }
+    
+    // Salva i dati in cache con durata permanente.
+    $this->cacheBackend->set(
+      $cache_key, 
+      [
+        'results' => $results,
+        'total_results' => $total_results,
+      ],
+      Cache::PERMANENT, 
+      ['omeka_api_search', 'omeka_api_search_' . $resource_type]
+    );
 
     return $results;
   }
@@ -201,7 +252,16 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    * {@inheritDoc}
    */
   public function getItemSets(): array {
-    // Run request.
+    // Verifica se i dati sono già in cache.
+    $cache_key = 'item_sets';
+    $cache_data = $this->cacheBackend->get($cache_key);
+    
+    if ($cache_data && !empty($cache_data->data)) {
+      // Recupera i dati dalla cache.
+      return $cache_data->data;
+    }
+    
+    // Se non sono in cache, esegui la richiesta all'API.
     $uri = "api/item_sets";
     $result = $this->request('GET', $uri);
 
@@ -209,8 +269,19 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
       return [];
     }
 
+    // Ottieni i dati dalla risposta.
+    $item_sets = $result->getContent();
+    
+    // Salva i dati in cache con durata permanente.
+    $this->cacheBackend->set(
+      $cache_key, 
+      $item_sets, 
+      Cache::PERMANENT, 
+      ['omeka_api_item_sets']
+    );
+
     // Build the return data.
-    return $result->getContent();
+    return $item_sets;
   }
 
   /**

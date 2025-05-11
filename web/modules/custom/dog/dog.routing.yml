@@ -5,3 +5,11 @@ dog.settings:
     _form: 'Drupal\dog\Form\SettingsForm'
   requirements:
     _permission: 'administer site configuration'
+
+dog.cache_management:
+  path: '/admin/config/services/dog-cache'
+  defaults:
+    _title: 'Gestione Cache Omeka API'
+    _form: 'Drupal\dog\Form\CacheManagementForm'
+  requirements:
+    _permission: 'administer site configuration'

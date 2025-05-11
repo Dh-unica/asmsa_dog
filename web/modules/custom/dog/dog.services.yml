@@ -1,9 +1,17 @@
 services:
 
+  # Cache bin personalizzato per i dati delle API Omeka
+  cache.omeka_api:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin, default_backend: cache.backend.database }
+    factory: ['@cache_factory', 'get']
+    arguments: [omeka_api]
+
   # Services.
   dog.omeka_resource_fetcher:
     class: Drupal\dog\Service\OmekaResourceFetcher
-    arguments: [ '@config.factory', '@http_client_factory', '@logger.factory' ]
+    arguments: [ '@config.factory', '@http_client_factory', '@logger.factory', '@cache.omeka_api' ]
 
   dog.omeka_url:
     class: Drupal\dog\Service\OmekaUrlService

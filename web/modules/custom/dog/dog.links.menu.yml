@@ -4,3 +4,10 @@ dog.settings:
   parent: system.admin_config_services
   route_name: dog.settings
   weight: 10
+
+dog.cache_management:
+  title: 'Gestione Cache Omeka API'
+  description: 'Gestisci la cache delle API Omeka, pulisci o preriscalda la cache'
+  parent: system.admin_config_services
+  route_name: dog.cache_management
+  weight: 11

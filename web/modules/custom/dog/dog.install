@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the dog module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function dog_schema() {
+  $schema['cache_omeka_api'] = drupal_get_schema_unprocessed('system', 'cache');
+  $schema['cache_omeka_api']['description'] = 'Cache table per i dati delle API Omeka, persistente anche dopo drush cr.';
+  return $schema;
+}
+
+/**
+ * Crea la tabella cache_omeka_api per il sistema di cache persistente.
+ */
+function dog_update_9001() {
+  $schema = \Drupal::database()->schema();
+  $table_name = 'cache_omeka_api';
+  
+  // Verifica se la tabella esiste già
+  if (!$schema->tableExists($table_name)) {
+    // Ottieni lo schema della tabella cache standard e modificalo
+    $cache_schema = drupal_get_schema_unprocessed('system', 'cache');
+    $cache_schema['description'] = 'Cache table per i dati delle API Omeka, persistente anche dopo drush cr.';
+    
+    // Crea la tabella
+    $schema->createTable($table_name, $cache_schema);
+    
+    return t('Creata la tabella @table per la cache persistente delle API Omeka.', [
+      '@table' => $table_name,
+    ]);
+  }
+  
+  return t('La tabella @table esiste già.', [
+    '@table' => $table_name,
+  ]);
+}
