@@ -1,0 +1,6 @@
+italiagov_cache_warmer.report:
+  title: 'Report Cache Omeka'
+  description: 'Visualizza e gestisci la cache dei blocchi Omeka Map'
+  parent: system.admin_config_services
+  route_name: italiagov_cache_warmer.report
+  weight: 100

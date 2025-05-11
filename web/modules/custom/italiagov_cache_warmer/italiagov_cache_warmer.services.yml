@@ -1,0 +1,12 @@
+services:
+  # Cache bin personalizzato per gli oggetti Omeka
+  cache.omeka_map:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin, default_backend: cache.backend.database }
+    factory: ['@cache_factory', 'get']
+    arguments: [omeka_map]
+  
+  italiagov_cache_warmer.warmer:
+    class: Drupal\italiagov_cache_warmer\Service\CacheWarmerService
+    arguments: ['@entity_type.manager', '@database', '@cache.omeka_map', '@omeka_utils.utils', '@logger.factory']

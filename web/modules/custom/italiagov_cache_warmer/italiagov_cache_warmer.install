@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the italiagov_cache_warmer module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function italiagov_cache_warmer_schema() {
+  $schema['cache_omeka_map'] = drupal_get_schema_unprocessed('system', 'cache');
+  $schema['cache_omeka_map']['description'] = 'Cache table per gli oggetti Omeka Map, persistente anche dopo drush cr.';
+  return $schema;
+}

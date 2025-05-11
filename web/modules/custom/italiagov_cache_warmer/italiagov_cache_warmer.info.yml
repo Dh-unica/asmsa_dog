@@ -1,0 +1,7 @@
+name: 'ItaliaGov Cache Warmer'
+type: module
+description: 'Modulo per precaricare la cache dei blocchi Omeka'
+core_version_requirement: ^9
+package: 'Custom'
+dependencies:
+  - drupal:block

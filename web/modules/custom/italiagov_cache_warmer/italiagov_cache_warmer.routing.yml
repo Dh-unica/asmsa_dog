@@ -1,0 +1,19 @@
+italiagov_cache_warmer.report:
+  path: '/admin/config/services/omeka-cache-report'
+  defaults:
+    _controller: '\Drupal\italiagov_cache_warmer\Controller\CacheReportController::report'
+    _title: 'Report Cache Omeka'
+  requirements:
+    _permission: 'administer site configuration'
+
+italiagov_cache_warmer.rebuild:
+  path: '/admin/config/services/omeka-cache-report/rebuild/{block_id}'
+  defaults:
+    _controller: '\Drupal\italiagov_cache_warmer\Controller\CacheReportController::rebuildCache'
+    _title: 'Ricostruzione Cache'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    parameters:
+      block_id:
+        type: string

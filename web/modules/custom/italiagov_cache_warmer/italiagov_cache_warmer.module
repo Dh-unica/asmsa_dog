@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * @file
+ * Contains italiagov_cache_warmer.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function italiagov_cache_warmer_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.italiagov_cache_warmer':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Modulo per precaricare la cache dei blocchi Omeka.') . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function italiagov_cache_warmer_cron() {
+  // Esegui il warming della cache ogni 12 ore
+  $interval = 12 * 60 * 60;
+  $last_run = \Drupal::state()->get('italiagov_cache_warmer.last_run', 0);
+  
+  if ((time() - $last_run) > $interval) {
+    \Drupal::service('italiagov_cache_warmer.warmer')->warmCache();
+    \Drupal::state()->set('italiagov_cache_warmer.last_run', time());
+    \Drupal::logger('italiagov_cache_warmer')->notice('Cache warming completato con successo.');
+  }
+}
