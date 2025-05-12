@@ -6,6 +6,14 @@
  */
 
 /**
+ * Implements hook_cron().
+ */
+function dog_cron() {
+  // Process Omeka resources cache refresh.
+  \Drupal::service('dog.omeka_cache_cron_handler')->processCache();
+}
+
+/**
  * Implements hook_theme().
  */
 function dog_theme($existing, $type, $theme, $path) {
@@ -17,6 +25,14 @@ function dog_theme($existing, $type, $theme, $path) {
         'omeka_resource_type' => NULL,
         'omeka_resource_data' => NULL,
         'view_mode' => 'default',
+      ],
+    ],
+    'omeka_resource_cache_empty' => [
+      'variables' => [
+        'attributes' => [],
+        'resource_id' => NULL,
+        'resource_type' => NULL,
+        'last_cache_update' => NULL,
       ],
     ],
     'dog_omeka_resource__item' => [

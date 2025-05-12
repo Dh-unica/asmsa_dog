@@ -5,29 +5,29 @@ namespace Drupal\dog\Service;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
- * Defines the OmekaResourceViewBuilder class.
- *
- * @package Drupal\dog
+ * Class which builds renders for remote resource elements.
+ * 
+ * Modified to use the cache service exclusively, without live API calls.
  */
 class OmekaResourceViewBuilder implements ResourceViewBuilderInterface {
 
   use StringTranslationTrait;
 
   /**
-   * The resource fetcher service.
+   * The omeka cache service.
    *
-   * @var \Drupal\dog\Service\ResourceFetcherInterface
+   * @var \Drupal\dog\Service\OmekaCacheService
    */
-  protected $resourceFetcher;
+  protected $cacheService;
 
   /**
    * Constructs a OmekaResourceViewBuilder object.
    *
-   * @param \Drupal\dog\Service\ResourceFetcherInterface $resource_fetcher
-   *   The resource fetcher service.
+   * @param \Drupal\dog\Service\OmekaCacheService $cache_service
+   *   The omeka cache service.
    */
-  public function __construct(ResourceFetcherInterface $resource_fetcher) {
-    $this->resourceFetcher = $resource_fetcher;
+  public function __construct(OmekaCacheService $cache_service) {
+    $this->cacheService = $cache_service;
   }
 
   /**
@@ -63,11 +63,25 @@ class OmekaResourceViewBuilder implements ResourceViewBuilderInterface {
       throw new \InvalidArgumentException("ID and Type for Omeka Resource is required.");
     }
 
-    $data = $this->resourceFetcher->retrieveResource($id, $type);
+    // Retrieve data only from cache, no live API calls
+    $data = $this->cacheService->getResource($id, $type);
 
     if (empty($data)) {
+      $last_update_info = $this->cacheService->getLastUpdateInfo();
+      
       return [
-        '#markup' => '<p>' . $this->t('Omeka Resource not found.') . '</p>',
+        '#theme' => 'omeka_resource_cache_empty',
+        '#resource_id' => $id,
+        '#resource_type' => $type,
+        '#last_cache_update' => $last_update_info['formatted_date'],
+        '#cache' => [
+          'tags' => [
+            'omeka_resource:' . $type . ':' . $id,
+            'omeka_resources:all',
+          ],
+          'contexts' => ['url'],
+          'max-age' => 1800, // Cache for 30 minutes
+        ],
       ];
     }
 
@@ -77,6 +91,15 @@ class OmekaResourceViewBuilder implements ResourceViewBuilderInterface {
       '#omeka_resource_type' => $type,
       '#omeka_resource_data' => $data,
       '#view_mode' => $view_mode,
+      '#cache' => [
+        'tags' => [
+          'omeka_resource:' . $type . ':' . $id,
+          'omeka_resource:' . $type,
+          'omeka_resources:all',
+        ],
+        'contexts' => ['url'],
+        'max-age' => 86400, // Cache for 24 hours
+      ],
     ];
   }
 

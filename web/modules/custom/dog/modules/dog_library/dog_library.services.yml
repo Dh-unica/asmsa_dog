@@ -15,6 +15,18 @@ services:
     class: Drupal\dog_library\LibraryOpener\ResourceLibraryFieldWidgetOpener
     arguments: [ ]
 
+  dog_library.resource_library_bridge:
+    class: Drupal\dog_library\ResourceLibraryBridge
+    arguments: [ '@database', '@request_stack', '@entity_type.manager', '@current_user', '@renderer' ]
+
+  dog_library.form_builder:
+    class: Drupal\dog_library\ResourceLibraryFormBuilder
+    arguments: [ '@form_builder', '@request_stack', '@entity_type.manager', '@current_user' ]
+    
+  dog_library.helper:
+    class: Drupal\dog_library\DogLibraryHelper
+    arguments: [ '@dog.omeka_cache' ]
+
   # Event Subscriber.
   dog_library.route_subscriber:
     class: Drupal\dog_library\Routing\RouteSubscriber

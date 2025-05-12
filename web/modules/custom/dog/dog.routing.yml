@@ -1,7 +1,23 @@
 dog.settings:
-  path: '/admin/config/services/dog-settings'
+  path: '/admin/config/services/dog'
   defaults:
-    _title: 'Drupal Omeka Geonode Settings'
-    _form: 'Drupal\dog\Form\SettingsForm'
+    _form: '\Drupal\dog\Form\SettingsForm'
+    _title: 'Drupal Omeka Geonode settings'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer dog'
+
+dog.omeka_cache_refresh:
+  path: '/admin/config/services/dog/cache-refresh'
+  defaults:
+    _form: '\Drupal\dog\Form\OmekaCacheRefreshForm'
+    _title: 'Refresh Omeka Resources Cache'
+  requirements:
+    _permission: 'administer dog'
+    
+dog.omeka_cache_documentation:
+  path: '/admin/config/services/dog/cache-documentation'
+  defaults:
+    _form: '\Drupal\dog\Form\OmekaCacheDocumentationForm'
+    _title: 'Omeka Cache System Documentation'
+  requirements:
+    _permission: 'administer dog'

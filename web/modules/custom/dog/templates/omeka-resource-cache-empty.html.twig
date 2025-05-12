@@ -1,0 +1,32 @@
+{#
+/**
+ * @file
+ * Theme implementation for when Omeka resource is not available in cache.
+ *
+ * Available variables:
+ * - resource_id: The ID of the requested Omeka resource.
+ * - resource_type: The type of the requested Omeka resource.
+ * - attributes: HTML attributes for the containing element.
+ * - last_cache_update: Formatted date of the last cache update.
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes.addClass('omeka-resource-cache-empty') }}>
+  <div class="messages messages--warning">
+    <div class="messages__content">
+      <h2>{{ 'Resource not available in cache'|t }}</h2>
+      <p>{{ 'The requested Omeka resource is not currently available in the cache.'|t }}</p>
+      {% if resource_id %}
+        <p>{{ 'Resource ID: '|t }}{{ resource_id }}</p>
+      {% endif %}
+      {% if resource_type %}
+        <p>{{ 'Resource Type: '|t }}{{ resource_type }}</p>
+      {% endif %}
+      {% if last_cache_update %}
+        <p>{{ 'Last cache update: '|t }}{{ last_cache_update }}</p>
+      {% endif %}
+      <p>{{ 'Please contact the administrator to refresh the Omeka resources cache.'|t }}</p>
+    </div>
+  </div>
+</div>

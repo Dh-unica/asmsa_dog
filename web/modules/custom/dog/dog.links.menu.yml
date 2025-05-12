@@ -4,3 +4,17 @@ dog.settings:
   parent: system.admin_config_services
   route_name: dog.settings
   weight: 10
+
+dog.omeka_cache_refresh:
+  title: 'Refresh Omeka Cache'
+  description: 'Refresh Omeka resources cache'
+  parent: system.admin_config_services
+  route_name: dog.omeka_cache_refresh
+  weight: 11
+  
+dog.omeka_cache_documentation:
+  title: 'Omeka Cache Documentation'
+  description: 'Documentation on how to use and manage the Omeka cache system'
+  parent: system.admin_config_services
+  route_name: dog.omeka_cache_documentation
+  weight: 12

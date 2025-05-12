@@ -11,7 +11,17 @@ services:
 
   dog.omeka_resource_view_builder:
     class: Drupal\dog\Service\OmekaResourceViewBuilder
-    arguments: [ '@dog.omeka_resource_fetcher' ]
+    arguments: [ '@dog.omeka_cache' ]
+
+  # New Omeka cache service.
+  dog.omeka_cache:
+    class: Drupal\dog\Service\OmekaCacheService
+    arguments: [ '@dog.omeka_resource_fetcher', '@dog.omeka_url', '@cache.default', '@state', '@config.factory', '@logger.factory' ]
+
+  # Omeka cache cron handler
+  dog.omeka_cache_cron_handler:
+    class: Drupal\dog\Cron\OmekaCacheCronHandler
+    arguments: [ '@dog.omeka_cache', '@state', '@logger.factory' ]
 
   # Event Subscriber.
   dog.omeka_resource_query_event:

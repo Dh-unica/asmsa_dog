@@ -95,6 +95,7 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    */
   public function retrieveResource(string $id, string $resource_type): ?array {
     // Run request.
+    // Aggiungiamo il prefisso 'api/' all'URL base
     $uri = sprintf("api/%s/%s", $resource_type, $id);
     $result = $this->request('GET', $uri);
 
@@ -124,21 +125,51 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
     if (empty($base_url)) {
       throw new \InvalidArgumentException(sprintf("The base URL is required for use the service %s!", __CLASS__));
     }
+    
+    // Assicurati che l'URL base NON termini con una barra (/)
+    $base_url = rtrim($base_url, '/');
+    
+    // Log dell'URL base per debug
+    $this->logger->notice('Omeka API base URL configurato: @url', [
+      '@url' => $base_url,
+    ]);
 
-    // Add the authentication keys.
-    $auth_params = [
-      'key_identity' => $this->config->get('key_identity'),
-      'key_credential' => $this->config->get('key_credential'),
-    ];
+    // Se l'API Omeka richiede autenticazione, aggiungi i parametri
+    $key_identity = $this->config->get('key_identity');
+    $key_credential = $this->config->get('key_credential');
+    
+    // Crea lo stack handler di base
     $handler = HandlerStack::create();
-    $handler->push(Middleware::mapRequest(function (RequestInterface $request) use ($auth_params) {
-      return $request->withUri(Uri::withQueryValues($request->getUri(), $auth_params));
-    }));
+    
+    // Aggiungi i parametri di autenticazione solo se sono stati configurati
+    if (!empty($key_identity) || !empty($key_credential)) {
+      $auth_params = [];
+      if (!empty($key_identity)) {
+        $auth_params['key_identity'] = $key_identity;
+      }
+      if (!empty($key_credential)) {
+        $auth_params['key_credential'] = $key_credential;
+      }
+      
+      // Aggiungi i parametri solo se c'è effettivamente qualcosa da aggiungere
+      if (!empty($auth_params)) {
+        $handler->push(Middleware::mapRequest(function (RequestInterface $request) use ($auth_params) {
+          return $request->withUri(Uri::withQueryValues($request->getUri(), $auth_params));
+        }));
+      }
+    }
 
-    // Create http client.
+    // Verifica se l'URL base contiene già 'http' o 'https'
+    if (!preg_match('~^https?://~i', $base_url)) {
+      $base_url = 'https://' . $base_url;
+    }
+    
+    // Create http client con l'URL base specifico configurato
     $this->httpClient = $this->factory->fromOptions([
-      'base_uri' => $base_url,
+      'base_uri' => $base_url . '/',  // Aggiungo slash finale per sicurezza
       'handler' => $handler,
+      'http_errors' => TRUE,  // Attiva gli errori HTTP per gestire meglio i problemi
+      'debug' => FALSE,       // In produzione mantieni debug disattivato
     ]);
 
     return $this->httpClient;
@@ -156,9 +187,26 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
     $query['page'] = $page;
     $query['per_page'] = $items_per_page;
 
+    // Log dettagliato dei parametri di ricerca
+    $this->logger->notice('Omeka API search: @resource_type con parametri page=@page, per_page=@items_per_page', [
+      '@resource_type' => $resource_type,
+      '@page' => $page,
+      '@items_per_page' => $items_per_page,
+    ]);
+    
     // Run request.
+    // Aggiungiamo il prefisso 'api/' all'URL base
     $uri = sprintf("api/%s", $resource_type);
     $result = $this->request('GET', $uri, ['query' => $query]);
+    
+    // Log del risultato della ricerca
+    if ($result !== FALSE) {
+      $this->logger->notice('Omeka API search result: @count risultati trovati', [
+        '@count' => count($result->getContent()),
+      ]);
+    } else {
+      $this->logger->error('Omeka API search: nessun risultato o errore nella risposta');
+    }
 
     if ($result === FALSE) {
       return [];
@@ -202,6 +250,7 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    */
   public function getItemSets(): array {
     // Run request.
+    // Aggiungiamo il prefisso 'api/' all'URL base
     $uri = "api/item_sets";
     $result = $this->request('GET', $uri);
 
@@ -221,6 +270,124 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
       'items' => "Items",
     ];
   }
+  
+  /**
+   * Recupera tutti gli ID disponibili per un tipo di risorsa.
+   *
+   * Questo metodo fa una chiamata diretta all'API di Omeka senza usare la configurazione
+   * per assicurare che l'URL sia costruito correttamente.
+   *
+   * @param string $resource_type
+   *   Tipo di risorsa (es. 'items', 'collections').
+   * @param int $per_page
+   *   Numero di elementi per pagina.
+   *
+   * @return array
+   *   Array di ID disponibili, o array vuoto in caso di errore.
+   */
+  public function getAllAvailableIds(string $resource_type = 'items', int $per_page = 200): array {
+    // URL hardcoded per debugging, per assicurare che l'indirizzo sia corretto
+    $base_url = 'https://storia.dh.unica.it/risorse/api/' . $resource_type;
+    
+    // Log dell'URL utilizzato
+    $this->logger->notice('Omeka API getAllAvailableIds: chiamata diretta a @url', [
+      '@url' => $base_url,
+    ]);
+    
+    $all_ids = [];
+    $client = \Drupal::httpClient();
+    $page = 1;
+    $has_more_pages = TRUE;
+    $total_processed = 0;
+    $total_errors = 0;
+    
+    // Continua a scaricare pagine fino a quando non ci sono più elementi
+    while ($has_more_pages) {
+      $this->logger->notice('Omeka API getAllAvailableIds: recupero pagina @page', [
+        '@page' => $page,
+      ]);
+      
+      try {
+        // Parametri di ricerca con il numero di pagina corrente
+        $params = [
+          'query' => [
+            'page' => $page,
+            'per_page' => $per_page,
+          ],
+        ];
+        
+        // Esegui la richiesta per la pagina corrente
+        $response = $client->request('GET', $base_url, $params);
+        
+        // Verifica che la risposta sia OK
+        if ($response->getStatusCode() == 200) {
+          $body = (string) $response->getBody();
+          $data = json_decode($body, TRUE);
+          
+          // Conta i risultati ottenuti in questa pagina
+          $items_in_page = is_array($data) ? count($data) : 0;
+          $total_processed += $items_in_page;
+          
+          $this->logger->notice('Omeka API getAllAvailableIds: pagina @page, ricevuti @count risultati', [
+            '@page' => $page,
+            '@count' => $items_in_page,
+          ]);
+          
+          // Estrai gli ID dalla pagina corrente
+          if (is_array($data)) {
+            foreach ($data as $item) {
+              if (isset($item['o:id'])) {
+                $all_ids[] = $item['o:id'];
+              }
+            }
+          }
+          
+          // Se abbiamo ricevuto meno elementi del massimo per pagina,
+          // significa che abbiamo raggiunto l'ultima pagina
+          if ($items_in_page < $per_page) {
+            $has_more_pages = FALSE;
+            $this->logger->notice('Omeka API getAllAvailableIds: ultima pagina raggiunta (@page)', [
+              '@page' => $page,
+            ]);
+          } else {
+            // Passa alla pagina successiva
+            $page++;
+          }
+        } else {
+          // Errore nella risposta HTTP
+          $this->logger->error('Omeka API getAllAvailableIds: risposta HTTP non valida per pagina @page: @code', [
+            '@page' => $page,
+            '@code' => $response->getStatusCode(),
+          ]);
+          $total_errors++;
+          $has_more_pages = FALSE;  // Interrompi il ciclo in caso di errore
+        }
+      } catch (\Exception $e) {
+        // Errore durante la chiamata API
+        $this->logger->error('Omeka API getAllAvailableIds: errore durante la chiamata pagina @page: @error', [
+          '@page' => $page,
+          '@error' => $e->getMessage(),
+        ]);
+        $total_errors++;
+        $has_more_pages = FALSE;  // Interrompi il ciclo in caso di errore
+      }
+      
+      // Limite di sicurezza: non più di 50 pagine per evitare cicli infiniti
+      if ($page > 50) {
+        $this->logger->warning('Omeka API getAllAvailableIds: limite massimo di pagine raggiunto (50)');
+        $has_more_pages = FALSE;
+      }
+    }
+    
+    // Log riassuntivo
+    $this->logger->notice('Omeka API getAllAvailableIds: completato con @count ID totali, @errors errori, @pages pagine', [
+      '@count' => count($all_ids),
+      '@errors' => $total_errors,
+      '@pages' => $page,
+    ]);
+    
+    return $all_ids;
+  }
 
   /**
    * Request http client.
@@ -238,11 +405,27 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    */
   protected function request(string $method, string $uri, array $options = []) {
     try {
+      // Log dell'URL completo prima della chiamata
+      $this->logger->notice('Omeka API request: @method @url', [
+        '@method' => $method,
+        '@url' => $this->config->get('base_url') . '/' . $uri,
+      ]);
+      
       // Run request.
       $response = $this->getApiClient()->request($method, $uri, $options);
 
+      // Log della risposta
+      $this->logger->notice('Omeka API response status: @status', [
+        '@status' => $response->getStatusCode(),
+      ]);
+      
       // Build the return.
-      $return = new OmekaApiResponse($response->getBody());
+      $response_body = (string) $response->getBody();
+      $this->logger->notice('Omeka API response body: @body', [
+        '@body' => substr($response_body, 0, 200) . (strlen($response_body) > 200 ? '...' : ''),
+      ]);
+      
+      $return = new OmekaApiResponse($response_body);
 
       if ($response->hasHeader('Omeka-S-Total-Results')) {
         // Include the header information.

@@ -56,7 +56,7 @@ class SettingsForm extends ConfigFormBase {
     $form['base_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Base URL '),
-      '#description' => $this->t('The base URL to which the system request the resource. Ex. "https://www.digitaliststor.it/risorse/".'),
+      '#description' => $this->t('The base URL to which the system requests the resource. Ex. "https://www.digitaliststor.it/risorse" (senza slash finale).'),
       '#default_value' => $this->config('dog.settings')->get('base_url'),
       '#required' => TRUE,
     ];
@@ -81,16 +81,35 @@ class SettingsForm extends ConfigFormBase {
     parent::validateForm($form, $form_state);
 
     try {
-      $http_client = $this->factory->fromOptions([
-        'base_uri' => $form_state->getValue('base_url'),
-        'query' => [
-          'key_identity' => $form_state->getValue('key_identity'),
-          'key_credential' => $form_state->getValue('key_credential'),
-        ],
+      // Prepara l'URL base e i parametri di autenticazione (se presenti)
+      $base_url = rtrim($form_state->getValue('base_url'), '/');
+      $options = ['base_uri' => $base_url];
+      
+      // Aggiungi i parametri di autenticazione solo se configurati
+      $key_identity = $form_state->getValue('key_identity');
+      $key_credential = $form_state->getValue('key_credential');
+      if (!empty($key_identity) || !empty($key_credential)) {
+        $auth_params = [];
+        if (!empty($key_identity)) {
+          $auth_params['key_identity'] = $key_identity;
+        }
+        if (!empty($key_credential)) {
+          $auth_params['key_credential'] = $key_credential;
+        }
+        
+        $options['query'] = $auth_params;
+      }
+      
+      $http_client = $this->factory->fromOptions($options);
+
+      // Costruisci manualmente l'URL di test
+      $test_url = $base_url . '/api/items';
+      \Drupal::logger('dog')->notice('Test Omeka API: test_url = @url', [
+        '@url' => $test_url,
       ]);
 
-      // @todo update the endpoint for test!.
-      $response = $http_client->request('GET', 'api/items');
+      // Effettua la richiesta di test all'API usando l'URL assoluto
+      $response = $http_client->request('GET', $test_url);
 
       $data = json_decode($response->getBody());
       assert(is_array($data), "Response is not an array.");
@@ -109,8 +128,9 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $base_url = rtrim($form_state->getValue('base_url'), '/');
     $this->config('dog.settings')
-      ->set('base_url', $form_state->getValue('base_url'))
+      ->set('base_url', $base_url)
       ->set('key_identity', $form_state->getValue('key_identity'))
       ->set('key_credential', $form_state->getValue('key_credential'))
       ->save();
