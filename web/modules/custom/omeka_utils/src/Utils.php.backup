@@ -20,110 +20,146 @@ class Utils {
     $this->logger->notice('Omeka Utils: URL configurato @url', [
       '@url' => $this->url,
     ]);
-  }
-
-  function getSocialMetaTags($item_id) {
-    // Get item
-    $item = $this->getItem($item_id);
-    $base_url = \Drupal::request()->getSchemeAndHttpHost();
-    $title = $this->getTitle($item);
-    $metadata = [];
-    $metadata['title'] = $title;
-    $metadata['abstract'] = $this->getAbstract($item);
-    $metadata['img'] = $this->getImage($item);
-    $metadata['url'] = $base_url . '/omeka/' . $item_id;
-
-    // Set type to "website"
-    $metadata['type'] = 'website';
-
-    // Metadati specifici per l'applicazione
-    $metadata['app_name'] = 'Omeka Collection';
-    $metadata['app_id'] = '123456789012345';
-
-    return $metadata;
-  }
-
-  function getItem($item_id) {
-    try {
-      $response = file_get_contents($this->url . $item_id);
-      $item = json_decode($response);
-      return $item;
-    }
-    catch (Exception $e) {
-      \Drupal::logger('omeka_utils')->error('Error getting item: @error', [
-        '@error' => $e->getMessage(),
-      ]);
-      return false;
-    }
-  }
-
-  /**
-   * Restituisce il titolo dell'elemento.
-   *
-   * @param mixed $item
-   *   L'elemento Omeka.
-   *
-   * @return string
-   *   Il titolo dell'elemento.
-   */
-  function getTitle($item) {
-    if (is_object($item) && isset($item->{'o:title'})) {
-      return $item->{'o:title'};
-    }
-    elseif (is_array($item) && isset($item['o:title'])) {
-      return $item['o:title'];
-    }
-    return '';
-  }
-
-  function getAbstract($item) {
-    $abstract = '';
-    if (isset($item->{'dcterms:description'})) {
-      if (is_array($item->{'dcterms:description'}) && isset($item->{'dcterms:description'}[0]->{'@value'})) {
-        $abstract = $item->{'dcterms:description'}[0]->{'@value'};
-      }
-    }
-    return $abstract;
-  }
-
-  function getImage($item) {
-    $image = '';
-    if (isset($item->{'o:media'}) && is_array($item->{'o:media'}) && count($item->{'o:media'}) > 0) {
-      $url = $item->{'o:media'}[0]->{'@id'};
-      $response = file_get_contents($url);
-      $media = json_decode($response);
-      
-      // $image = $media->{'o:source'};
-      $image = $item->{'thumbnail_display_urls'}->{'medium'};
-    }
-    return $image;
-  }
-
-  /**
-   * Ottiene la posizione geografica di un elemento Omeka.
-   *
-   * @param mixed $omeka_item_full
-   *   L'elemento Omeka completo (può essere un oggetto o un array).
-   *
-   * @return array
-   *   Associative array con 'latitude' e 'longitude' dell'elemento.
-   */
-  public function getLocation($omeka_item_full) {
-    // Ottieni ID per la chiave cache
-    $id = $this->getItemId($omeka_item_full);
-    $cache_key = 'omeka_location_' . $id;
     
-    // Controlla se abbiamo la posizione in cache
-    if ($cache = \Drupal::cache('omeka')->get($cache_key)) {
-      $this->logger->debug('getLocation - Posizione recuperata da cache per item @id', [
+    $this->expire = strtotime('now +1 week');
+    
+    // Carica il servizio di cache Omeka per riutilizzarlo
+    $this->omekaCache = \Drupal::service('dog.omeka_cache');
+  }
+
+  /**
+   * Recupera un elemento Omeka dal sistema di cache.
+   *
+   * @param int $id
+   *   L'ID dell'elemento Omeka da recuperare.
+   *
+   * @return object|null
+   *   L'elemento Omeka come oggetto, o NULL se non trovato.
+   */
+  public function getItem($id) {
+    // Cache ID nel formato utilizzato dal servizio OmekaCacheService
+    $cacheId = 'omeka_resource:items:' . $id;
+    
+    // Utilizziamo il sistema di cache Drupal più efficace
+    // Utilizziamo il bin 'default' che è disponibile in Drupal
+    $cache = \Drupal::cache('default')->get($cacheId);
+    
+    if ($cache && isset($cache->data)) {
+      // Log per debugging: elemento recuperato dalla cache
+      $this->logger->debug('Elemento Omeka @id recuperato dalla cache', [
         '@id' => $id,
       ]);
+      
       return $cache->data;
     }
     
-    // Prova a ottenere le coordinate direttamente dall'oggetto
-    $coordinates = $this->getCoordinatesDirectly($omeka_item_full);
+    // Se non è in cache, proviamo a recuperarlo usando il servizio OmekaCacheService
+    try {
+      // Utilizziamo il servizio OmekaCacheService che abbiamo già ottimizzato
+      $item = $this->omekaCache->fetchResource('items', $id);
+      
+      if ($item) {
+        // Log per debugging: elemento recuperato dal servizio
+        $this->logger->info('Elemento Omeka @id recuperato con OmekaCacheService', [
+          '@id' => $id,
+        ]);
+        
+        return $item;
+      }
+      
+      // Se non è stato trovato, log dell'errore
+      $this->logger->warning('Elemento Omeka @id non trovato in cache né tramite API', [
+        '@id' => $id,
+      ]);
+      
+      return NULL;
+    }
+    catch (\Exception $e) {
+      // Log dell'errore
+      $this->logger->error('Errore nel recupero dell\'elemento Omeka @id: @error', [
+        '@id' => $id,
+        '@error' => $e->getMessage(),
+      ]);
+      
+      return NULL;
+    }
+  }
+
+  public function getDescription($item) {
+    $template = $this->getResourceTemplate($item);
+    $description_fields = [
+      '2' => 'oad:scopeAndContent',
+      '4' => 'oad:scopeAndContent',
+      '5' => 'oad:scopeAndContent',
+      '6' => 'dcterms:description',
+      '7' => 'bibo:content',
+    ];
+
+    $description_field = $description_fields[$template];
+    $descrizione = $item->{$description_field};
+    return $descrizione[0]->{'@value'};
+  }
+
+  public function getTitle($item) {
+    $title = $item->{'dcterms:title'};
+    return $title[0]->{'@value'};
+  }
+
+  public function getIdFromEck($entity) {
+    $id = $entity->get('field_id')->getValue();
+    return $id[0]['value'];
+  }
+
+  public function getImage($item, $type = 'large') {
+    $medias = $item->{"o:media"};
+    if (!empty($medias)) {
+      $media_url = $medias[0]->{"@id"};
+      $media_source = file_get_contents($media_url);
+      $media = json_decode($media_source);
+      $image_src = $media->thumbnail_display_urls->{$type};
+      return $image_src;
+    }
+  }
+
+  public function getResourceTemplate($item) {
+    $resource_id = $item->{'o:resource_template'};
+    return $resource_id->{"o:id"};
+  }
+
+  public function getLatLon($item) {
+    $marker_url = $item->{'o-module-mapping:marker'};
+    $marker_object = file_get_contents($marker_url[0]->{'@id'});
+    $marker = json_decode($marker_object);
+    $values['lat'] = $marker->{'o-module-mapping:lat'};
+    $values['lon'] = $marker->{'o-module-mapping:lng'};
+    $values['title'] = $marker->{'o-module-mapping:label'};
+    $values['url'] = 'https://risorse.dh.unica.it/s/400-risorse/item/' . $item->{'o:id'};
+    $values['image'] = $this->getImage($item);
+    return $values;
+  }
+
+  /**
+   * Ottiene le coordinate geografiche di un elemento Omeka.
+   *
+   * @param mixed $omeka_item_full
+   *   L'elemento Omeka (può essere un oggetto o un array).
+   *
+   * @return array
+   *   Un array con le chiavi 'latitude' e 'longitude'.
+   */
+  public function getLocation($omeka_item_full) {
+    // Ottieni l'ID dell'elemento
+    $id = $this->getItemId($omeka_item_full);
     
+    // Verifica se abbiamo già le coordinate nella cache
+    $cache_key = 'omeka_location_' . $id;
+    $cache = \Drupal::cache('omeka')->get($cache_key);
+    if ($cache) {
+      return $cache->data;
+    }
+    
+    // Prova a estrarre le coordinate direttamente dall'elemento
+    $coordinates = $this->getCoordinatesDirectly($omeka_item_full);
     if (!empty($coordinates)) {
       $location = [
         'latitude' => $coordinates[1],
@@ -260,49 +296,20 @@ class Utils {
    *   L'URL completo dell'elemento.
    */
   public function getItemUrl($item) {
+    $site_url = $this->getSiteUrl($item);
     $id = $this->getItemId($item);
-    $base_url = rtrim($this->base_url, '/');
-    
-    // Estrai lo slug del sito dall'elemento
-    // Per la collezione principale di storia, lo slug corretto è 'risorse-storia'
-    $site_slug = $this->getSiteSlugFromItem($item);
-    
-    // Costruisci l'URL completo con il pattern: {base_url}/s/{site-slug}/item/{id}
-    return $base_url . '/s/' . $site_slug . '/item/' . $id;
-  }
-  
-  /**
-   * Estrae lo slug del sito dall'elemento Omeka.
-   * 
-   * @param mixed $item
-   *   L'elemento Omeka (può essere un oggetto o un array).
-   * 
-   * @return string
-   *   Lo slug del sito Omeka.
-   */
-  protected function getSiteSlugFromItem($item) {
-    // Estrai l'ID del sito, se disponibile
-    $site_id = null;
-    
-    if (is_object($item) && isset($item->{'o:site'}) && is_array($item->{'o:site'}) && !empty($item->{'o:site'})) {
-      $site_id = $item->{'o:site'}[0]->{'o:id'} ?? null;
-    } elseif (is_array($item) && isset($item['o:site']) && is_array($item['o:site']) && !empty($item['o:site'])) {
-      $site_id = $item['o:site'][0]['o:id'] ?? null;
-    }
-    
-    // Mappa gli ID dei siti con gli slug corretti
-    // In base all'esempio fornito, lo slug dovrebbe essere 'risorse-storia' per la collezione principale
-    $site_slugs = [
-      1 => 'risorse-storia',  // Collezione principale (risorse storia)
-      2 => 'archivio',        // Archivio storico
-      3 => 'patrimonio',      // Patrimonio culturale
-      // Aggiungi altri siti come necessario
-    ];
-    
-    // Restituisci lo slug in base all'ID del sito, o quello predefinito se l'ID non è disponibile
-    return $site_slugs[$site_id] ?? 'risorse-storia';  // Fallback predefinito
+    return $site_url . '/item/' . $id;
   }
 
+  /**
+   * Ottiene l'URL del sito Omeka.
+   *
+   * @param mixed $item
+   *   L'elemento Omeka (può essere un oggetto o un array).
+   *
+   * @return string
+   *   L'URL base del sito Omeka.
+   */
   /**
    * Ottiene l'URL del sito Omeka senza fare chiamate HTTP.
    *
@@ -375,6 +382,7 @@ class Utils {
     
     return $siteMap[$site_id] ?? 'risorse';  // Fallback predefinito
   }
+  }
   
   /**
    * Ottiene l'ID di un elemento Omeka, supportando sia oggetti che array.
@@ -398,4 +406,4 @@ class Utils {
   }
 
   // JavaScript code removed
-}
+

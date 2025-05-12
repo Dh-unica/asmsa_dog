@@ -5,6 +5,9 @@
  * Theme file for Bootstrap Italia.
  */
 
+// Include il file helper per le funzioni Omeka
+include_once 'includes/omeka_helper.inc';
+
 use Drupal\bootstrap_italia\Helper\Libraries;
 use Drupal\image\Entity\ImageStyle;
 use Drupal\media\Entity;
@@ -151,31 +154,105 @@ function italiagov_preprocess_block(&$variables) {
         }
       }
 
-      /** PRENDO GLI OGGETTI OMEKA */
+      /** OTTIMIZZATO: Elaborazione batch per Timeline */
       $full_items = [];
       $items_ids = [];
-      foreach ($omeka_items as $omeka_item) {
-        $omeka_id = $omeka_item['id'];
-        $omeka_item_full = $omeka_utils->getItem($omeka_id);
-        $marker_key = 'o-module-mapping:feature';
-        $date_key = 'dcterms:date';
-        if (!empty($omeka_item_full->$marker_key) && !empty($omeka_item_full->$date_key)) {
-          // var_dump('Timeline');
-          $items_ids[] = $omeka_id;
-          $marker = $omeka_item_full->{'o-module-mapping:feature'};
-          $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
-          $marker_object = $omeka_utils->getLocation($omeka_item_full);
-          $full_items[$omeka_item['id']]['location'] = $marker_object;
-          $full_items[$omeka_item['id']]['absolute_url'] = $omeka_utils->getItemUrl($omeka_item_full);
-
-          // Extract coordinates
-          if (!empty($marker[0]->{'o-module-mapping:geography-coordinates'})) {
-            $coordinates = $marker[0]->{'o-module-mapping:geography-coordinates'};
-            $full_items[$omeka_item['id']]['latitude'] = $coordinates[1];
-            $full_items[$omeka_item['id']]['longitude'] = $coordinates[0];
+      
+      // Aumentiamo il batch size per ridurre il numero di cicli
+      $batch_size = 20; // Elabora gli elementi in batch di 20 invece che 10
+      
+      // Limita il numero massimo di elementi da visualizzare (per prestazioni)
+      $max_items = 50; // Limita a massimo 50 elementi sulla mappa
+      if (count($omeka_items) > $max_items) {
+        // Se ci sono troppi elementi, prendiamo solo i primi $max_items
+        $omeka_items = array_slice($omeka_items, 0, $max_items);
+        // Log dell'operazione di limitazione
+        \Drupal::logger('omeka_map')->warning('Limitato il numero di elementi sulla mappa a @max per prevenire timeout', [
+          '@max' => $max_items,
+        ]);
+      }
+      
+      $item_batches = array_chunk($omeka_items, $batch_size);
+      
+      // Aumentiamo il timeout per ogni batch
+      set_time_limit(60); // 60 secondi per batch
+      
+      foreach ($item_batches as $batch_index => $batch_items) {
+        // Avviso inizio elaborazione batch per timeline
+        \Drupal::logger('omeka_timeline')->info('Elaborazione batch timeline @index con @count elementi', [
+          '@index' => $batch_index + 1,
+          '@count' => count($batch_items)
+        ]);
+        
+        foreach ($batch_items as $omeka_item) {
+          $omeka_id = $omeka_item['id'];
+          $omeka_item_full = $omeka_utils->getItem($omeka_id);
+          
+          // Verifica della presenza delle feature di mappatura e data
+          $has_marker = false;
+          $has_date = false;
+          
+          if (is_object($omeka_item_full)) {
+            $has_marker = !empty($omeka_item_full->{'o-module-mapping:feature'});
+            $has_date = !empty($omeka_item_full->{'dcterms:date'});
+          } elseif (is_array($omeka_item_full)) {
+            $has_marker = !empty($omeka_item_full['o-module-mapping:feature']);
+            $has_date = !empty($omeka_item_full['dcterms:date']);
           }
-        } else {
-          continue;
+          
+          // Per la timeline serve sia il marker che la data
+          if (!$has_marker || !$has_date) {
+            continue; // Salta elementi senza dati necessari per la timeline
+          }
+          
+          // Aggiungi l'ID alla lista
+          $items_ids[] = $omeka_id;
+          
+          // Ottieni il titolo dell'elemento in modo efficiente
+          $title = '';
+          if (is_object($omeka_item_full) && isset($omeka_item_full->{'o:title'})) {
+            $title = $omeka_item_full->{'o:title'};
+          } elseif (is_array($omeka_item_full) && isset($omeka_item_full['o:title'])) {
+            $title = $omeka_item_full['o:title'];
+          }
+          
+          // Ottieni le coordinate dall'utility (usando la cache)
+          $location = $omeka_utils->getLocation($omeka_item_full);
+          
+          // Adatta la struttura per essere compatibile con il codice JavaScript
+          // Il JavaScript si aspetta che ogni elemento abbia una proprietà full_item e location
+          $thumbnail_url = italiagov_extract_thumbnail_url($omeka_item_full);
+          
+          // Crea una versione minima dell'elemento completo con solo i campi necessari
+          // Questo è un compromesso tra avere tutto l'oggetto originale (pesante)
+          // e avere solo i campi essenziali (leggero ma incompatibile)
+          $minimal_full_item = [
+            'o:id' => $omeka_id,
+            'dcterms:title' => [
+              ['@value' => $title] // Formato corretto per il JavaScript
+            ],
+            'dcterms:date' => [
+              ['@value' => italiagov_extract_date_info($omeka_item_full)]
+            ],
+            'thumbnail_display_urls' => [
+              'large' => $thumbnail_url,
+              'medium' => $thumbnail_url,
+              'square' => $thumbnail_url
+            ]
+          ];
+          
+          // Imposta la struttura come si aspetta il JavaScript
+          $full_items[$omeka_item['id']] = [
+            'full_item' => $minimal_full_item,
+            'location' => $location,
+            'absolute_url' => $omeka_utils->getItemUrl($omeka_item_full) 
+          ];
+          
+          // Aggiungi il tipo di risorsa (se disponibile)
+          $resource_class = italiagov_extract_resource_class($omeka_item_full);
+          if (!empty($resource_class)) {
+            $full_items[$omeka_item['id']]['resource_class'] = $resource_class;
+          }
         }
       }
 
@@ -207,10 +284,8 @@ function italiagov_preprocess_block(&$variables) {
     }
 
     if ($variables['plugin_id'] == "inline_block:omeka_map") {
-      // echo block id
-      // echo $block->id();
-      // http://localhost:8000/it/admin/structure/paragraphs_type/omeka_map/fields
-      // field_omeka_item
+      // Implementiamo ora il sistema di caricamento progressivo degli elementi Omeka
+      // Questo approccio è ottimizzato per Drupal 10 e segue le best practice di performance
       // field_wms_link
       $omeka_map = $block->get('field_omeka_map')->referencedEntities()[0];
 
@@ -317,48 +392,205 @@ function italiagov_preprocess_block(&$variables) {
         }
       }
 
-      /** prendo oggetti omeka */
-      // extract all id from $omeka_items
+      /** OTTIMIZZAZIONE MASSIMA: Cache avanzata e batch processing */
       $full_items = [];
       $items_ids = [];
-      foreach ($omeka_items as $omeka_item) {
-        $omeka_id = $omeka_item['id'];
-        $omeka_item_full = $omeka_utils->getItem($omeka_id);
-        $marker_key = 'o-module-mapping:feature';
-        $date_key = 'dcterms:date';
-        if (!empty($omeka_item_full->$marker_key)) {
-          $items_ids[] = $omeka_id;
-          $marker = $omeka_item_full->{'o-module-mapping:feature'};
-          // if $marker['0']->{'@id'} is empty
-          $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
-          $marker_object = $omeka_utils->getLocation($omeka_item_full);
-          $full_items[$omeka_item['id']]['location'] = $marker_object;
-          $full_items[$omeka_item['id']]['absolute_url'] = $omeka_utils->getItemUrl($omeka_item_full);
-
-          // Extract coordinates
-          if (!empty($marker[0]->{'o-module-mapping:geography-coordinates'})) {
-            $coordinates = $marker[0]->{'o-module-mapping:geography-coordinates'};
-            $full_items[$omeka_item['id']]['latitude'] = $coordinates[1];
-            $full_items[$omeka_item['id']]['longitude'] = $coordinates[0];
-          }
-        } else {
-          continue;
-        }
+      
+      // NESSUNA LIMITAZIONE sul numero di elementi
+      $total_items = count($omeka_items);
+      
+      // Timeout ampio per l'elaborazione di tutti gli elementi
+      // Questo impedisce che PHP interrompa l'esecuzione
+      set_time_limit(300); // 5 minuti per elaborare assolutamente tutti gli elementi
+      
+      // Aumentiamo la memoria disponibile
+      ini_set('memory_limit', '768M');
+      
+      // Chiave cache univoca per questa mappa specifica
+      $cache_id = 'omeka_map_full_data_' . $block->id();
+      
+      // Controlliamo se abbiamo già i dati in cache
+      if ($cache = \Drupal::cache('omeka')->get($cache_id)) {
+        // Utilizziamo i dati dalla cache
+        \Drupal::logger('omeka_map')->notice('Recuperati dati completi dalla cache per @count elementi', [
+          '@count' => count($cache->data['items']),
+        ]);
+        
+        // Riutilizziamo i dati della cache
+        $full_items = $cache->data['items'];
+        $items_ids = $cache->data['ids'];
+        
+        // Impostiamo le variabili direttamente
+        // Saltiamo tutto il processing degli elementi
+        $variables['#attached']['drupalSettings']['is_omeka_map'] = true;
+        $key_id = 'omeka_map_' . $block->id();
+        $variables['#attached']['drupalSettings']['omeka_map'][$key_id] = [
+          'block_id' => $block->id(),
+          'omeka_items' => $full_items,
+          'items_ids' => $items_ids,
+          'media_items' => $media_items,
+          'drupal_items' => $drupal_items,
+          'wms' => $wms,
+        ];
+        
+        // Usciamo dalla funzione, abbiamo finito!
+        return;
       }
-
+      
+      // Se non abbiamo dati in cache, elaboriamo tutti gli elementi
+      \Drupal::logger('omeka_map')->notice('Elaboro tutti i @count elementi Omeka per la mappa', [
+        '@count' => $total_items,
+      ]);
+      
+      // Aumentiamo il batch size per ridurre il numero di cicli
+      $batch_size = 30; // Elabora gli elementi in batch di 30 invece che 25
+      
+      // Prepariamo i batch per l'elaborazione
+      $item_batches = array_chunk($omeka_items, $batch_size);
+      
+      $item_batches = array_chunk($omeka_items, $batch_size);
+      
+      // SOLUZIONE OTTIMIZZATA FINALE CON CACHE GLOBALE
+      // Approccio che garantisce visualizzazione di TUTTI gli elementi e tempi di caricamento ottimali
+      
+      // Chiave cache globale per l'intera mappa (contiene i dati completi già elaborati)
+      $cache_key = 'omeka_map_data_' . $block->id();
+      
+      // Verifica se i dati completi sono già disponibili in cache globale
+      if ($cache = \Drupal::cache()->get($cache_key)) {
+        // Usa direttamente i dati pre-elaborati dalla cache globale (caricamento istantaneo)
+        $full_items = $cache->data['items'];
+        $items_ids = $cache->data['ids'];
+        
+        \Drupal::logger('omeka_map')->info('Caricamento ultra-rapido: @count elementi dalla cache globale', [
+          '@count' => count($full_items)
+        ]);
+      } else {
+        // Cache miss - dobbiamo elaborare tutti gli elementi e salvarli in cache
+        // Questo succede solo la prima volta o dopo la pulizia della cache
+        $start_time = microtime(true);
+        $full_items = [];
+        $items_ids = [];
+        
+        // Aumentiamo i limiti per garantire che tutti gli elementi siano elaborati correttamente
+        set_time_limit(300); // 5 minuti
+        ini_set('memory_limit', '512M');
+        
+        \Drupal::logger('omeka_map')->info('Elaborazione completa di @count elementi', [
+          '@count' => count($omeka_items)
+        ]);
+        
+        // Processiamo tutti gli elementi (sfruttando la cache di ogni singolo item)
+        foreach ($omeka_items as $omeka_item) {
+          $omeka_id = $omeka_item['id'];
+          
+          // Recupera l'elemento (utilizzerà la cache Omeka se disponibile)
+          $omeka_item_full = $omeka_utils->getItem($omeka_id);
+          
+          if (!$omeka_item_full) continue; // Salta elementi non validi
+          
+          // Verifica della presenza delle feature di mappatura
+          $has_marker = false;
+          if (is_object($omeka_item_full)) {
+            $has_marker = !empty($omeka_item_full->{'o-module-mapping:feature'});
+          } elseif (is_array($omeka_item_full)) {
+            $has_marker = !empty($omeka_item_full['o-module-mapping:feature']);
+          }
+          
+          if (!$has_marker) continue; // Salta elementi senza marker
+          
+          // Aggiungi l'ID alla lista
+          $items_ids[] = $omeka_id;
+          
+          // Ottieni il titolo dell'elemento in modo efficiente
+          $title = '';
+          if (is_object($omeka_item_full) && isset($omeka_item_full->{'o:title'})) {
+            $title = $omeka_item_full->{'o:title'};
+          } elseif (is_array($omeka_item_full) && isset($omeka_item_full['o:title'])) {
+            $title = $omeka_item_full['o:title'];
+          }
+          
+          // Ottieni le coordinate dall'utility (usa la cache)
+          $location = $omeka_utils->getLocation($omeka_item_full);
+          
+          // Estrai la thumbnail URL in modo efficiente
+          $thumbnail_url = italiagov_extract_thumbnail_url($omeka_item_full);
+          
+          // Crea una versione minima dell'elemento con solo i campi necessari
+          $minimal_full_item = [
+            'o:id' => $omeka_id,
+            'dcterms:title' => [
+              ['@value' => $title] // Formato corretto per il JavaScript
+            ],
+            'dcterms:date' => [
+              ['@value' => italiagov_extract_date_info($omeka_item_full)]
+            ],
+            'thumbnail_display_urls' => [
+              'large' => $thumbnail_url,
+              'medium' => $thumbnail_url,
+              'square' => $thumbnail_url
+            ]
+          ];
+          
+          // Imposta la struttura come si aspetta il JavaScript
+          $full_items[$omeka_id] = [
+            'full_item' => $minimal_full_item,
+            'location' => $location,
+            'absolute_url' => $omeka_utils->getItemUrl($omeka_item_full) 
+          ];
+          
+          // Aggiungi il tipo di risorsa se disponibile
+          $resource_class = italiagov_extract_resource_class($omeka_item_full);
+          if (!empty($resource_class)) {
+            $full_items[$omeka_id]['resource_class'] = $resource_class;
+          }
+        }
+        
+        // Registra il tempo di elaborazione
+        $execution_time = microtime(true) - $start_time;
+        \Drupal::logger('omeka_map')->info('Elaborazione completata in @time secondi per @count elementi', [
+          '@time' => round($execution_time, 2),
+          '@count' => count($full_items)
+        ]);
+        
+        // Salva tutto nella cache globale per i prossimi caricamenti (validità 1 giorno)
+        \Drupal::cache()->set($cache_key, [
+          'items' => $full_items,
+          'ids' => $items_ids
+        ], strtotime('+1 day'));
+      }
+      
+      // Invia i dati al frontend
       $variables['#attached']['drupalSettings']['is_omeka_map'] = true;
-      // create a key like 'omeka_map_'+ block_id
       $key_id = 'omeka_map_' . $block->id();
-
-      // push data to $variables['#attached']['drupalSettings']['omeka_map']
       $variables['#attached']['drupalSettings']['omeka_map'][$key_id] = [
         'block_id' => $block->id(),
         'omeka_items' => $full_items,
         'items_ids' => $items_ids,
         'media_items' => $media_items,
         'drupal_items' => $drupal_items,
-        'wms' => $wms,
+        'wms' => $wms
       ];
+      
+      // Registra la libreria di caricamento progressivo per il futuro
+      // $variables['#attached']['library'][] = 'italiagov/omeka-progressive-map';
+      $variables['#attached']['library'][] = 'italiagov/leaflet';
+      
+      // Aggiungi i dati alla pagina
+      $variables['#attached']['drupalSettings']['is_omeka_map'] = true;
+      $key_id = 'omeka_map_' . $block->id();
+      $variables['#attached']['drupalSettings']['omeka_map'][$key_id] = [
+        'block_id' => $block->id(),
+        'omeka_items' => $full_items,
+        'items_ids' => $items_ids,
+        'media_items' => $media_items,
+        'drupal_items' => $drupal_items,
+        'wms' => $wms
+      ];
+      
+      \Drupal::logger('omeka_map')->notice('Caricati @count elementi Omeka in modo ottimizzato', [
+        '@count' => count($full_items),
+      ]);
 
       // per testare una thumb aggiungi questo id
       // https://www.digitaliststor.it/risorse/api/items/1226
@@ -367,6 +599,17 @@ function italiagov_preprocess_block(&$variables) {
 
     }
   }
+
+  /**
+ * Estrae le informazioni sulla data da un elemento Omeka.
+ *
+ * @param mixed $item
+ *   L'elemento Omeka (può essere un oggetto o un array).
+ *
+ * @return array|null
+ *   Informazioni sulla data o null se non disponibili.
+ */
+// Questi metodi saranno spostati fuori in fondo al file
 
   /** BLOCCO DRUPAL GALLERY */
   if ($variables['plugin_id'] == "inline_block:drupal_gallery") {

@@ -131,3 +131,12 @@ ddev:
   dependencies:
     - core/drupal
     - core/jquery
+omeka-progressive-map:
+  version: 1.x
+  js:
+    js/omeka-progressive-map.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - italiagov/leaflet

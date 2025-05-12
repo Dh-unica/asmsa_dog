@@ -173,6 +173,7 @@ class OmekaCacheRefreshForm extends FormBase {
       // Salva le statistiche nel sistema state
       \Drupal::state()->set('dog.omeka_cache.cached_items', $processed);
       \Drupal::state()->set('dog.omeka_cache.error_items', $errors);
+      \Drupal::state()->set('dog.omeka_cache.last_update', time()); // Aggiorna il timestamp dell'ultimo aggiornamento
       
       // Visualizza il messaggio appropriato
       if ($errors > 0) {

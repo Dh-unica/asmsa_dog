@@ -272,6 +272,65 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
   }
   
   /**
+   * Recupera un singolo elemento Omeka dall'API.
+   *
+   * @param string $resource_type
+   *   Il tipo di risorsa (es. 'items').
+   * @param string|int $id
+   *   L'ID della risorsa da recuperare.
+   *
+   * @return array|null
+   *   I dati della risorsa, o NULL se non trovata.
+   */
+  public function getResource(string $resource_type, $id) {
+    $this->logger->notice('Recupero elemento Omeka @type:@id direttamente dall\'API', [
+      '@type' => $resource_type,
+      '@id' => $id,
+    ]);
+    
+    // URI diretta all'elemento specifico - assicuriamoci di includere il prefisso /api/
+    $uri = "api/{$resource_type}/{$id}";
+    
+    try {
+      // Effettua la richiesta API
+      $response = $this->request('GET', $uri);
+      
+      // Verifica la risposta
+      if ($response && !$response->hasError()) {
+        // Recupera i dati
+        $data = $response->getData();
+        
+        if (!empty($data)) {
+          $this->logger->info('Elemento Omeka @type:@id recuperato con successo dall\'API', [
+            '@type' => $resource_type,
+            '@id' => $id,
+          ]);
+          
+          return $data;
+        }
+      }
+      
+      // Log dell'errore se la risposta contiene errori
+      if ($response && $response->hasError()) {
+        $this->logger->error('Errore API durante il recupero dell\'elemento Omeka @type:@id: @error', [
+          '@type' => $resource_type,
+          '@id' => $id,
+          '@error' => $response->getErrorMessage(),
+        ]);
+      }
+    }
+    catch (\Exception $e) {
+      $this->logger->error('Eccezione durante il recupero dell\'elemento Omeka @type:@id: @error', [
+        '@type' => $resource_type,
+        '@id' => $id,
+        '@error' => $e->getMessage(),
+      ]);
+    }
+    
+    return NULL;
+  }
+  
+  /**
    * Recupera tutti gli ID disponibili per un tipo di risorsa.
    *
    * Questo metodo fa una chiamata diretta all'API di Omeka senza usare la configurazione
@@ -287,6 +346,7 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    */
   public function getAllAvailableIds(string $resource_type = 'items', int $per_page = 200): array {
     // URL hardcoded per debugging, per assicurare che l'indirizzo sia corretto
+    // Utilizziamo l'URL completo con il segmento /api/ esplicito
     $base_url = 'https://storia.dh.unica.it/risorse/api/' . $resource_type;
     
     // Log dell'URL utilizzato
@@ -410,6 +470,15 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
         '@method' => $method,
         '@url' => $this->config->get('base_url') . '/' . $uri,
       ]);
+      
+      // Verifica se l'URI contiene già il segmento /api/
+      if (strpos($uri, 'api/') !== 0 && strpos($uri, '/api/') !== 0) {
+        // Aggiungi il prefisso /api/ se non è già presente
+        $this->logger->notice('Omeka API request: aggiunto prefisso /api/ all\'URI @uri', [
+          '@uri' => $uri,
+        ]);
+        $uri = 'api/' . $uri;
+      }
       
       // Run request.
       $response = $this->getApiClient()->request($method, $uri, $options);

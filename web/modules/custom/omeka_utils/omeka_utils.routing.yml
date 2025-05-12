@@ -1,0 +1,7 @@
+omeka_utils.map_data:
+  path: '/api/omeka-map-data'
+  defaults:
+    _controller: '\Drupal\omeka_utils\Controller\OmekaMapController::loadMapData'
+    _title: 'Omeka Map Data'
+  requirements:
+    _permission: 'access content'

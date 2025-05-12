@@ -181,16 +181,100 @@ class OmekaCacheService {
       } 
       else {
         // Log cache miss
-        $this->logger->notice('Cache miss for Omeka resource @type:@id', [
+        $this->logger->notice('Cache miss for Omeka resource @type:@id in multiple fetch', [
           '@type' => $resource_type,
           '@id' => $id,
         ]);
-        
-        $result[$id] = NULL;
       }
     }
     
     return $result;
+  }
+  
+  /**
+   * Recupera una risorsa dalla cache o, se non presente, dall'API e la memorizza in cache.
+   *
+   * Questo metodo è utile per i frontend che necessitano di una risposta immediata,
+   * anche se comporta una chiamata API in tempo reale in caso di cache miss.
+   *
+   * @param string $resource_type
+   *   Il tipo di risorsa (es. 'items').
+   * @param string|int $id
+   *   L'ID della risorsa da recuperare.
+   * @param bool $force_refresh
+   *   Se TRUE, forza un aggiornamento dalla API anche se la risorsa è in cache.
+   *
+   * @return array|object|null
+   *   La risorsa se trovata, altrimenti NULL.
+   */
+  public function fetchResource(string $resource_type, $id, bool $force_refresh = FALSE) {
+    // Normalizza l'ID come stringa
+    $id = (string) $id;
+    
+    // Costruisci la chiave di cache
+    $cache_key = "omeka_resource:{$resource_type}:{$id}";
+    
+    // Verifica se l'elemento è già in cache e non è richiesto un refresh
+    if (!$force_refresh) {
+      $cache = $this->cache->get($cache_key);
+      if ($cache) {
+        $this->logger->debug('Risorsa Omeka @type:@id recuperata dalla cache', [
+          '@type' => $resource_type,
+          '@id' => $id,
+        ]);
+        return $cache->data;
+      }
+    }
+    
+    // La risorsa non è in cache o è richiesto un refresh, recupera dall'API
+    try {
+      $this->logger->notice('Recupero risorsa Omeka @type:@id dall\'API (cache miss o refresh forzato)', [
+        '@type' => $resource_type,
+        '@id' => $id,
+      ]);
+      
+      // Tentativo di recupero dalla API
+      $resource = $this->resourceFetcher->getResource($resource_type, $id);
+      
+      if ($resource) {
+        // Memorizza in cache con l'impostazione di tag appropriata
+        $cache_tags = [
+          'omeka_resource',
+          "omeka_resource:{$resource_type}",
+          "omeka_resource:{$resource_type}:{$id}",
+        ];
+        
+        // Calcola scadenza dalla configurazione
+        $cache_lifetime = $this->config->get('cache_lifetime') ?: 86400; // Default 24 ore
+        $expire = time() + $cache_lifetime;
+        
+        // Salva in cache
+        $this->cache->set($cache_key, $resource, $expire, $cache_tags);
+        
+        $this->logger->info('Risorsa Omeka @type:@id recuperata dall\'API e memorizzata in cache', [
+          '@type' => $resource_type,
+          '@id' => $id,
+        ]);
+        
+        return $resource;
+      }
+      
+      $this->logger->warning('Risorsa Omeka @type:@id non trovata nell\'API', [
+        '@type' => $resource_type,
+        '@id' => $id,
+      ]);
+      
+      return NULL;
+    }
+    catch (\Exception $e) {
+      $this->logger->error('Errore durante il recupero della risorsa Omeka @type:@id: @error', [
+        '@type' => $resource_type,
+        '@id' => $id,
+        '@error' => $e->getMessage(),
+      ]);
+      
+      return NULL;
+    }
   }
 
   /**
