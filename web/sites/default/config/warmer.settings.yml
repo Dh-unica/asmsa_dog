@@ -1,16 +1,6 @@
 _core:
   default_config_hash: wLhhL58IKPWkAbhxcI6gpCna7d431Q7kM0y-Om92BUQ
 warmers:
-  sitemap:
-    id: sitemap
-    frequency: 3600
-    batchSize: 50
-    minPriority: 0.0
-    sitemaps:
-      - 'https://storia.dh.unica.it/asmsa/sitemaps/index/sitemap.xml'
-    headers: {  }
-    verify: true
-    maxConcurrentRequests: 10
   cdn:
     id: cdn
     frequency: 300
@@ -19,9 +9,28 @@ warmers:
     headers: {  }
     verify: true
     maxConcurrentRequests: 10
+  sitemap:
+    id: sitemap
+    frequency: 3600
+    batchSize: 50
+    minPriority: 0.0
+    sitemaps:
+      - 'http://localhost:7001/asmsa/sitemaps/index/sitemap.xml'
+    headers: {  }
+    verify: true
+    maxConcurrentRequests: 10
   entity:
     id: entity
     frequency: 300
     batchSize: 50
-    entity_types: {  }
+    entity_types:
+      'block_content:omeka_gallery': 'block_content:omeka_gallery'
+      'block_content:omeka_map': 'block_content:omeka_map'
+      'block_content:omeka_map_timeline': 'block_content:omeka_map_timeline'
+      'node:page': 'node:page'
+      'view:view': 'view:view'
+      'paragraph:map': 'paragraph:map'
+      'paragraph:omeka_gallery': 'paragraph:omeka_gallery'
+      'paragraph:omeka_map': 'paragraph:omeka_map'
+      'paragraph:omeka_map_timeline': 'paragraph:omeka_map_timeline'
     published_only: false
