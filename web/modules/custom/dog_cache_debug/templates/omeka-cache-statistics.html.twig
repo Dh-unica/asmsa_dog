@@ -1,0 +1,84 @@
+{#
+/**
+ * @file
+ * Template per le statistiche della cache Omeka.
+ * Compatibile con tema italiagov.
+ *
+ * Variabili disponibili:
+ * - stats: statistiche generali
+ * - page_stats: statistiche della pagina corrente
+ * - urls: URL per le azioni
+ */
+#}
+<div class="omeka-cache-stats-block it-card-wrapper card-space">
+  <div class="card card-bg">
+    <div class="card-body">
+      <h5 class="card-title">{{ 'Statistiche Cache Omeka'|t }}</h5>
+      
+      <div class="stats-section mb-4">
+        <h6>{{ 'Statistiche Globali'|t }}</h6>
+        
+        <div class="table-responsive mt-3">
+          <table class="table table-sm">
+            <tbody>
+              <tr>
+                <th scope="row">{{ 'Ultimo Aggiornamento Cache'|t }}</th>
+                <td>{{ stats.last_update }}</td>
+              </tr>
+              <tr>
+                <th scope="row">{{ 'Totale Elementi Omeka'|t }}</th>
+                <td>{{ stats.total_items }}</td>
+              </tr>
+              <tr>
+                <th scope="row">{{ 'Elementi in Cache'|t }}</th>
+                <td>{{ stats.cached_items }} ({{ stats.cached_percent }}%)</td>
+              </tr>
+              <tr>
+                <th scope="row">{{ 'Elementi con Errori'|t }}</th>
+                <td>{{ stats.error_items }}</td>
+              </tr>
+              <tr>
+                <th scope="row">{{ 'Ratio Cache Hit'|t }}</th>
+                <td class="{{ stats.hit_ratio_class }}">{{ stats.hit_ratio }}% ({{ stats.cache_hits }} hits, {{ stats.cache_misses }} misses)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="stats-section">
+        <h6>{{ 'Statistiche Pagina Corrente'|t }}</h6>
+        
+        <div class="table-responsive mt-3">
+          <table class="table table-sm">
+            <tbody>
+              <tr>
+                <th scope="row">{{ 'Elementi Omeka nella Pagina'|t }}</th>
+                <td>{{ page_stats.page_items }}</td>
+              </tr>
+              <tr>
+                <th scope="row">{{ 'Ratio Cache Hit della Pagina'|t }}</th>
+                <td class="{{ page_stats.page_hit_ratio_class }}">{{ page_stats.page_hit_ratio }}% ({{ page_stats.page_hits }} hits, {{ page_stats.page_misses }} misses)</td>
+              </tr>
+              <tr>
+                <th scope="row">{{ 'Tempo di Rendering della Pagina'|t }}</th>
+                <td class="{{ page_stats.render_time_class }}">{{ page_stats.page_render_time }} ms</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="mt-4">
+        <a href="{{ urls.refresh }}" class="btn btn-primary btn-sm">{{ 'Aggiorna Cache Omeka'|t }}</a>
+        <a href="{{ urls.debug }}" class="btn btn-outline-primary btn-sm ml-2">{{ 'Dettagli Debug'|t }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.success { color: #28a745; }
+.warning { color: #ffc107; }
+.error { color: #dc3545; }
+</style>

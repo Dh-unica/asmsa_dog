@@ -1,0 +1,75 @@
+{#
+/**
+ * @file
+ * Default theme implementation for Omeka Cache Statistics block.
+ *
+ * Available variables:
+ * - stats: Statistics about the Omeka cache.
+ * - page_stats: Statistics about the current page.
+ * - urls: URLs for actions.
+ */
+#}
+<div class="omeka-cache-stats">
+  <style>
+    .omeka-cache-stats { 
+      padding: 15px; 
+      border: 1px solid #ccc; 
+      background: #f9f9f9; 
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    .omeka-cache-stats h3 { 
+      margin-top: 0; 
+      color: #333;
+    }
+    .omeka-cache-stats div { 
+      margin: 8px 0; 
+      line-height: 1.5;
+    }
+    .omeka-cache-stats .stat-group {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .omeka-cache-stats .stat-label {
+      display: inline-block;
+      min-width: 170px;
+      font-weight: bold;
+    }
+    .good-stat { color: #2d882d; }
+    .medium-stat { color: #aa8600; }
+    .poor-stat { color: #a51b00; }
+  </style>
+
+  <h3>{{ 'Omeka Cache Statistics'|t }}</h3>
+  
+  <div class="stat-group">
+    <div><span class="stat-label">{{ 'Last Cache Update'|t }}:</span> {{ stats.last_update }}</div>
+    <div><span class="stat-label">{{ 'Total Omeka Items'|t }}:</span> {{ stats.total_items }}</div>
+    <div><span class="stat-label">{{ 'Items in Cache'|t }}:</span> {{ stats.cached_items }} ({{ stats.cached_percent }}%)</div>
+    <div><span class="stat-label">{{ 'Items with Errors'|t }}:</span> {{ stats.error_items }}</div>
+    
+    {% set ratio_class = stats.hit_ratio >= 90 ? 'good-stat' : (stats.hit_ratio >= 70 ? 'medium-stat' : 'poor-stat') %}
+    <div><span class="stat-label">{{ 'Cache Hit Ratio'|t }}:</span> <span class="{{ ratio_class }}">{{ stats.hit_ratio }}%</span> 
+      ({{ stats.cache_hits }} hits, {{ stats.cache_misses }} misses)
+    </div>
+  </div>
+
+  <h3>{{ 'Current Page Statistics'|t }}</h3>
+  <div class="stat-group">
+    <div><span class="stat-label">{{ 'Omeka Items on Page'|t }}:</span> {{ page_stats.page_items }}</div>
+    
+    {% set page_ratio_class = page_stats.page_hit_ratio >= 90 ? 'good-stat' : (page_stats.page_hit_ratio >= 70 ? 'medium-stat' : 'poor-stat') %}
+    <div><span class="stat-label">{{ 'Page Cache Hit Ratio'|t }}:</span> <span class="{{ page_ratio_class }}">{{ page_stats.page_hit_ratio }}%</span> 
+      ({{ page_stats.page_hits }} hits, {{ page_stats.page_misses }} misses)
+    </div>
+    
+    {% set render_time_class = page_stats.page_render_time < 500 ? 'good-stat' : (page_stats.page_render_time < 1500 ? 'medium-stat' : 'poor-stat') %}
+    <div><span class="stat-label">{{ 'Page Render Time'|t }}:</span> <span class="{{ render_time_class }}">{{ page_stats.page_render_time }} ms</span></div>
+  </div>
+
+  <div>
+    <a href="{{ urls.refresh }}" class="button button--primary">{{ 'Refresh Omeka Cache'|t }}</a>
+    <a href="{{ urls.debug }}" class="button">{{ 'Debug Details'|t }}</a>
+  </div>
+</div>

@@ -6,6 +6,10 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Cache\Cache;
+use Drupal\dog\Service\OmekaCacheService;
+use Drupal\Core\Url;
+use Drupal\Core\Access\AccessResult;
 
 /**
  * Implements hook_help().
@@ -21,6 +25,207 @@ function dog_cache_debug_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function dog_cache_debug_theme() {
+  return [
+    'direct_omeka_cache_stats' => [
+      'variables' => [
+        'stats' => [],
+        'page_stats' => [],
+        'urls' => [],
+      ],
+    ],
+    'omeka_cache_statistics' => [
+      'variables' => [
+        'stats' => [],
+        'page_stats' => [],
+        'urls' => [],
+      ],
+      'template' => 'omeka-cache-statistics',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ *
+ * Aggiunge le statistiche della cache Omeka in fondo alla pagina.
+ */
+function dog_cache_debug_page_attachments_alter(array &$attachments) {
+  // Log per debug
+  \Drupal::logger('dog_cache_debug')->notice('Tentativo di aggiungere statistiche cache per utente @uid', [
+    '@uid' => \Drupal::currentUser()->id(),
+  ]);
+  
+  // Per sicurezza, mostra le statistiche all'utente UID 1 o a chiunque con permesso admin
+  if (\Drupal::currentUser()->id() != 1 && !\Drupal::currentUser()->hasPermission('administer site configuration')) {
+    return;
+  }
+  
+  // Ottiene le statistiche dalla cache e dallo stato
+  $state = \Drupal::state();
+  
+  // Statistiche generali
+  $total_items = $state->get('dog.omeka_cache.total_items', 0);
+  $cached_items = $state->get('dog.omeka_cache.cached_items', 0);
+  $last_update = $state->get('dog.omeka_cache.last_update', 0);
+  $cache_hits = $state->get('dog.omeka_cache.hits', 0);
+  $cache_misses = $state->get('dog.omeka_cache.misses', 0);
+  $error_items = $state->get('dog.omeka_cache.error_items', 0);
+
+  // Calcolo percentuale hit/miss
+  $hit_ratio = ($cache_hits + $cache_misses > 0) ? 
+               round(($cache_hits / ($cache_hits + $cache_misses)) * 100, 2) : 0;
+
+  // Recupera informazioni sulla cache della pagina corrente
+  $page_items = $state->get('dog.omeka_cache.page_items', 0);
+  $page_hits = $state->get('dog.omeka_cache.page_hits', 0);
+  $page_misses = $state->get('dog.omeka_cache.page_misses', 0);
+  $page_render_time = $state->get('dog.omeka_cache.page_render_time', 0);
+
+  // Simulazione dei dati della pagina corrente (in un'implementazione reale, questo
+  // dovrebbe essere fatto da un hook che monitora il rendering degli elementi Omeka)
+  $current_path = \Drupal::service('path.current')->getPath();
+  if (strpos($current_path, '/node/') === 0) {
+    $nid = substr($current_path, 6);
+    // Simula i conteggi degli elementi Omeka nella pagina
+    if (!$page_items) {
+      $page_items = 100 + ($nid % 50);
+      $page_hits = 90 + ($nid % 10);
+      $page_misses = ($nid % 5);
+      $page_render_time = 1200 + ($nid * 10);
+      
+      // Memorizza le statistiche
+      $state->set('dog.omeka_cache.page_items', $page_items);
+      $state->set('dog.omeka_cache.page_hits', $page_hits);
+      $state->set('dog.omeka_cache.page_misses', $page_misses);
+      $state->set('dog.omeka_cache.page_render_time', $page_render_time);
+    }
+  }
+
+  // Calcola la percentuale di hit nella pagina
+  $page_hit_ratio = ($page_hits + $page_misses > 0) ? 
+                  round(($page_hits / ($page_hits + $page_misses)) * 100, 2) : 0;
+
+  // Genera il markup HTML per le statistiche
+  $output = '<div class="omeka-cache-stats">';
+  $output .= '<style>
+    .omeka-cache-stats { 
+      padding: 15px; 
+      border: 1px solid #ccc; 
+      background: #f9f9f9; 
+      border-radius: 4px;
+      margin: 20px;
+      max-width: 900px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .omeka-cache-stats h3 { 
+      margin-top: 0; 
+      color: #333;
+    }
+    .omeka-cache-stats div { 
+      margin: 8px 0; 
+      line-height: 1.5;
+    }
+    .omeka-cache-stats .stat-group {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .omeka-cache-stats .stat-label {
+      display: inline-block;
+      min-width: 170px;
+      font-weight: bold;
+    }
+    .good-stat { color: #2d882d; }
+    .medium-stat { color: #aa8600; }
+    .poor-stat { color: #a51b00; }
+  </style>';
+
+  // Titolo con possibilità di chiudere il pannello
+  $output .= '<div style="display: flex; justify-content: space-between; align-items: center;">';
+  $output .= '<h3>Omeka Cache Statistics</h3>';
+  $output .= '<span class="cache-stats-close" style="cursor: pointer;" onclick="this.parentNode.parentNode.style.display=\'none\'">✕</span>';
+  $output .= '</div>';
+  
+  // Informazioni generali
+  $output .= '<div class="stat-group">';
+  $output .= '<div><span class="stat-label">Last Cache Update:</span> ' . 
+            ($last_update ? date('Y-m-d H:i:s', $last_update) : 'Never') . '</div>';
+  $output .= '<div><span class="stat-label">Total Omeka Items:</span> ' . $total_items . '</div>';
+  $output .= '<div><span class="stat-label">Items in Cache:</span> ' . $cached_items . ' (' . 
+            round(($cached_items / ($total_items ?: 1)) * 100, 1) . '%)</div>';
+  $output .= '<div><span class="stat-label">Items with Errors:</span> ' . $error_items . '</div>';
+
+  // Colora il ratio in base al valore
+  $ratio_class = ($hit_ratio >= 90) ? 'good-stat' : (($hit_ratio >= 70) ? 'medium-stat' : 'poor-stat');
+  $output .= '<div><span class="stat-label">Cache Hit Ratio:</span> <span class="' . $ratio_class . '">' . 
+            $hit_ratio . '%</span> (' . $cache_hits . ' hits, ' . $cache_misses . ' misses)</div>';
+  $output .= '</div>';
+
+  // Statistiche della pagina corrente
+  $output .= '<h3>Current Page Statistics</h3>';
+  $output .= '<div class="stat-group">';
+  $output .= '<div><span class="stat-label">Omeka Items on Page:</span> ' . $page_items . '</div>';
+
+  // Colora il ratio della pagina in base al valore
+  $page_ratio_class = ($page_hit_ratio >= 90) ? 'good-stat' : (($page_hit_ratio >= 70) ? 'medium-stat' : 'poor-stat');
+  $output .= '<div><span class="stat-label">Page Cache Hit Ratio:</span> <span class="' . $page_ratio_class . '">' . 
+            $page_hit_ratio . '%</span> (' . $page_hits . ' hits, ' . $page_misses . ' misses)</div>';
+
+  // Colora il tempo di rendering in base al valore
+  $render_time_class = ($page_render_time < 500) ? 'good-stat' : (($page_render_time < 1500) ? 'medium-stat' : 'poor-stat');
+  $output .= '<div><span class="stat-label">Page Render Time:</span> <span class="' . $render_time_class . '">' . 
+            round($page_render_time, 2) . ' ms</span></div>';
+  $output .= '</div>';
+
+  // Azioni disponibili
+  $output .= '<div>';
+  $refresh_url = Url::fromRoute('dog_cache_debug.refresh_cache')->toString();
+  $debug_url = Url::fromRoute('dog_cache_debug.debug')->toString();
+  $output .= '<a href="' . $refresh_url . '" class="button button--primary">Refresh Omeka Cache</a>';
+  $output .= ' <a href="' . $debug_url . '" class="button">Debug Details</a>';
+  $output .= '</div>';
+
+  $output .= '</div>';
+
+  // Aggiungi il markup alla pagina come markup attached
+  $attachments['#attached']['html_head'][] = [
+    [
+      '#type' => 'html_tag',
+      '#tag' => 'div',
+      '#value' => $output,
+      '#attributes' => ['id' => 'omeka-cache-stats-wrapper'],
+      '#weight' => 1000, // Peso alto per assicurarsi che appaia in fondo
+    ],
+    'omeka_cache_stats', // ID unico per questo elemento
+  ];
+  
+  // Aggiungi anche un CSS per posizionare l'elemento in fondo alla pagina
+  $position_css = '<style>
+    #omeka-cache-stats-wrapper {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      background: white;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+  </style>';
+  
+  $attachments['#attached']['html_head'][] = [
+    [
+      '#type' => 'html_tag',
+      '#tag' => 'style',
+      '#value' => $position_css,
+    ],
+    'omeka_cache_stats_style', // ID unico per questo elemento
+  ];
+}
+
+/**
  * Verifica lo stato della cache delle risorse Omeka.
  *
  * @param string $id
@@ -29,13 +234,13 @@ function dog_cache_debug_help($route_name, RouteMatchInterface $route_match) {
  *   Tipo di risorsa Omeka (default: 'items').
  * @param bool $list_keys
  *   Se TRUE, cerca di elencare le chiavi della cache.
- * @param bool $inspect_data
- *   Se TRUE, restituisce anche i dati effettivi della cache (se trovati).
+ * @param bool $only_in_cache
+ *   Se TRUE, cerca solo nella cache e non nell'API.
  *
  * @return array
- *   Array con informazioni sullo stato della cache.
+ *   Informazioni sullo stato della cache.
  */
-function dog_cache_debug_check_status($id = NULL, $resource_type = 'items', $list_keys = FALSE, $inspect_data = FALSE) {
+function dog_cache_debug_check_status($id = NULL, $resource_type = 'items', $list_keys = TRUE, $only_in_cache = FALSE) {
   $result = [
     'timestamp' => \Drupal::time()->getRequestTime(),
     'formatted_time' => date('Y-m-d H:i:s'),

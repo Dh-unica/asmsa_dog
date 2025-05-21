@@ -1,0 +1,8 @@
+name: Omeka Statistics Block
+type: module
+description: 'Fornisce un blocco per visualizzare le statistiche della cache Omeka'
+package: Custom
+core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:block
+  - dog:dog_cache_debug

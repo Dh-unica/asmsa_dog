@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the dog_cache_debug module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dog_cache_debug_install() {
+  // Inizializza le variabili di stato per le statistiche della cache
+  \Drupal::state()->set('dog.omeka_cache.hits', 0);
+  \Drupal::state()->set('dog.omeka_cache.misses', 0);
+  \Drupal::state()->set('dog.omeka_cache.total_items', 0);
+  \Drupal::state()->set('dog.omeka_cache.cached_items', 0);
+  \Drupal::state()->set('dog.omeka_cache.error_items', 0);
+  \Drupal::state()->set('dog.omeka_cache.last_update', 0);
+  \Drupal::state()->set('dog.omeka_cache.page_items', 0);
+  \Drupal::state()->set('dog.omeka_cache.page_hits', 0);
+  \Drupal::state()->set('dog.omeka_cache.page_misses', 0);
+  \Drupal::state()->set('dog.omeka_cache.page_render_time', 0);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function dog_cache_debug_uninstall() {
+  // Rimuovi le variabili di stato al disinstallo
+  \Drupal::state()->delete('dog.omeka_cache.hits');
+  \Drupal::state()->delete('dog.omeka_cache.misses');
+  \Drupal::state()->delete('dog.omeka_cache.total_items');
+  \Drupal::state()->delete('dog.omeka_cache.cached_items');
+  \Drupal::state()->delete('dog.omeka_cache.error_items');
+  \Drupal::state()->delete('dog.omeka_cache.last_update');
+  \Drupal::state()->delete('dog.omeka_cache.page_items');
+  \Drupal::state()->delete('dog.omeka_cache.page_hits');
+  \Drupal::state()->delete('dog.omeka_cache.page_misses');
+  \Drupal::state()->delete('dog.omeka_cache.page_render_time');
+}
