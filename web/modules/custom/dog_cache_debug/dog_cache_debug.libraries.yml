@@ -1,0 +1,10 @@
+debug_styles:
+  version: 1.x
+  css:
+    theme:
+      css/debug_styles.css: {}
+  js:
+    js/debug.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery

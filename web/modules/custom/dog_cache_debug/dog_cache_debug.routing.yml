@@ -1,0 +1,25 @@
+dog_cache_debug.debug:
+  path: '/admin/config/services/dog/cache-debug'
+  defaults:
+    _controller: '\Drupal\dog_cache_debug\Controller\CacheDebugController::debugPage'
+    _title: 'Debug Cache Omeka'
+  requirements:
+    _permission: 'administer site configuration'
+
+dog_cache_debug.api:
+  path: '/admin/config/services/dog/cache-debug/api/{id}/{type}'
+  defaults:
+    _controller: '\Drupal\dog_cache_debug\Controller\CacheDebugController::apiResponse'
+    _title: 'Debug Cache API'
+    id: null
+    type: 'items'
+  requirements:
+    _permission: 'administer site configuration'
+    
+dog_cache_debug.refresh_cache:
+  path: '/admin/config/services/dog/cache-debug/refresh'
+  defaults:
+    _controller: '\Drupal\dog_cache_debug\Controller\CacheDebugController::refreshCache'
+    _title: 'Refresh Omeka Cache'
+  requirements:
+    _permission: 'administer site configuration'

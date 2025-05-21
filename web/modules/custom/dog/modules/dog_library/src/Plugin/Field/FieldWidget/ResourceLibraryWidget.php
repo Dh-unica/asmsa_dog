@@ -765,21 +765,46 @@ class ResourceLibraryWidget extends WidgetBase implements TrustedCallbackInterfa
     $value = NestedArray::getValue($values, $path);
     $items = [];
 
+    $logger = \Drupal::logger('dog_library_debug');
+    $logger->debug('DEBUG ResourceLibraryWidget: Tentativo di selezione risorse. Element: @element', [
+      '@element' => json_encode(array_intersect_key($element, array_flip(['#field_name', '#field_parents'])))
+    ]);
+
     if (!empty($value['resource_library_selection'])) {
       $ids = explode(',', $value['resource_library_selection']);
       $ids = array_filter($ids, 'is_string');
+      
+      $logger->notice('DEBUG ResourceLibraryWidget: IDs selezionati: @ids', [
+        '@ids' => implode(', ', $ids)
+      ]);
+      
       if (!empty($ids)) {
         $fetcher = \Drupal::service('dog.omeka_resource_fetcher');
         assert($fetcher instanceof ResourceFetcherInterface);
 
         foreach ($ids as $id) {
-
           // @todo retrieve the resource type.
           $resource_type = 'items';
+          
+          $logger->debug('DEBUG ResourceLibraryWidget: Tentativo di recupero risorsa ID: @id, Type: @type', [
+            '@id' => $id,
+            '@type' => $resource_type,
+          ]);
+          
           $data = $fetcher->retrieveResource($id, $resource_type);
+          
           if (empty($data)) {
+            $logger->warning('DEBUG ResourceLibraryWidget: FALLIMENTO recupero risorsa ID: @id, Type: @type', [
+              '@id' => $id,
+              '@type' => $resource_type,
+            ]);
             continue;
           }
+          
+          $logger->debug('DEBUG ResourceLibraryWidget: SUCCESSO recupero risorsa ID: @id, Type: @type', [
+            '@id' => $id,
+            '@type' => $resource_type,
+          ]);
 
           $items[] = [
             'id' => $id,
@@ -787,9 +812,16 @@ class ResourceLibraryWidget extends WidgetBase implements TrustedCallbackInterfa
           ];
         }
 
+        $logger->notice('DEBUG ResourceLibraryWidget: Risorse recuperate con successo: @count su @total', [
+          '@count' => count($items),
+          '@total' => count($ids),
+        ]);
+        
         // @phpstan-ignore-next-line
         return $items;
       }
+    } else {
+      $logger->debug('DEBUG ResourceLibraryWidget: Nessuna risorsa selezionata');
     }
 
     return $items;

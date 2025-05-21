@@ -1,5 +1,13 @@
 services:
 
+  # Cache bins.
+  cache.omeka_resources:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory: ['@cache_factory', 'get']
+    arguments: ['omeka_resources']
+
   # Services.
   dog.omeka_resource_fetcher:
     class: Drupal\dog\Service\OmekaResourceFetcher
@@ -16,7 +24,7 @@ services:
   # New Omeka cache service.
   dog.omeka_cache:
     class: Drupal\dog\Service\OmekaCacheService
-    arguments: [ '@dog.omeka_resource_fetcher', '@dog.omeka_url', '@cache.default', '@state', '@config.factory', '@logger.factory' ]
+    arguments: [ '@dog.omeka_resource_fetcher', '@dog.omeka_url', '@cache.omeka_resources', '@state', '@config.factory', '@logger.factory' ]
 
   # Omeka cache cron handler
   dog.omeka_cache_cron_handler:

@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Contains dog_debug.module.
+ */
+
+use Drupal\Core\Logger\RfcLogLevel;
+
+/**
+ * Implements hook_logger_filter_alter().
+ */
+function dog_debug_logger_filter_alter(&$level, $context) {
+  // Assicura che i messaggi di debug con prefisso DEBUG: siano sempre loggati
+  if (isset($context['message']) && strpos($context['message'], 'DEBUG:') !== FALSE) {
+    // Forza il livello di logging a notice per renderlo visibile nei log
+    $level = RfcLogLevel::NOTICE;
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function dog_debug_cron() {
+  // Pulisce vecchi log dopo 5 giorni
+  $database = \Drupal::database();
+  $database->delete('watchdog')
+    ->condition('type', ['dog_debug', 'dog_library_debug'], 'IN')
+    ->condition('timestamp', \Drupal::time()->getRequestTime() - 86400 * 5, '<')
+    ->execute();
+}

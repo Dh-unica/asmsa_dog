@@ -1,0 +1,56 @@
+/* Stili per il blocco di statistiche cache Omeka */
+
+.omeka-cache-stats-block {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.omeka-cache-stats-block details {
+  margin-bottom: 15px;
+}
+
+.omeka-cache-stats-block summary {
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px;
+  background-color: #eaeaea;
+  border-radius: 3px;
+}
+
+.omeka-cache-stats-block div {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.omeka-cache-stats-block strong {
+  display: inline-block;
+  min-width: 180px;
+}
+
+.cache-stats-good {
+  color: #2d882d; /* Verde per valori positivi */
+}
+
+.cache-stats-medium {
+  color: #aa8600; /* Giallo per valori medi */
+}
+
+.cache-stats-bad {
+  color: #a51b00; /* Rosso per valori problematici */
+}
+
+/* Stile per il bottone di refresh */
+.cache-refresh-button {
+  margin-top: 15px;
+}
+
+/* Responsive design per piccoli schermi */
+@media screen and (max-width: 600px) {
+  .omeka-cache-stats-block strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+}

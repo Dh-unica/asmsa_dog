@@ -138,17 +138,47 @@ class OmekaCacheService {
    */
   public function getResource(string $id, string $resource_type): ?array {
     $cache_key = "omeka_resource:{$resource_type}:{$id}";
+    
+    // Logging dettagliato pre-recupero dalla cache
+    $this->logger->debug('DEBUG: Tentativo di recupero risorsa Omeka dalla cache. ID: @id, Type: @type, Cache key: @key', [
+      '@id' => $id,
+      '@type' => $resource_type,
+      '@key' => $cache_key,
+    ]);
+    
     $cache = $this->cache->get($cache_key);
     
     if ($cache) {
+      $this->logger->debug('DEBUG: CACHE HIT per risorsa Omeka @type:@id', [
+        '@type' => $resource_type,
+        '@id' => $id,
+      ]);
       return $cache->data;
     }
     
     // Return NULL if not in cache - DO NOT make a live API call.
-    $this->logger->notice('Cache miss for Omeka resource @type:@id', [
+    $this->logger->warning('DEBUG: CACHE MISS per risorsa Omeka @type:@id con chiave @key', [
       '@type' => $resource_type,
       '@id' => $id,
+      '@key' => $cache_key,
     ]);
+    
+    // Verifica se la risorsa esiste con formati di chiave alternativi
+    $alternative_keys = [
+      "omeka_resource:{$id}", // Senza tipo
+      "omeka:{$resource_type}:{$id}", // Prefisso differente
+      "dog:{$resource_type}:{$id}", // Altro prefisso
+      "{$resource_type}:{$id}", // Solo tipo e id
+    ];
+    
+    foreach ($alternative_keys as $alt_key) {
+      if ($this->cache->get($alt_key)) {
+        $this->logger->notice('DEBUG: Risorsa trovata con chiave alternativa @key invece di @original_key', [
+          '@key' => $alt_key,
+          '@original_key' => $cache_key,
+        ]);
+      }
+    }
     
     return NULL;
   }
@@ -411,8 +441,15 @@ class OmekaCacheService {
       return FALSE;
     }
 
-    // Clear all Omeka resource cache to start fresh.
-    Cache::invalidateTags([self::CACHE_TAG_ALL]);
+    // NOTA: Non invalidiamo più tutta la cache all'inizio, in quanto ciò potrebbe causare problemi
+    // Cache::invalidateTags([self::CACHE_TAG_ALL]);
+    
+    // Log informativo per debug
+    $this->logger->notice('OmekaCache batch: avvio aggiornamento senza invalidazione cache');
+    
+    // Recupera il bin di cache corretto direttamente per verificare
+    $cache_factory = \Drupal::service('cache_factory');
+    $direct_cache = $cache_factory->get('omeka_resources');
 
     // Controlla se abbiamo elementi da elaborare
     if (!isset($context['sandbox']['items_to_process']) || 
@@ -459,12 +496,46 @@ class OmekaCacheService {
           "omeka_resource:{$resource_type}:{$current_id}"
         ];
         
-        $this->cache->set(
-          $cache_key,
-          $resource_data,
-          time() + self::CACHE_LIFETIME,
-          $cache_tags
-        );
+        // Log dettagliato per debug
+        $this->logger->notice('OmekaCache: Salvataggio elemento @id nella cache con chiave "@key"', [
+          '@id' => $current_id,
+          '@key' => $cache_key,
+        ]);
+        
+        try {
+          // Utilizza un approccio alternativo per il salvataggio - simile al test manuale che ha avuto successo
+          $direct_cache->set(
+            $cache_key,
+            $resource_data,
+            time() + self::CACHE_LIFETIME,
+            $cache_tags
+          );
+          
+          // Verifica dopo il salvataggio
+          $verify_cache = $direct_cache->get($cache_key);
+          if ($verify_cache) {
+            $this->logger->notice('OmekaCache: Salvataggio riuscito per @id (@current/@total)', [
+              '@id' => $current_id,
+              '@current' => $current_index + 1,
+              '@total' => count($context['sandbox']['items_to_process']),
+            ]);
+          } else {
+            $this->logger->error('OmekaCache: Elemento @id non trovato in cache dopo il salvataggio!', [
+              '@id' => $current_id,
+            ]);
+            
+            // Secondo tentativo con cache diretta
+            $this->logger->notice('OmekaCache: Secondo tentativo di salvataggio per @id con cache diretta', [
+              '@id' => $current_id,
+            ]);
+            $direct_cache->set($cache_key, $resource_data, time() + self::CACHE_LIFETIME, $cache_tags);
+          }
+        } catch (\Exception $e) {
+          $this->logger->error('OmekaCache: Errore nel salvataggio in cache per @id: @error', [
+            '@id' => $current_id,
+            '@error' => $e->getMessage(),
+          ]);
+        }
         
         $context['results']['processed']++;
       } else {

@@ -45,6 +45,7 @@ module:
   dblog: 0
   devel: 0
   dog: 0
+  dog_cache_debug: 0
   dog_ckeditor5: 0
   dog_library: 0
   dog_utils: 0

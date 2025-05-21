@@ -1,0 +1,174 @@
+<?php
+
+/**
+ * @file
+ * Provides utilities for debugging the Omeka cache system.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function dog_cache_debug_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.dog_cache_debug':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Utilities for debugging the Omeka cache system.') . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Verifica lo stato della cache delle risorse Omeka.
+ *
+ * @param string $id
+ *   ID della risorsa da cercare.
+ * @param string $resource_type
+ *   Tipo di risorsa Omeka (default: 'items').
+ * @param bool $list_keys
+ *   Se TRUE, cerca di elencare le chiavi della cache.
+ * @param bool $inspect_data
+ *   Se TRUE, restituisce anche i dati effettivi della cache (se trovati).
+ *
+ * @return array
+ *   Array con informazioni sullo stato della cache.
+ */
+function dog_cache_debug_check_status($id = NULL, $resource_type = 'items', $list_keys = FALSE, $inspect_data = FALSE) {
+  $result = [
+    'timestamp' => \Drupal::time()->getRequestTime(),
+    'formatted_time' => date('Y-m-d H:i:s'),
+  ];
+  
+  try {
+    // Ottieni la factory della cache.
+    $cache_factory = \Drupal::service('cache_factory');
+    
+    // Ottieni i bin di cache potenzialmente rilevanti per Omeka.
+    $bin_names = [
+      'omeka_resources',  // Nome specifico dal servizio OmekaCacheService.
+      'omeka',            // Possibile nome alternativo.
+      'dog',              // Altro possibile nome per il modulo principale.
+      'default',          // Cache di default.
+    ];
+    
+    $result['checked_bins'] = [];
+    
+    foreach ($bin_names as $bin_name) {
+      try {
+        $cache = $cache_factory->get($bin_name);
+        $result['checked_bins'][] = $bin_name;
+        
+        // Verifica se una specifica risorsa è in cache.
+        if ($id) {
+          $cache_key = "omeka_resource:{$resource_type}:{$id}";
+          $cache_data = $cache->get($cache_key);
+          
+          $result['bins'][$bin_name]['resource_found'] = !empty($cache_data);
+          $result['bins'][$bin_name]['cache_key_checked'] = $cache_key;
+          
+          if (!empty($cache_data) && $inspect_data) {
+            $result['bins'][$bin_name]['data'] = $cache_data->data;
+          }
+          
+          // Verifica chiavi alternative.
+          $alternative_keys = [
+            "omeka_resource:{$id}",             // Senza tipo.
+            "omeka:{$resource_type}:{$id}",     // Prefisso differente.
+            "dog:{$resource_type}:{$id}",       // Altro prefisso.
+            "{$resource_type}:{$id}",           // Solo tipo e id.
+            "resource:{$resource_type}:{$id}",  // Altro prefisso.
+          ];
+          
+          $result['bins'][$bin_name]['alternative_keys_checked'] = [];
+          
+          foreach ($alternative_keys as $alt_key) {
+            $alt_data = $cache->get($alt_key);
+            $result['bins'][$bin_name]['alternative_keys_checked'][] = $alt_key;
+            
+            if (!empty($alt_data)) {
+              $result['bins'][$bin_name]['found_with_alternative_key'] = $alt_key;
+              
+              if ($inspect_data) {
+                $result['bins'][$bin_name]['alternative_data'][$alt_key] = $alt_data->data;
+              }
+            }
+          }
+        }
+      }
+      catch (\Exception $e) {
+        $result['errors'][] = "Errore nell'accesso al bin {$bin_name}: " . $e->getMessage();
+      }
+    }
+    
+    // Ottieni alcune statistiche di base dai dati di stato.
+    $state = \Drupal::state();
+    $result['cache_statistics'] = [
+      'last_update_timestamp' => $state->get('dog.omeka_cache.last_update', 0),
+      'last_update_formatted' => date('Y-m-d H:i:s', $state->get('dog.omeka_cache.last_update', 0)),
+      'total_items' => $state->get('dog.omeka_cache.total_items', 0),
+      'cached_items' => $state->get('dog.omeka_cache.cached_items', 0),
+      'error_items' => $state->get('dog.omeka_cache.error_items', 0),
+    ];
+    
+    // Recupera il servizio cache specifico se disponibile - usa il nome corretto dog.omeka_cache.
+    try {
+      $omeka_cache = \Drupal::service('dog.omeka_cache');
+      $result['cache_service_available'] = TRUE;
+      $result['cache_service_status'] = $omeka_cache->getConfigurationStatus();
+      
+      // Verifica direttamente con il servizio se la risorsa è in cache
+      if ($id) {
+        $resource_from_service = $omeka_cache->getResource($id, $resource_type);
+        $result['service_check'] = [
+          'service_found_resource' => !empty($resource_from_service),
+          'resource_type_checked' => $resource_type,
+          'id_checked' => $id,
+        ];
+      }
+      
+      // Ottieni informazioni su come il servizio memorizza gli elementi in cache
+      $cache_info = ['bin_used' => 'default']; // Il servizio usa cache.default come mostrato nel services.yml
+      $result['service_cache_info'] = $cache_info;
+    }
+    catch (\Exception $e) {
+      // In caso di errore, prova con il nome corretto dog.omeka_cache
+      try {
+        $omeka_cache = \Drupal::service('dog.omeka_cache');
+        $result['cache_service_available'] = TRUE;
+        $result['cache_service_status'] = $omeka_cache->getConfigurationStatus();
+        
+        // Verifica direttamente con il servizio se la risorsa è in cache
+        if ($id) {
+          $resource_from_service = $omeka_cache->getResource($id, $resource_type);
+          $result['service_check'] = [
+            'service_found_resource' => !empty($resource_from_service),
+            'resource_type_checked' => $resource_type,
+            'id_checked' => $id,
+          ];
+        }
+      }
+      catch (\Exception $e2) {
+        $result['cache_service_available'] = FALSE;
+        $result['cache_service_error'] = $e->getMessage() . ' / ' . $e2->getMessage();
+      }
+    }
+  }
+  catch (\Exception $e) {
+    $result['error'] = $e->getMessage();
+  }
+  
+  return $result;
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function dog_cache_debug_page_attachments(array &$attachments) {
+  // Aggiungi CSS solo per la pagina di debug.
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if ($route_name == 'dog_cache_debug.debug') {
+    $attachments['#attached']['library'][] = 'dog_cache_debug/debug_styles';
+  }
+}

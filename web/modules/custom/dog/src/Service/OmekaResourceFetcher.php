@@ -94,12 +94,52 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    * {@inheritDoc}
    */
   public function retrieveResource(string $id, string $resource_type): ?array {
+    // Logging iniziale per tracciare la richiesta
+    $this->logger->debug('DEBUG OmekaResourceFetcher: Tentativo di recupero risorsa. ID: @id, Type: @type', [
+      '@id' => $id,
+      '@type' => $resource_type,
+    ]);
+    
+    // Prima verifica se esiste una implementazione del cache manager
+    $cacheService = NULL;
+    
+    try {
+      $cacheService = \Drupal::service('dog.omeka_cache');
+      $this->logger->debug('DEBUG OmekaResourceFetcher: Servizio cache trovato, verifico in cache prima');
+      
+      // Controlla se la risorsa è disponibile nella cache
+      $cachedData = $cacheService->getResource($id, $resource_type);
+      
+      // Se abbiamo trovato i dati in cache, li restituiamo immediatamente
+      if (!empty($cachedData)) {
+        $this->logger->debug('DEBUG OmekaResourceFetcher: Risorsa @id:@type trovata in cache!', [
+          '@id' => $id,
+          '@type' => $resource_type,
+        ]);
+        return $cachedData;
+      }
+      
+      $this->logger->debug('DEBUG OmekaResourceFetcher: Risorsa NON trovata in cache, procedo con API');
+    }
+    catch (\Exception $e) {
+      $this->logger->warning('DEBUG OmekaResourceFetcher: Errore nel tentativo di accesso alla cache: @error', [
+        '@error' => $e->getMessage(),
+      ]);
+      // Continua con la chiamata API se c'è un problema con la cache
+    }
+    
     // Run request.
     // Aggiungiamo il prefisso 'api/' all'URL base
     $uri = sprintf("api/%s/%s", $resource_type, $id);
+    $this->logger->debug('DEBUG OmekaResourceFetcher: Chiamata API a URI: @uri', ['@uri' => $uri]);
+    
     $result = $this->request('GET', $uri);
 
     if ($result === FALSE) {
+      $this->logger->warning('DEBUG OmekaResourceFetcher: Chiamata API fallita per ID: @id, Type: @type', [
+        '@id' => $id,
+        '@type' => $resource_type,
+      ]);
       return NULL;
     }
 
@@ -107,6 +147,28 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
     $data = $result->getContent();
     $data['id'] = $id;
     $data['type'] = $resource_type;
+    
+    $this->logger->debug('DEBUG OmekaResourceFetcher: Risorsa recuperata da API con successo. ID: @id, Type: @type', [
+      '@id' => $id,
+      '@type' => $resource_type,
+    ]);
+    
+    // Se abbiamo il servizio cache, salviamo la risorsa in cache
+    if ($cacheService !== NULL) {
+      try {
+        // Utilizziamo il metodo fetchResource che gestisce il salvataggio in cache
+        $cacheService->fetchResource($resource_type, $id, TRUE);
+        $this->logger->debug('DEBUG OmekaResourceFetcher: Risorsa salvata in cache. ID: @id, Type: @type', [
+          '@id' => $id,
+          '@type' => $resource_type,
+        ]);
+      }
+      catch (\Exception $e) {
+        $this->logger->warning('DEBUG OmekaResourceFetcher: Impossibile salvare in cache: @error', [
+          '@error' => $e->getMessage(),
+        ]);
+      }
+    }
 
     return $data;
   }
