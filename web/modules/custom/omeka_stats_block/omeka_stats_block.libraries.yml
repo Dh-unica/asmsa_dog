@@ -1,0 +1,8 @@
+omeka_stats:
+  version: 1.x
+  js:
+    js/omeka-stats.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal

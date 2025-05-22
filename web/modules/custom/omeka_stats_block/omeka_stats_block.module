@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * @file
+ * Module file for omeka_stats_block.
+ */
+
+use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Database\Database;
+
+/**
+ * Implements hook_dog_omeka_cache_access().
+ *
+ * Registra gli accessi alla cache Omeka in un database per l'analisi.
+ */
+function omeka_stats_block_dog_omeka_cache_access($resource_id, $resource_type, $cache_key, $cache_hit, $load_time = NULL) {
+  try {
+    // Ottieni informazioni sulla richiesta
+    $request_id = $_SERVER['HTTP_X_REQUEST_ID'] ?? $_SERVER['UNIQUE_ID'] ?? uniqid('req_', true);
+    $current_path = \Drupal::service('path.current')->getPath();
+    
+    // Verifica che la tabella esista
+    $schema = Database::getConnection()->schema();
+    if (!$schema->tableExists('omeka_cache_access_log')) {
+      return;
+    }
+    
+    // Registra l'accesso
+    Database::getConnection()->insert('omeka_cache_access_log')
+      ->fields([
+        'resource_id' => $resource_id,
+        'resource_type' => $resource_type,
+        'cache_key' => $cache_key,
+        'cache_hit' => $cache_hit ? 1 : 0,
+        'load_time' => $load_time,
+        'access_time' => time(),
+        'request_id' => $request_id,
+        'url' => $current_path,
+      ])
+      ->execute();
+      
+    // Registra anche in stato Drupal per accesso più veloce
+    $state = \Drupal::state();
+    
+    // Aggiorna contatori globali
+    if ($cache_hit) {
+      $hits = $state->get('dog.omeka_cache.hits', 0);
+      $state->set('dog.omeka_cache.hits', $hits + 1);
+    } else {
+      $misses = $state->get('dog.omeka_cache.misses', 0);
+      $state->set('dog.omeka_cache.misses', $misses + 1);
+    }
+    
+    // Aggiorna contatori della pagina corrente
+    $page_stats = $state->get('dog.omeka_cache.page_stats', []);
+    if (!isset($page_stats[$request_id])) {
+      $page_stats[$request_id] = [
+        'hits' => 0,
+        'misses' => 0,
+        'total' => 0,
+        'time' => time(),
+        'url' => $current_path,
+      ];
+    }
+    
+    $page_stats[$request_id]['total']++;
+    if ($cache_hit) {
+      $page_stats[$request_id]['hits']++;
+    } else {
+      $page_stats[$request_id]['misses']++;
+    }
+    
+    $state->set('dog.omeka_cache.page_stats', $page_stats);
+  }
+  catch (\Exception $e) {
+    \Drupal::logger('omeka_stats_block')->error('Errore durante la registrazione dell\'accesso alla cache: @message', [
+      '@message' => $e->getMessage(),
+    ]);
+  }
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function omeka_stats_block_module_implements_alter(&$implementations, $hook) {
+  // Assicurati che il nostro hook venga eseguito per ultimo
+  if ($hook == 'dog_omeka_cache_access' && isset($implementations['omeka_stats_block'])) {
+    $group = $implementations['omeka_stats_block'];
+    unset($implementations['omeka_stats_block']);
+    $implementations['omeka_stats_block'] = $group;
+  }
+}
