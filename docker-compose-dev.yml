@@ -6,15 +6,15 @@ services:
     ports:
       - '7001:80'
   php:
-    environment:
-      PHP_XDEBUG: 1
-      PHP_XDEBUG_MODE: debug
+#    environment:
+#      PHP_XDEBUG: 1
+#      PHP_XDEBUG_MODE: debug
 #      PHP_XDEBUG_MODE: profile
-      PHP_XDEBUG_USE_COMPRESSION: false
-      PHP_IDE_CONFIG: serverName=my-ide
-      PHP_XDEBUG_IDEKEY: "my-ide"
+#      PHP_XDEBUG_USE_COMPRESSION: false
+#      PHP_IDE_CONFIG: serverName=my-ide
+#      PHP_XDEBUG_IDEKEY: "my-ide"
 #     PHP_XDEBUG_CLIENT_HOST: 172.17.0.1 # Linux
-      PHP_XDEBUG_CLIENT_HOST: host.docker.internal # Docker 18.03+ Mac/Win
+#      PHP_XDEBUG_CLIENT_HOST: host.docker.internal # Docker 18.03+ Mac/Win
 #      PHP_XDEBUG_CLIENT_HOST: 10.0.75.1 # Windows, Docker < 18.03
 #      PHP_XDEBUG_LOG: /tmp/php-xdebug.log
 #      # PHPUnit Drupal testing configurations
@@ -22,3 +22,13 @@ services:
 #      SIMPLETEST_DB: "${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}#tests_"
 #      MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu","--headless"]}}, "http://chrome:9515"]'
 
+  pma:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '8080:80'
+    container_name: "${PROJECT_NAME}_pma"
+    environment:
+      PMA_HOST: $DB_HOST
+      PMA_USER: $DB_USER
+      PMA_PASSWORD: $DB_PASSWORD
+      UPLOAD_LIMIT: 1G

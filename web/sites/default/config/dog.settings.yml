@@ -1,7 +1,5 @@
 _core:
   default_config_hash: j0l9thbNSoAxI7ZdIqauC1MAlMYTEpE-vV3vkCTFccA
-base_url: 'https://storia.dh.unica.it/risorse'
+base_url: 'https://storia.dh.unica.it/risorse/'
 key_identity: ''
 key_credential: ''
-cache_ttl: '3600'
-batch_size: '100'

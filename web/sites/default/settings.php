@@ -818,3 +818,44 @@ $settings['trusted_host_patterns'] = [
   '^nginx$',
   '^localhost$',
 ];
+
+$settings['redis.connection']['interface'] = 'PhpRedis'; // O 'Predis' se usi Predis
+$settings['redis.connection']['host'] = 'redis'; // Nome del container Docker
+
+$settings['cache']['default'] = 'cache.backend.redis';
+
+// Usa Redis anche per i container di cache specifici
+// $settings['cache']['bins']['bootstrap'] = 'cache.backend.redis';
+// $settings['cache']['bins']['discovery'] = 'cache.backend.redis';
+// $settings['cache']['bins']['config'] = 'cache.backend.redis';
+
+// Usa Redis per le sessioni (opzionale)
+$settings['redis.connection']['persistent'] = 0;
+$settings['redis.connection']['port'] = 6379;
+$settings['redis.connection']['base'] = 0;
+
+// $settings['container_yamls'][] = 'modules/contrib/redis/example.services.yml';
+
+// Preload Redis services
+// $settings['bootstrap_container_definition'] = [
+//   'parameters' => [
+//     'redis.settings' => $settings['redis.connection'],
+//   ],
+//   'services' => [
+//     'redis.factory' => [
+//       'class' => 'Drupal\redis\ClientFactory',
+//       'arguments' => ['%redis.settings%'],
+//     ],
+//     'redis.cache_tags_checksum' => [
+//       'class' => 'Drupal\redis\Cache\RedisCacheTagsChecksum',
+//       'arguments' => ['@redis.factory'],
+//     ],
+//     'cache.backend.redis' => [
+//       'class' => 'Drupal\redis\Cache\CacheBackendFactory',
+//       'arguments' => ['@redis.factory', '@redis.cache_tags_checksum', '@serialization.phpserialize'],
+//     ],
+//     'serialization.phpserialize' => [
+//       'class' => 'Drupal\Component\Serialization\PhpSerialize',
+//     ],
+//   ],
+// ];
