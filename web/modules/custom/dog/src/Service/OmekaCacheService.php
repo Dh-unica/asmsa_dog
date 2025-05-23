@@ -33,7 +33,7 @@ class OmekaCacheService {
   /**
    * Cache tag for all Omeka resources.
    */
-  const CACHE_TAG_ALL = 'omeka_resources:all';
+  const CACHE_TAG_ALL = 'dog_omeka_resource:all';
 
   /**
    * State key for last update timestamp.
@@ -267,11 +267,11 @@ class OmekaCacheService {
       $resource = $this->resourceFetcher->getResource($resource_type, $id);
       
       if ($resource) {
-        // Memorizza in cache con l'impostazione di tag appropriata
+        // Memorizza in cache con l'impostazione di tag appropriata usando i tag specifici del modulo
         $cache_tags = [
-          'omeka_resource',
-          "omeka_resource:{$resource_type}",
-          "omeka_resource:{$resource_type}:{$id}",
+          'dog_omeka_resource',
+          "dog_omeka_resource:{$resource_type}",
+          "dog_omeka_resource:{$resource_type}:{$id}",
         ];
         
         // Calcola scadenza dalla configurazione
@@ -440,9 +440,9 @@ class OmekaCacheService {
       ];
       return FALSE;
     }
-
-    // NOTA: Non invalidiamo più tutta la cache all'inizio, in quanto ciò potrebbe causare problemi
-    // Cache::invalidateTags([self::CACHE_TAG_ALL]);
+    
+    // IMPORTANTE: Rimuoviamo completamente l'invalidazione generale della cache
+    // per evitare che venga svuotata durante l'aggiornamento
     
     // Log informativo per debug
     $this->logger->notice('OmekaCache batch: avvio aggiornamento senza invalidazione cache');
@@ -490,10 +490,11 @@ class OmekaCacheService {
         
         // Cache l'elemento con i tag appropriati
         $cache_key = "omeka_resource:{$resource_type}:{$current_id}";
+        // Uso tag più specifici che non verranno invalidati da altre operazioni di Drupal
         $cache_tags = [
-          self::CACHE_TAG_ALL,
-          "omeka_resource:{$resource_type}",
-          "omeka_resource:{$resource_type}:{$current_id}"
+          "dog_omeka_resource", // Tag base specifico del modulo
+          "dog_omeka_resource:{$resource_type}",
+          "dog_omeka_resource:{$resource_type}:{$current_id}"
         ];
         
         // Log dettagliato per debug
@@ -706,5 +707,65 @@ class OmekaCacheService {
   public function needsRefresh(int $max_age = 86400): bool {
     $last_update = $this->state->get(self::STATE_LAST_UPDATE, 0);
     return (time() - $last_update) > $max_age;
+  }
+  
+  /**
+   * Esegue una diagnosi dello stato della cache.
+   *
+   * Questo metodo verifica lo stato effettivo della tabella cache_omeka_resources
+   * e lo confronta con i dati memorizzati nel sistema di state.
+   *
+   * @return array
+   *   Array con informazioni diagnostiche.
+   */
+  public function diagnosticaCacheStatus(): array {
+    $database = \Drupal::database();
+    
+    // Conta gli elementi effettivamente presenti nella tabella cache
+    $query = $database->select('cache_omeka_resources', 'c')
+      ->fields('c', ['cid'])
+      ->countQuery();
+    $actual_cache_count = $query->execute()->fetchField();
+    
+    // Recupera i valori memorizzati nel sistema state
+    $state_total = $this->state->get(self::STATE_TOTAL_ITEMS, 0);
+    $state_cached = $this->state->get(self::STATE_CACHED_ITEMS, 0);
+    $state_errors = $this->state->get(self::STATE_ERROR_ITEMS, 0);
+    $last_update = $this->state->get(self::STATE_LAST_UPDATE, 0);
+    
+    // Verifica se ci sono discrepanze
+    $discrepancy = ($actual_cache_count != $state_cached);
+    
+    // Log dettagliato se ci sono discrepanze
+    if ($discrepancy) {
+      $this->logger->warning('Discrepanza rilevata nella cache Omeka: @actual elementi effettivi vs @expected attesi', [
+        '@actual' => $actual_cache_count,
+        '@expected' => $state_cached,
+      ]);
+      
+      // Verifica gli ultimi 5 elementi nella cache per debug
+      $recent_items = $database->select('cache_omeka_resources', 'c')
+        ->fields('c', ['cid', 'expire'])
+        ->orderBy('created', 'DESC')
+        ->range(0, 5)
+        ->execute()
+        ->fetchAll();
+      
+      foreach ($recent_items as $item) {
+        $this->logger->debug('Elemento cache recente: @cid, scadenza: @expire', [
+          '@cid' => $item->cid,
+          '@expire' => date('Y-m-d H:i:s', $item->expire),
+        ]);
+      }
+    }
+    
+    return [
+      'actual_cache_count' => $actual_cache_count,
+      'state_total' => $state_total,
+      'state_cached' => $state_cached,
+      'state_errors' => $state_errors,
+      'last_update' => $last_update ? date('Y-m-d H:i:s', $last_update) : 'Mai',
+      'discrepancy' => $discrepancy,
+    ];
   }
 }

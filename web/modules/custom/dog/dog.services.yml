@@ -7,6 +7,14 @@ services:
       - { name: cache.bin }
     factory: ['@cache_factory', 'get']
     arguments: ['omeka_resources']
+    
+  # Cache bin per i dati geografici degli oggetti Omeka.
+  cache.omeka_geo_data:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory: ['@cache_factory', 'get']
+    arguments: ['omeka_geo_data']
 
   # Services.
   dog.omeka_resource_fetcher:
@@ -25,6 +33,11 @@ services:
   dog.omeka_cache:
     class: Drupal\dog\Service\OmekaCacheService
     arguments: [ '@dog.omeka_resource_fetcher', '@dog.omeka_url', '@cache.omeka_resources', '@state', '@config.factory', '@logger.factory' ]
+    
+  # Servizio per la cache dei dati geografici Omeka.
+  dog.omeka_geo_cache:
+    class: Drupal\dog\Service\OmekaGeoDataCacheService
+    arguments: [ '@dog.omeka_cache', '@dog.omeka_resource_fetcher', '@cache.omeka_geo_data', '@state', '@config.factory', '@logger.factory' ]
 
   # Omeka cache cron handler
   dog.omeka_cache_cron_handler:
