@@ -159,6 +159,20 @@ class OmekaCacheRefreshForm extends FormBase {
       '#value' => $this->t('Refresh Omeka Cache'),
       '#button_type' => 'primary',
     ];
+    
+    $form['actions']['test_api'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Test API Connectivity'),
+      '#submit' => ['::testApiConnectivity'],
+      '#button_type' => 'secondary',
+    ];
+    
+    $form['actions']['refresh_count'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Aggiorna Conteggi Reali'),
+      '#submit' => ['::refreshRealCounts'],
+      '#button_type' => 'secondary',
+    ];
 
     return $form;
   }
@@ -301,4 +315,98 @@ class OmekaCacheRefreshForm extends FormBase {
     }
   }
 
+  /**
+   * Test della connettività API.
+   */
+  public function testApiConnectivity(array &$form, FormStateInterface $form_state) {
+    // Esegue i test di connettività API
+    $test_results = $this->geoCacheService->testApiConnectivity();
+    
+    // Prepara i messaggi per l'utente
+    foreach ($test_results as $api_name => $result) {
+      $api_label = $api_name === 'items_api' ? 'API Items' : 'API Mapping Features';
+      
+      switch ($result['status']) {
+        case 'success':
+          $this->messenger()->addStatus($this->t('@api: ✅ @message (@count elementi totali)', [
+            '@api' => $api_label,
+            '@message' => $result['message'],
+            '@count' => $result['count'],
+          ]));
+          
+          // Mostra un sample della risposta se disponibile
+          if (!empty($result['response_sample'])) {
+            $this->messenger()->addStatus($this->t('Sample response: <pre>@sample</pre>', [
+              '@sample' => substr($result['response_sample'], 0, 300) . '...',
+            ]));
+          }
+          break;
+          
+        case 'warning':
+          $this->messenger()->addWarning($this->t('@api: ⚠️ @message', [
+            '@api' => $api_label,
+            '@message' => $result['message'],
+          ]));
+          break;
+          
+        case 'error':
+          $this->messenger()->addError($this->t('@api: ❌ @message', [
+            '@api' => $api_label,
+            '@message' => $result['message'],
+          ]));
+          break;
+      }
+    }
+    
+    // Log dettagliato per debugging
+    \Drupal::logger('dog_omeka_cache')->info('Test API eseguito: @results', [
+      '@results' => json_encode($test_results, JSON_PRETTY_PRINT),
+    ]);
+  }
+  
+  /**
+   * Aggiorna i conteggi reali.
+   */
+  public function refreshRealCounts(array &$form, FormStateInterface $form_state) {
+    $this->messenger()->addStatus($this->t('🔄 Aggiornamento conteggi in corso...'));
+    
+    // Aggiorna il conteggio delle mapping features
+    $geo_count = $this->geoCacheService->getRealMappingFeaturesCount();
+    
+    if ($geo_count > 0) {
+      // SALVA il nuovo conteggio nel state
+      $state = \Drupal::state();
+      $state->set('dog.omeka_geo_cache.total_items', $geo_count);
+      
+      $this->messenger()->addStatus($this->t('✅ Mapping Features: @count elementi trovati e salvati', [
+        '@count' => $geo_count,
+      ]));
+    } else {
+      $this->messenger()->addWarning($this->t('⚠️ Nessuna mapping feature trovata nell\'API o errore nella connessione'));
+    }
+    
+    // Aggiorna il conteggio degli items principali
+    try {
+      $items_count = $this->cacheService->getTotalItemsFromApi();
+      if ($items_count > 0) {
+        $state = \Drupal::state();
+        $state->set('dog.omeka_cache.total_items', $items_count);
+        
+        $this->messenger()->addStatus($this->t('✅ Items Principali: @count elementi trovati e salvati', [
+          '@count' => $items_count,
+        ]));
+      } else {
+        $this->messenger()->addWarning($this->t('⚠️ Errore nel conteggio degli items principali'));
+      }
+    } catch (\Exception $e) {
+      $this->messenger()->addError($this->t('❌ Errore items principali: @message', [
+        '@message' => $e->getMessage(),
+      ]));
+    }
+    
+    $this->messenger()->addStatus($this->t('✅ Conteggi aggiornati! I nuovi valori sono ora visibili.'));
+    
+    // Forza il reload della pagina per mostrare i nuovi valori
+    $form_state->setRedirect('<current>');
+  }
 }

@@ -768,4 +768,62 @@ class OmekaCacheService {
       'discrepancy' => $discrepancy,
     ];
   }
+
+  /**
+   * Ottiene il conteggio effettivo degli items dall'API Omeka.
+   * 
+   * @return int
+   *   Il numero totale di items disponibili nell'API.
+   */
+  public function getTotalItemsFromApi(): int {
+    try {
+      $this->logger->info('Tentativo di ottenere conteggio reale items dall\'API...');
+      
+      // Chiamata con per_page=1 per ottenere solo il totale dall'header
+      $total_results = 0;
+      $result = $this->resourceFetcher->search('items', [], 1, 1, $total_results);
+      
+      if ($total_results > 0) {
+        $this->logger->info('Conteggio items da API header: @count', ['@count' => $total_results]);
+        return $total_results;
+      }
+      
+      // Fallback: se non abbiamo l'header, conta manualmente
+      $this->logger->info('Header total_results non disponibile, conteggio manuale...');
+      $page = 1;
+      $per_page = 100;
+      $total_count = 0;
+      
+      do {
+        $total_results_page = 0;
+        $result = $this->resourceFetcher->search('items', [], $page, $per_page, $total_results_page);
+        
+        $current_count = is_array($result) ? count($result) : 0;
+        $total_count += $current_count;
+        $page++;
+        
+        $this->logger->info('Pagina @page: trovati @count items (totale: @total)', [
+          '@page' => $page - 1,
+          '@count' => $current_count,
+          '@total' => $total_count,
+        ]);
+        
+        // Evita loop infiniti
+        if ($page > 100) {
+          $this->logger->warning('Interrotto conteggio dopo 100 pagine per evitare loop infiniti');
+          break;
+        }
+        
+      } while ($current_count === $per_page);
+      
+      $this->logger->info('Conteggio finale items: @count', ['@count' => $total_count]);
+      return $total_count;
+      
+    } catch (\Exception $e) {
+      $this->logger->error('Errore nel conteggio items: @message', [
+        '@message' => $e->getMessage(),
+      ]);
+      return 0;
+    }
+  }
 }

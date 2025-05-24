@@ -311,7 +311,7 @@ class OmekaGeoDataCacheService {
     }
     
     // Log informativo per debug
-    $this->logger->notice('OmekaGeoCache batch: avvio aggiornamento cache dati geografici dalla API mapping_feature');
+    $this->logger->notice('OmekaGeoCache batch: avvio aggiornamento cache dati geografici dalla API mapping_features');
     
     try {
       // Se siamo in modalità elaborazione per pagina
@@ -323,9 +323,10 @@ class OmekaGeoDataCacheService {
           '@page' => $current_page,
         ]);
         
-        // Chiamiamo l'endpoint mapping_feature invece di items
-        $total_results = 0;
-        $mapping_features = $this->resourceFetcher->search('mapping_feature', [], $current_page, $batch_size, $total_results);
+        // Utilizziamo il nuovo metodo per chiamate dirette all'API
+        $api_result = $this->fetchMappingFeatures($current_page, $batch_size);
+        $mapping_features = $api_result['data'];
+        $total_results = $api_result['total_results'];
         
         // Se abbiamo ricevuto un conteggio totale valido, aggiorniamo la stima
         if ($total_results > 0) {
@@ -553,35 +554,61 @@ class OmekaGeoDataCacheService {
     // Prova a stimare il numero totale di mapping features
     try {
       // Facciamo una chiamata API con per_page=1 per ottenere i metadati di paginazione
-      $total_results = 0;
-      $test_features = $this->resourceFetcher->search('mapping_feature', [], 1, 1, $total_results);
+      $this->logger->info('Inizializzazione batch: tentativo di ottenere conteggio totale mapping features...');
       
-      // Usa direttamente il valore di $total_results ottenuto dal metodo search()
-      $estimated_total = $total_results;
+      $api_result = $this->fetchMappingFeatures(1, 1);
+      $test_features = $api_result['data'];
+      $total_results = $api_result['total_results'];
       
-      // Se non abbiamo ottenuto un valore valido, usiamo una stima ragionevole
-      if ($estimated_total <= 0) {
-        if (!empty($test_features) && is_array($test_features)) {
-          // Se abbiamo risultati ma non un conteggio, facciamo una stima di almeno 100
-          $estimated_total = 100;
+      $this->logger->info('Risultato chiamata API: features trovate=@features_count, total_results=@total', [
+        '@features_count' => is_array($test_features) ? count($test_features) : 0,
+        '@total' => $total_results,
+      ]);
+      
+      // Prima priorità: usa il valore total_results se disponibile e valido
+      if ($total_results > 0) {
+        $estimated_total = $total_results;
+        $this->logger->info('Usando conteggio da header API: @count', ['@count' => $estimated_total]);
+      }
+      // Seconda priorità: se abbiamo almeno una feature, prova a fare una stima
+      else if (!empty($test_features) && is_array($test_features)) {
+        // Prova con per_page più alto per fare una stima migliore
+        $api_result_sample = $this->fetchMappingFeatures(1, 100);
+        $sample_features = $api_result_sample['data'];
+        $sample_count = is_array($sample_features) ? count($sample_features) : 0;
+        
+        if ($sample_count >= 100) {
+          // Ci sono probabilmente molte più feature, stimiamo almeno 200
+          $estimated_total = 200;
+          $this->logger->info('Stima basata su sample: almeno @count elementi (trovati @sample in una pagina)', [
+            '@count' => $estimated_total,
+            '@sample' => $sample_count,
+          ]);
         } else {
-          // Altrimenti usiamo un valore di default
-          $estimated_total = 50;
+          // Usiamo il numero effettivo trovato
+          $estimated_total = $sample_count;
+          $this->logger->info('Usando conteggio effettivo dal sample: @count', ['@count' => $estimated_total]);
         }
       }
-      
-      $this->logger->notice('OmekaGeoCache batch: stima totale feature geografiche: @count', [
-        '@count' => $estimated_total,
-      ]);
+      // Ultima risorsa: nessun dato disponibile
+      else {
+        $estimated_total = 0;
+        $this->logger->warning('Nessuna mapping feature trovata nell\'API, impostando conteggio a 0');
+      }
       
       $context['sandbox']['estimated_total'] = $estimated_total;
+      $this->state->set(self::STATE_TOTAL_GEO_ITEMS, $estimated_total);
       
-      $this->logger->notice('OmekaGeoCache batch: inizializzato in modalità paginazione, stima di @count elementi', [
+      $this->logger->info('OmekaGeoCache batch: inizializzato in modalità paginazione, stima di @count elementi', [
         '@count' => $estimated_total,
       ]);
       
-      // Salva subito il conteggio stimato per le statistiche
-      $this->state->set(self::STATE_TOTAL_GEO_ITEMS, $estimated_total);
+      // Inizializza contatori dei risultati
+      $context['results'] = [
+        'processed' => 0,
+        'errors' => 0,
+        'total_items' => $estimated_total,
+      ];
     } catch (\Exception $e) {
       $this->logger->error('OmekaGeoCache batch: errore durante inizializzazione: @message', [
         '@message' => $e->getMessage(),
@@ -591,13 +618,6 @@ class OmekaGeoDataCacheService {
       $context['sandbox']['estimated_total'] = 100;
       $this->state->set(self::STATE_TOTAL_GEO_ITEMS, 100);
     }
-    
-    // Inizializza contatori dei risultati
-    $context['results'] = [
-      'processed' => 0,
-      'errors' => 0,
-      'total_items' => $context['sandbox']['estimated_total'],
-    ];
   }
   
   /**
@@ -619,5 +639,230 @@ class OmekaGeoDataCacheService {
       'cached_items' => $actual_count,
       'error_items' => $this->state->get(self::STATE_ERROR_GEO_ITEMS, 0),
     ];
+  }
+
+  /**
+   * Fa una chiamata diretta all'API per ottenere le mapping features.
+   *
+   * @param int $page
+   *   Il numero di pagina.
+   * @param int $per_page
+   *   Il numero di elementi per pagina.
+   *
+   * @return array
+   *   Array con i dati delle features e il conteggio totale.
+   */
+  protected function fetchMappingFeatures(int $page = 1, int $per_page = 50): array {
+    try {
+      $base_url = $this->config->get('base_url');
+      if (!$base_url) {
+        throw new \Exception('URL API Omeka non configurato in dog.settings:base_url');
+      }
+      
+      $this->logger->info('Configurazione Omeka API URL: @url', [
+        '@url' => $base_url,
+      ]);
+      
+      // Costruisce l'URL per le mapping features
+      $url = rtrim($base_url, '/') . '/api/mapping_features';
+      $params = [
+        'page' => $page,
+        'per_page' => $per_page,
+      ];
+      
+      $query_string = http_build_query($params);
+      $full_url = $url . '?' . $query_string;
+      
+      $this->logger->info('Chiamata diretta all\'API mapping features: @url', [
+        '@url' => $full_url,
+      ]);
+      
+      // Fa la richiesta HTTP
+      $client = \Drupal::httpClient();
+      $response = $client->request('GET', $full_url, [
+        'headers' => [
+          'Accept' => 'application/json',
+        ],
+        'timeout' => 30,
+      ]);
+      
+      if ($response->getStatusCode() !== 200) {
+        throw new \Exception('Errore HTTP: ' . $response->getStatusCode() . ' - ' . $response->getReasonPhrase());
+      }
+      
+      $response_body = $response->getBody()->getContents();
+      $this->logger->info('Response HTTP body sample: @body', [
+        '@body' => substr($response_body, 0, 500),
+      ]);
+      
+      $data = json_decode($response_body, TRUE);
+      
+      if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new \Exception('Errore parsing JSON: ' . json_last_error_msg());
+      }
+      
+      if (!is_array($data)) {
+        throw new \Exception('Risposta API non valida: non è un array');
+      }
+      
+      if (empty($data)) {
+        $this->logger->info('API mapping features ha restituito un array vuoto');
+      }
+      
+      // Estrae il conteggio totale dalle header se disponibile
+      $total_results = 0;
+      $total_header = $response->getHeader('Omeka-S-Total-Results');
+      if (!empty($total_header)) {
+        $total_results = (int) $total_header[0];
+      }
+      
+      $this->logger->info('API mapping features: ricevuti @count elementi (totale: @total)', [
+        '@count' => count($data),
+        '@total' => $total_results,
+      ]);
+      
+      return [
+        'data' => $data,
+        'total_results' => $total_results,
+      ];
+      
+    } catch (\Exception $e) {
+      $this->logger->error('Errore nella chiamata API mapping features: @message', [
+        '@message' => $e->getMessage(),
+      ]);
+      return [
+        'data' => [],
+        'total_results' => 0,
+      ];
+    }
+  }
+
+  /**
+   * Ottiene il conteggio effettivo delle mapping features dall'API.
+   * 
+   * @return int
+   *   Il numero totale di mapping features disponibili.
+   */
+  public function getRealMappingFeaturesCount(): int {
+    try {
+      $this->logger->info('Tentativo di ottenere conteggio reale mapping features...');
+      
+      // Prima prova: chiamata con per_page=1 per ottenere l'header
+      $api_result = $this->fetchMappingFeatures(1, 1);
+      $total_from_header = $api_result['total_results'];
+      
+      if ($total_from_header > 0) {
+        $this->logger->info('Conteggio da header API: @count', ['@count' => $total_from_header]);
+        return $total_from_header;
+      }
+      
+      // Seconda prova: chiamata iterativa per contare
+      $this->logger->info('Header non disponibile, conteggio iterativo...');
+      $page = 1;
+      $per_page = 100;
+      $total_count = 0;
+      
+      do {
+        $api_result = $this->fetchMappingFeatures($page, $per_page);
+        $features = $api_result['data'];
+        $current_count = is_array($features) ? count($features) : 0;
+        
+        $total_count += $current_count;
+        $page++;
+        
+        $this->logger->info('Pagina @page: trovate @count features (totale: @total)', [
+          '@page' => $page - 1,
+          '@count' => $current_count,
+          '@total' => $total_count,
+        ]);
+        
+        // Evita loop infiniti
+        if ($page > 50) {
+          $this->logger->warning('Interrotto conteggio dopo 50 pagine per evitare loop infiniti');
+          break;
+        }
+        
+      } while ($current_count === $per_page);
+      
+      $this->logger->info('Conteggio finale iterativo: @count', ['@count' => $total_count]);
+      return $total_count;
+      
+    } catch (\Exception $e) {
+      $this->logger->error('Errore nel conteggio mapping features: @message', [
+        '@message' => $e->getMessage(),
+      ]);
+      return 0;
+    }
+  }
+
+  /**
+   * Testa la connettività e la risposta delle API Omeka.
+   *
+   * @return array
+   *   Array con i risultati dei test.
+   */
+  public function testApiConnectivity(): array {
+    $results = [
+      'items_api' => [
+        'status' => 'unknown',
+        'message' => '',
+        'response_sample' => '',
+        'count' => 0,
+      ],
+      'mapping_features_api' => [
+        'status' => 'unknown',
+        'message' => '',
+        'response_sample' => '',
+        'count' => 0,
+      ],
+    ];
+    
+    // Test API Items
+    try {
+      $this->logger->info('TEST API: Tentativo di test dell\'API items...');
+      
+      // Usa il ResourceFetcher per testare gli items
+      $total_results = 0;
+      $test_items = $this->resourceFetcher->search('items', [], 1, 1, $total_results);
+      
+      if (!empty($test_items)) {
+        $results['items_api']['status'] = 'success';
+        $results['items_api']['message'] = 'API items funzionante';
+        $results['items_api']['response_sample'] = json_encode(array_slice($test_items, 0, 1), JSON_PRETTY_PRINT);
+        $results['items_api']['count'] = $total_results;
+      } else {
+        $results['items_api']['status'] = 'warning';
+        $results['items_api']['message'] = 'API items restituisce array vuoto';
+      }
+      
+    } catch (\Exception $e) {
+      $results['items_api']['status'] = 'error';
+      $results['items_api']['message'] = 'Errore API items: ' . $e->getMessage();
+    }
+    
+    // Test API Mapping Features
+    try {
+      $this->logger->info('TEST API: Tentativo di test dell\'API mapping features...');
+      
+      $api_result = $this->fetchMappingFeatures(1, 1);
+      $test_features = $api_result['data'];
+      $total_results = $api_result['total_results'];
+      
+      if (!empty($test_features)) {
+        $results['mapping_features_api']['status'] = 'success';
+        $results['mapping_features_api']['message'] = 'API mapping features funzionante';
+        $results['mapping_features_api']['response_sample'] = json_encode(array_slice($test_features, 0, 1), JSON_PRETTY_PRINT);
+        $results['mapping_features_api']['count'] = $total_results;
+      } else {
+        $results['mapping_features_api']['status'] = 'warning';
+        $results['mapping_features_api']['message'] = 'API mapping features restituisce array vuoto';
+      }
+      
+    } catch (\Exception $e) {
+      $results['mapping_features_api']['status'] = 'error';
+      $results['mapping_features_api']['message'] = 'Errore API mapping features: ' . $e->getMessage();
+    }
+    
+    return $results;
   }
 }
