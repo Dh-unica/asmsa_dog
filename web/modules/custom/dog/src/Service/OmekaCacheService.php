@@ -471,83 +471,108 @@ class OmekaCacheService {
     $current_id = $context['sandbox']['items_to_process'][$current_index];
     
     try {
-      // Log della chiamata API per l'elemento corrente
-      $this->logger->notice('OmekaCache batch: recupero elemento @type/@id (@index di @total)', [
-        '@type' => $resource_type,
-        '@id' => $current_id,
-        '@index' => $current_index + 1,
+      // Elabora più elementi fino al batch_size specificato
+      $items_processed = 0;
+      $max_items = min($batch_size, count($context['sandbox']['items_to_process']) - $context['sandbox']['current_item_index']);
+      
+      $this->logger->notice('OmekaCache batch: inizio elaborazione batch di @size elementi (da @start a @end di @total)', [
+        '@size' => $max_items,
+        '@start' => $context['sandbox']['current_item_index'] + 1,
+        '@end' => $context['sandbox']['current_item_index'] + $max_items,
         '@total' => count($context['sandbox']['items_to_process']),
       ]);
       
-      // Recupera direttamente l'elemento singolo invece di usare la ricerca
-      $resource_data = $this->resourceFetcher->retrieveResource($current_id, $resource_type);
-      
-      // Log del risultato dell'API
-      if ($resource_data) {
-        $this->logger->notice('OmekaCache batch: ottenuto elemento @id con successo', [
+      // Loop attraverso gli elementi fino al batch_size o fino a quando ci sono elementi da elaborare
+      while ($items_processed < $max_items && 
+            $context['sandbox']['current_item_index'] < count($context['sandbox']['items_to_process'])) {
+        
+        // Recupera le informazioni sull'elemento corrente da elaborare
+        $current_index = $context['sandbox']['current_item_index'];
+        $current_id = $context['sandbox']['items_to_process'][$current_index];
+        
+        // Log della chiamata API per l'elemento corrente
+        $this->logger->notice('OmekaCache batch: recupero elemento @type/@id (@index di @total)', [
+          '@type' => $resource_type,
           '@id' => $current_id,
+          '@index' => $current_index + 1,
+          '@total' => count($context['sandbox']['items_to_process']),
         ]);
         
-        // Cache l'elemento con i tag appropriati
-        $cache_key = "omeka_resource:{$resource_type}:{$current_id}";
-        // Uso tag più specifici che non verranno invalidati da altre operazioni di Drupal
-        $cache_tags = [
-          "dog_omeka_resource", // Tag base specifico del modulo
-          "dog_omeka_resource:{$resource_type}",
-          "dog_omeka_resource:{$resource_type}:{$current_id}"
-        ];
+        // Recupera direttamente l'elemento singolo invece di usare la ricerca
+        $resource_data = $this->resourceFetcher->retrieveResource($current_id, $resource_type);
         
-        // Log dettagliato per debug
-        $this->logger->notice('OmekaCache: Salvataggio elemento @id nella cache con chiave "@key"', [
-          '@id' => $current_id,
-          '@key' => $cache_key,
-        ]);
-        
-        try {
-          // Utilizza un approccio alternativo per il salvataggio - simile al test manuale che ha avuto successo
-          $direct_cache->set(
-            $cache_key,
-            $resource_data,
-            time() + self::CACHE_LIFETIME,
-            $cache_tags
-          );
-          
-          // Verifica dopo il salvataggio
-          $verify_cache = $direct_cache->get($cache_key);
-          if ($verify_cache) {
-            $this->logger->notice('OmekaCache: Salvataggio riuscito per @id (@current/@total)', [
-              '@id' => $current_id,
-              '@current' => $current_index + 1,
-              '@total' => count($context['sandbox']['items_to_process']),
-            ]);
-          } else {
-            $this->logger->error('OmekaCache: Elemento @id non trovato in cache dopo il salvataggio!', [
-              '@id' => $current_id,
-            ]);
-            
-            // Secondo tentativo con cache diretta
-            $this->logger->notice('OmekaCache: Secondo tentativo di salvataggio per @id con cache diretta', [
-              '@id' => $current_id,
-            ]);
-            $direct_cache->set($cache_key, $resource_data, time() + self::CACHE_LIFETIME, $cache_tags);
-          }
-        } catch (\Exception $e) {
-          $this->logger->error('OmekaCache: Errore nel salvataggio in cache per @id: @error', [
+        // Log del risultato dell'API
+        if ($resource_data) {
+          $this->logger->notice('OmekaCache batch: ottenuto elemento @id con successo', [
             '@id' => $current_id,
-            '@error' => $e->getMessage(),
           ]);
+          
+          // Cache l'elemento con i tag appropriati
+          $cache_key = "omeka_resource:{$resource_type}:{$current_id}";
+          // Uso tag più specifici che non verranno invalidati da altre operazioni di Drupal
+          $cache_tags = [
+            "dog_omeka_resource", // Tag base specifico del modulo
+            "dog_omeka_resource:{$resource_type}",
+            "dog_omeka_resource:{$resource_type}:{$current_id}"
+          ];
+          
+          // Log dettagliato per debug
+          $this->logger->notice('OmekaCache: Salvataggio elemento @id nella cache con chiave "@key"', [
+            '@id' => $current_id,
+            '@key' => $cache_key,
+          ]);
+          
+          try {
+            // Utilizza un approccio alternativo per il salvataggio - simile al test manuale che ha avuto successo
+            $direct_cache->set(
+              $cache_key,
+              $resource_data,
+              time() + self::CACHE_LIFETIME,
+              $cache_tags
+            );
+            
+            // Verifica dopo il salvataggio
+            $verify_cache = $direct_cache->get($cache_key);
+            if ($verify_cache) {
+              $this->logger->notice('OmekaCache: Salvataggio riuscito per @id (@current/@total)', [
+                '@id' => $current_id,
+                '@current' => $current_index + 1,
+                '@total' => count($context['sandbox']['items_to_process']),
+              ]);
+            } else {
+              $this->logger->error('OmekaCache: Elemento @id non trovato in cache dopo il salvataggio!', [
+                '@id' => $current_id,
+              ]);
+              
+              // Secondo tentativo con cache diretta
+              $this->logger->notice('OmekaCache: Secondo tentativo di salvataggio per @id con cache diretta', [
+                '@id' => $current_id,
+              ]);
+              $direct_cache->set($cache_key, $resource_data, time() + self::CACHE_LIFETIME, $cache_tags);
+            }
+          } catch (\Exception $e) {
+            $this->logger->error('OmekaCache: Errore nel salvataggio in cache per @id: @error', [
+              '@id' => $current_id,
+              '@error' => $e->getMessage(),
+            ]);
+          }
+          
+          $context['results']['processed']++;
+        } else {
+          $this->logger->warning('OmekaCache batch: impossibile recuperare elemento @id', [
+            '@id' => $current_id,
+          ]);
+          $context['results']['errors']++;
         }
-        
-        $context['results']['processed']++;
-      } else {
-        $this->logger->warning('OmekaCache batch: impossibile recuperare elemento @id', [
-          '@id' => $current_id,
-        ]);
-        $context['results']['errors']++;
+          
+        // Incrementa l'indice dell'elemento corrente
+        $context['sandbox']['current_item_index']++;
+        $items_processed++;
       }
-        
-      // Incrementa l'indice dell'elemento corrente
-      $context['sandbox']['current_item_index']++;
+      
+      $this->logger->notice('OmekaCache batch: elaborati @count elementi in questo batch', [
+        '@count' => $items_processed,
+      ]);
       
       // Calcola il progresso (valore tra 0 e 1)
       $progress = $context['sandbox']['current_item_index'] / count($context['sandbox']['items_to_process']);
@@ -824,6 +849,60 @@ class OmekaCacheService {
         '@message' => $e->getMessage(),
       ]);
       return 0;
+    }
+  }
+  
+  /**
+   * Ottiene tutti gli ID degli items dall'API Omeka.
+   *
+   * @return array
+   *   Array di ID degli items.
+   */
+  public function getAllItemIds(): array {
+    $ids = [];
+    $page = 1;
+    $per_page = 100; // Ottieni 100 items per pagina per velocizzare
+    $total_results = 0;
+    
+    $this->logger->notice('Recupero elenco completo di tutti gli item IDs...');
+    
+    try {
+      do {
+        $this->logger->notice('Recupero item IDs pagina @page...', ['@page' => $page]);
+        
+        // Ottieni gli items per questa pagina
+        $items = $this->resourceFetcher->search('items', [], $page, $per_page, $total_results);
+        
+        // Se non ci sono risultati, esci dal ciclo
+        if (empty($items) || !is_array($items)) {
+          break;
+        }
+        
+        // Estrai gli ID e aggiungili all'array
+        foreach ($items as $item) {
+          if (isset($item['id'])) {
+            $ids[] = $item['id'];
+          }
+        }
+        
+        $this->logger->notice('Trovati @count IDs nella pagina @page', [
+          '@count' => count($items),
+          '@page' => $page,
+        ]);
+        
+        // Vai alla pagina successiva
+        $page++;
+        
+        // Continua finché ci sono risultati per questa pagina
+      } while (count($items) == $per_page);
+      
+      $this->logger->notice('Recupero completato: @count item IDs totali', ['@count' => count($ids)]);
+      return $ids;
+    } catch (\Exception $e) {
+      $this->logger->error('Errore nel recupero degli item IDs: @message', [
+        '@message' => $e->getMessage(),
+      ]);
+      return [];
     }
   }
 }

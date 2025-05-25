@@ -135,13 +135,16 @@ class OmekaGeoDataCacheService {
    *   The geographical data, or NULL if not found in cache.
    */
   public function getGeoData(string $id): ?array {
-    $cache_key = "omeka_geo_data:item:{$id}";
+    // Definiamo le chiavi di cache per entrambi i tipi di memorizzazione
+    $item_cache_key = "omeka_geo_data:item:{$id}";
+    $feature_cache_key = "omeka_geo_data:feature:{$id}";
     
     $this->logger->debug('Tentativo di recupero dati geografici dalla cache per risorsa Omeka ID: @id', [
       '@id' => $id,
     ]);
     
-    $cache = $this->cache->get($cache_key);
+    // 1. Prima controlla la cache standard (bin: cache.omeka_geo_data)
+    $cache = $this->cache->get($item_cache_key);
     
     if ($cache) {
       $this->logger->debug('CACHE HIT per dati geografici Omeka ID: @id', [
@@ -150,10 +153,64 @@ class OmekaGeoDataCacheService {
       return $cache->data;
     }
     
-    $this->logger->warning('CACHE MISS per dati geografici Omeka ID: @id', [
+    $this->logger->debug('CACHE MISS in cache standard per dati geografici Omeka ID: @id, provo nella cache permanente', [
       '@id' => $id,
     ]);
     
+    // 2. Se non trovato nella cache standard, cerca nella cache permanente (batch cache)
+    try {
+      // Prima prova a cercare per item ID
+      $database = \Drupal::database();
+      $query = $database->select('cache_omeka_geo_data', 'c')
+        ->fields('c', ['data'])
+        ->condition('cid', $item_cache_key)
+        ->execute();
+      
+      $result = $query->fetchField();
+      
+      if ($result) {
+        $geo_data = unserialize($result);
+        $this->logger->info('CACHE HIT nella cache permanente (item) per Omeka ID: @id', [
+          '@id' => $id,
+        ]);
+        
+        // Memorizza anche nella cache standard per accessi futuri più veloci
+        $this->cache->set($item_cache_key, $geo_data);
+        
+        return $geo_data;
+      }
+      
+      // Se non trovato come item, prova a cercare come feature
+      $query = $database->select('cache_omeka_geo_data', 'c')
+        ->fields('c', ['data'])
+        ->condition('cid', $feature_cache_key)
+        ->execute();
+      
+      $result = $query->fetchField();
+      
+      if ($result) {
+        $geo_data = unserialize($result);
+        $this->logger->info('CACHE HIT nella cache permanente (feature) per Omeka ID: @id', [
+          '@id' => $id,
+        ]);
+        
+        // Memorizza anche nella cache standard per accessi futuri più veloci
+        $this->cache->set($item_cache_key, $geo_data);
+        
+        return $geo_data;
+      }
+    } 
+    catch (\Exception $e) {
+      $this->logger->error('Errore nel recupero dati geografici dalla cache permanente: @error', [
+        '@error' => $e->getMessage(),
+      ]);
+    }
+    
+    $this->logger->warning('CACHE MISS completa per dati geografici Omeka ID: @id', [
+      '@id' => $id,
+    ]);
+    
+    // Se non trovato né nella cache standard né in quella permanente, restituisci NULL
     return NULL;
   }
 
@@ -169,23 +226,103 @@ class OmekaGeoDataCacheService {
   public function getMultipleGeoData(array $ids): array {
     $cache_keys = [];
     $result = [];
+    $missing_ids = [];
     
+    // Prepara le chiavi di cache per la cache standard
     foreach ($ids as $id) {
       $cache_keys[$id] = "omeka_geo_data:item:{$id}";
     }
     
+    // 1. Prima controlla la cache standard
     $cached = $this->cache->getMultiple($cache_keys);
     
     foreach ($ids as $id) {
       $key = "omeka_geo_data:item:{$id}";
       if (isset($cached[$key])) {
         $result[$id] = $cached[$key]->data;
-      }
-      else {
-        $this->logger->notice('Cache miss per dati geografici Omeka ID: @id', [
+        $this->logger->debug('CACHE HIT per dati geografici Omeka ID: @id', [
           '@id' => $id,
         ]);
       }
+      else {
+        // Segna questo ID come mancante nella cache standard
+        $missing_ids[] = $id;
+        $this->logger->debug('CACHE MISS in cache standard per dati geografici Omeka ID: @id', [
+          '@id' => $id,
+        ]);
+      }
+    }
+    
+    // Se abbiamo tutti gli elementi, non serve cercare oltre
+    if (empty($missing_ids)) {
+      return $result;
+    }
+    
+    // 2. Per gli ID mancanti, cerca nella cache permanente
+    $this->logger->info('Ricerca @count elementi mancanti nella cache permanente', [
+      '@count' => count($missing_ids),
+    ]);
+    
+    try {
+      $database = \Drupal::database();
+      
+      foreach ($missing_ids as $id) {
+        // Prima cerca come item
+        $item_cache_key = "omeka_geo_data:item:{$id}";
+        $feature_cache_key = "omeka_geo_data:feature:{$id}";
+        
+        // Cerca per item ID
+        $query = $database->select('cache_omeka_geo_data', 'c')
+          ->fields('c', ['data'])
+          ->condition('cid', $item_cache_key)
+          ->execute();
+        
+        $db_result = $query->fetchField();
+        
+        // Se trovato come item
+        if ($db_result) {
+          $geo_data = unserialize($db_result);
+          $result[$id] = $geo_data;
+          
+          // Memorizza nella cache standard per accessi futuri
+          $this->cache->set($item_cache_key, $geo_data);
+          
+          $this->logger->info('CACHE HIT nella cache permanente (item) per Omeka ID: @id', [
+            '@id' => $id,
+          ]);
+          continue; // Passa al prossimo ID mancante
+        }
+        
+        // Se non trovato come item, cerca come feature
+        $query = $database->select('cache_omeka_geo_data', 'c')
+          ->fields('c', ['data'])
+          ->condition('cid', $feature_cache_key)
+          ->execute();
+        
+        $db_result = $query->fetchField();
+        
+        // Se trovato come feature
+        if ($db_result) {
+          $geo_data = unserialize($db_result);
+          $result[$id] = $geo_data;
+          
+          // Memorizza nella cache standard per accessi futuri
+          $this->cache->set($item_cache_key, $geo_data);
+          
+          $this->logger->info('CACHE HIT nella cache permanente (feature) per Omeka ID: @id', [
+            '@id' => $id,
+          ]);
+        } else {
+          $this->logger->warning('CACHE MISS completa per dati geografici Omeka ID: @id', [
+            '@id' => $id,
+          ]);
+        }
+      }
+    }
+    catch (\Exception $e) {
+      $this->logger->error('Errore nel recupero multiplo dati geografici dalla cache permanente: @error', [
+        '@error' => $e->getMessage(),
+      ]);
     }
     
     return $result;
@@ -314,7 +451,165 @@ class OmekaGeoDataCacheService {
     $this->logger->notice('OmekaGeoCache batch: avvio aggiornamento cache dati geografici dalla API mapping_features');
     
     try {
-      // Se siamo in modalità elaborazione per pagina
+      // Elaborazione per feature singola (nuovo metodo basato su ID)
+      if (isset($context['sandbox']['process_mode']) && $context['sandbox']['process_mode'] === 'by_feature' &&
+          isset($context['sandbox']['features_to_process']) && isset($context['sandbox']['current_feature_index'])) {
+        
+        // Verifica se abbiamo terminato
+        if ($context['sandbox']['current_feature_index'] >= count($context['sandbox']['features_to_process'])) {
+          // Tutti gli elementi sono stati elaborati
+          $this->state->set(self::STATE_LAST_GEO_UPDATE, time());
+          $this->state->set(self::STATE_CACHED_GEO_ITEMS, $context['results']['processed'] ?? 0);
+          $context['finished'] = 1;
+          return TRUE;
+        }
+        
+        // Elabora più elementi fino al batch_size specificato
+        $features_processed = 0;
+        $max_features = min($batch_size, count($context['sandbox']['features_to_process']) - $context['sandbox']['current_feature_index']);
+        
+        $this->logger->notice('GeoCache batch: inizio elaborazione batch di @size features (da @start a @end di @total)', [
+          '@size' => $max_features,
+          '@start' => $context['sandbox']['current_feature_index'] + 1,
+          '@end' => $context['sandbox']['current_feature_index'] + $max_features,
+          '@total' => count($context['sandbox']['features_to_process']),
+        ]);
+        
+        // Loop attraverso le features fino al batch_size o fino a quando ci sono elementi da elaborare
+        while ($features_processed < $max_features && 
+              $context['sandbox']['current_feature_index'] < count($context['sandbox']['features_to_process'])) {
+          
+          // Ottieni l'ID della feature corrente
+          $current_index = $context['sandbox']['current_feature_index'];
+          $feature_id = $context['sandbox']['features_to_process'][$current_index];
+          
+          $this->logger->notice('Elaborazione mapping feature ID @id (@current di @total)', [
+            '@id' => $feature_id,
+            '@current' => $current_index + 1,
+            '@total' => count($context['sandbox']['features_to_process']),
+          ]);
+          
+          // Recupera la feature specifica dall'API e salvala in cache
+          $feature_url = rtrim($this->config->get('base_url'), '/') . '/api/mapping_features/' . $feature_id;
+          
+          try {
+            $client = $this->getHttpClient();
+            $response = $client->get($feature_url);
+            $feature_data = json_decode((string) $response->getBody(), TRUE);
+            
+            if (!empty($feature_data) && isset($feature_data['o:id'])) {
+              // Verifica se la feature ha coordinate
+              if (!empty($feature_data['o-module-mapping:geography-coordinates'])) {
+                // Prepara i dati geografici
+                $item_id = NULL;
+                if (!empty($feature_data['o:item']['o:id'])) {
+                  $item_id = $feature_data['o:item']['o:id'];
+                }
+                
+                $coords = $feature_data['o-module-mapping:geography-coordinates'];
+                $geo_type = $feature_data['o-module-mapping:geography-type'] ?? 'Point';
+                $label = $feature_data['o:label'] ?? '';
+                
+                // Struttura base dei dati geografici
+                $geo_data = [
+                  'id' => $item_id,
+                  'feature_id' => $feature_id,
+                  'title' => $label,
+                  'type' => $geo_type,
+                  'has_geo_data' => TRUE,
+                  'coordinates' => [
+                    'lng' => (float) $coords[0],
+                    'lat' => (float) $coords[1],
+                  ],
+                ];
+                
+                // Aggiungi dati aggiuntivi dall'item associato se disponibile
+                if ($item_id) {
+                  $item_data = $this->omekaCacheService->getResource($item_id, 'items');
+                  if ($item_data) {
+                    // Integra i dati dell'item
+                    $geo_data['title'] = $item_data['o:title'] ?? $label;
+                    
+                    if (!empty($item_data['dcterms:description'][0]['@value'])) {
+                      $geo_data['description'] = $item_data['dcterms:description'][0]['@value'];
+                    }
+                    
+                    if (!empty($item_data['thumbnail_display_urls']['medium'])) {
+                      $geo_data['thumbnail_url'] = $item_data['thumbnail_display_urls']['medium'];
+                    }
+                    
+                    if (!empty($item_data['dcterms:type'][0]['@value'])) {
+                      $geo_data['type_desc'] = $item_data['dcterms:type'][0]['@value'];
+                    }
+                  }
+                }
+                
+                // Salva i dati geografici in cache
+                $cache_key = "omeka_geo_data:feature:{$feature_id}";
+                $cache_key_item = $item_id ? "omeka_geo_data:item:{$item_id}" : NULL;
+                
+                // Tag per la cache
+                $cache_tags = [
+                  self::CACHE_TAG_ALL,
+                  "dog_omeka_geo_data:feature",
+                  "dog_omeka_geo_data:feature:{$feature_id}",
+                ];
+                
+                // Salva nella cache
+                $this->cache->set(
+                  $cache_key,
+                  $geo_data,
+                  time() + self::CACHE_LIFETIME,
+                  $cache_tags
+                );
+                
+                // Verifica che la cache sia stata aggiornata
+                $verify_cache = $this->cache->get($cache_key);
+                if ($verify_cache) {
+                  // Incrementa i contatori
+                  $context['results']['processed'] = ($context['results']['processed'] ?? 0) + 1;
+                  $this->logger->info('Mapping feature @id salvata in cache', ['@id' => $feature_id]);
+                } else {
+                  $context['results']['errors'] = ($context['results']['errors'] ?? 0) + 1;
+                  $this->logger->error('Errore nel salvataggio della feature @id', ['@id' => $feature_id]);
+                }
+              } else {
+                $this->logger->info('Feature @id senza coordinate, ignorata', ['@id' => $feature_id]);
+              }
+            } else {
+              $this->logger->warning('Feature @id non valida o non trovata', ['@id' => $feature_id]);
+              $context['results']['errors'] = ($context['results']['errors'] ?? 0) + 1;
+            }
+          } catch (\Exception $e) {
+            $this->logger->error('Errore durante recupero feature @id: @message', [
+              '@id' => $feature_id,
+              '@message' => $e->getMessage(),
+            ]);
+            $context['results']['errors'] = ($context['results']['errors'] ?? 0) + 1;
+          }
+          
+          // Avanza all'elemento successivo
+          $context['sandbox']['current_feature_index']++;
+          $features_processed++;
+        }
+        
+        $this->logger->notice('GeoCache batch: elaborate @count features in questo batch', [
+          '@count' => $features_processed,
+        ]);
+        
+        // Se abbiamo finito, imposta lo stato
+        if ($context['sandbox']['current_feature_index'] >= count($context['sandbox']['features_to_process'])) {
+          $this->state->set(self::STATE_LAST_GEO_UPDATE, time());
+          $this->state->set(self::STATE_CACHED_GEO_ITEMS, $context['results']['processed'] ?? 0);
+          $context['finished'] = 1;
+          return TRUE;
+        }
+        
+        // Non abbiamo ancora finito, restituisci FALSE per continuare il batch
+        return FALSE;
+      }
+      
+      // Modalità legacy: elaborazione per pagina
       if (isset($context['sandbox']['process_mode']) && $context['sandbox']['process_mode'] === 'by_page') {
         $current_page = $context['sandbox']['current_page'];
         
@@ -621,22 +916,38 @@ class OmekaGeoDataCacheService {
   }
   
   /**
-   * Ottiene le statistiche della cache dei dati geografici.
+   * Ottiene le statistiche dettagliate della cache dei dati geografici.
    *
    * @return array
-   *   Array con le statistiche della cache.
+   *   Array con le statistiche della cache separate per tipo.
    */
   public function getGeoDataCacheStatistics(): array {
-    // Conta gli elementi nella cache
+    // Conta gli elementi nella cache per tipo
     $database = \Drupal::database();
-    $query = $database->select('cache_omeka_geo_data', 'c')
+    
+    // Conta mapping features (prefix: omeka_geo_data:feature:)
+    $features_query = $database->select('cache_omeka_geo_data', 'c')
+      ->condition('cid', 'omeka_geo_data:feature:%', 'LIKE')
       ->countQuery();
-    $actual_count = $query->execute()->fetchField();
+    $features_count = $features_query->execute()->fetchField();
+    
+    // Conta items geografici (prefix: omeka_geo_data:item:)
+    $items_query = $database->select('cache_omeka_geo_data', 'c')
+      ->condition('cid', 'omeka_geo_data:item:%', 'LIKE')
+      ->countQuery();
+    $items_count = $items_query->execute()->fetchField();
+    
+    // Conta totale generale
+    $total_query = $database->select('cache_omeka_geo_data', 'c')
+      ->countQuery();
+    $total_count = $total_query->execute()->fetchField();
     
     return [
       'last_update' => $this->state->get(self::STATE_LAST_GEO_UPDATE, 0),
-      'total_items' => $this->state->get(self::STATE_TOTAL_GEO_ITEMS, 0),
-      'cached_items' => $actual_count,
+      'total_items' => $this->state->get(self::STATE_TOTAL_GEO_ITEMS, 0), // API totale
+      'cached_features' => $features_count, // Features in cache
+      'cached_items' => $items_count, // Items geografici in cache  
+      'cached_total' => $total_count, // Totale in cache
       'error_items' => $this->state->get(self::STATE_ERROR_GEO_ITEMS, 0),
     ];
   }
@@ -792,6 +1103,85 @@ class OmekaGeoDataCacheService {
         '@message' => $e->getMessage(),
       ]);
       return 0;
+    }
+  }
+
+  /**
+   * Ottiene il numero totale di mapping features dall'API.
+   * 
+   * @return int
+   *   Numero totale di mapping features disponibili nell'API.
+   */
+  public function getTotalMappingFeaturesFromApi(): int {
+    try {
+      // Usa il metodo fetchMappingFeatures che fa la chiamata diretta
+      $result = $this->fetchMappingFeatures(1, 1);
+      $total_results = $result['total_results'] ?? 0;
+      
+      $this->logger->info('Conteggio mapping features dall\'API: @total', [
+        '@total' => $total_results,
+      ]);
+      
+      return $total_results;
+    } catch (\Exception $e) {
+      $this->logger->error('Errore nel conteggio mapping features dall\'API: @message', [
+        '@message' => $e->getMessage(),
+      ]);
+      throw $e;
+    }
+  }
+
+  /**
+   * Ottiene tutti gli ID delle mapping features dall'API Omeka.
+   *
+   * @return array
+   *   Array di ID delle mapping features.
+   */
+  public function getAllMappingFeatureIds(): array {
+    $ids = [];
+    $page = 1;
+    $per_page = 100; // Ottieni 100 features per pagina per velocizzare
+    
+    $this->logger->notice('Recupero elenco completo di tutti i mapping feature IDs...');
+    
+    try {
+      do {
+        $this->logger->notice('Recupero mapping feature IDs pagina @page...', ['@page' => $page]);
+        
+        // Ottieni le mapping features per questa pagina
+        $result = $this->fetchMappingFeatures($page, $per_page);
+        $features = $result['data'] ?? [];
+        
+        // Se non ci sono risultati, esci dal ciclo
+        if (empty($features) || !is_array($features)) {
+          break;
+        }
+        
+        // Estrai gli ID e aggiungili all'array
+        foreach ($features as $feature) {
+          if (isset($feature['o:id'])) {
+            $ids[] = $feature['o:id'];
+          }
+        }
+        
+        $this->logger->notice('Trovati @count feature IDs nella pagina @page', [
+          '@count' => count($features),
+          '@page' => $page,
+        ]);
+        
+        // Vai alla pagina successiva
+        $page++;
+        
+        // Continua finché ci sono risultati per questa pagina
+      } while (count($features) == $per_page);
+      
+      $this->logger->notice('Recupero completato: @count mapping feature IDs totali', ['@count' => count($ids)]);
+      return $ids;
+    } catch (\Exception $e) {
+      $this->logger->error('Errore nel recupero dei mapping feature IDs: @message', [
+        '@message' => $e->getMessage(),
+      ]);
+      return [];
     }
   }
 

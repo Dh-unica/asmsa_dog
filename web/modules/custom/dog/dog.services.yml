@@ -1,18 +1,18 @@
 services:
 
-  # Cache bins.
+  # Cache bins (permanente).
   cache.omeka_resources:
     class: Drupal\Core\Cache\CacheBackendInterface
     tags:
-      - { name: cache.bin }
+      - { name: cache.bin, permanent: true }
     factory: ['@cache_factory', 'get']
     arguments: ['omeka_resources']
     
-  # Cache bin per i dati geografici degli oggetti Omeka.
+  # Cache bin per i dati geografici degli oggetti Omeka (permanente).
   cache.omeka_geo_data:
     class: Drupal\Core\Cache\CacheBackendInterface
     tags:
-      - { name: cache.bin }
+      - { name: cache.bin, permanent: true }
     factory: ['@cache_factory', 'get']
     arguments: ['omeka_geo_data']
 
@@ -43,6 +43,20 @@ services:
   dog.omeka_cache_cron_handler:
     class: Drupal\dog\Cron\OmekaCacheCronHandler
     arguments: [ '@dog.omeka_cache', '@state', '@logger.factory' ]
+
+  # Event Subscriber per la persistenza delle cache.
+  dog.cache_persistence_subscriber:
+    class: Drupal\dog\EventSubscriber\CachePersistenceSubscriber
+    arguments: ['@database', '@logger.factory']
+    tags:
+      - { name: event_subscriber }
+      
+  # Drush commands per la persistenza delle cache.
+  dog.commands:
+    class: Drupal\dog\Commands\DogCacheCommands
+    arguments: ['@database']
+    tags:
+      - { name: drush.command }
 
   # Event Subscriber.
   dog.omeka_resource_query_event:

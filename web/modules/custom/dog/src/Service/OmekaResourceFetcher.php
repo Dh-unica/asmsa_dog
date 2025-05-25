@@ -295,7 +295,7 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
       }
       catch (\Exception $exception) {
         $this->logger->warning("Unable to include this element %id in the results: %message.", [
-          '%id' => $item['id'],
+          '%id' => $item['o:id'] ?? 'unknown',
           '%message' => $exception->getMessage(),
         ]);
 

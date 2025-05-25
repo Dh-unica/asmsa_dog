@@ -6,6 +6,22 @@
  */
 
 /**
+ * Implements hook_cache_flush().
+ *
+ * Protegge le nostre cache bin personalizzate durante il flush della cache.
+ * Con questo hook diciamo a Drupal di NON cancellare le tabelle cache_omeka_resources
+ * e cache_omeka_geo_data quando viene eseguito drush cr.
+ */
+function dog_cache_flush() {
+  return [
+    // Specifichiamo esplicitamente un array vuoto per le nostre cache bin
+    // Questo le protegge dall'essere cancellate durante il cache rebuild
+    'cache_omeka_resources' => [],
+    'cache_omeka_geo_data' => [],
+  ];
+}
+
+/**
  * Implements hook_cron().
  */
 function dog_cron() {
