@@ -1,10 +1,12 @@
 services:
   omeka_utils.utils:
     class: Drupal\omeka_utils\Utils
+    arguments: ['@config.factory', '@logger.factory', '@dog.omeka_cache', '@dog.omeka_geo_cache']
+    calls:
+      - [setLoggerFactory, ['@logger.factory']]
   cache.omeka:
     class: Drupal\Core\Cache\CacheBackendInterface
     tags:
       - { name: cache.bin }
-    factory: cache_factory:get
-    arguments: [ omeka ]
-
+    factory: ['@cache_factory', 'get']
+    arguments: ['omeka']

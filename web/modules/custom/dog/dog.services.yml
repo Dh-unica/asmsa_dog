@@ -47,7 +47,7 @@ services:
   # Event Subscriber per la persistenza delle cache.
   dog.cache_persistence_subscriber:
     class: Drupal\dog\EventSubscriber\CachePersistenceSubscriber
-    arguments: ['@database', '@logger.factory']
+    arguments: ['@database', '@logger.factory', '@file_system']
     tags:
       - { name: event_subscriber }
       

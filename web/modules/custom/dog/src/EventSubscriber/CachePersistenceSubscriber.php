@@ -4,6 +4,7 @@ namespace Drupal\dog\EventSubscriber;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -31,6 +32,13 @@ class CachePersistenceSubscriber implements EventSubscriberInterface {
   protected $logger;
 
   /**
+   * Il servizio del file system.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * Il file di stato delle cache.
    *
    * @var string
@@ -44,12 +52,31 @@ class CachePersistenceSubscriber implements EventSubscriberInterface {
    *   Il servizio di connessione al database.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   La factory dei logger.
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   Il servizio del file system.
    */
-  public function __construct(Connection $database, LoggerChannelFactoryInterface $logger_factory) {
+  public function __construct(
+    Connection $database,
+    LoggerChannelFactoryInterface $logger_factory,
+    FileSystemInterface $file_system = NULL
+  ) {
     $this->database = $database;
     $this->logger = $logger_factory->get('dog_cache');
-    // File in sites/default/files per salvare lo stato della cache
-    $this->cacheStateFile = DRUPAL_ROOT . '/../sites/default/files/dog_cache_state.json';
+    $this->fileSystem = $file_system ?: \Drupal::service('file_system');
+    
+    // Utilizziamo il servizio file_system per ottenere il percorso pubblico dei file
+    $public_files_dir = $this->fileSystem->realpath('public://');
+    if (!$public_files_dir) {
+      // Fallback: se non riusciamo a ottenere il percorso pubblico, usiamo il percorso di default
+      $public_files_dir = DRUPAL_ROOT . '/sites/default/files';
+      // Assicuriamoci che la directory esista
+      if (!is_dir($public_files_dir)) {
+        mkdir($public_files_dir, 0775, TRUE);
+      }
+    }
+    
+    $this->cacheStateFile = $public_files_dir . '/dog_cache_state.json';
+    $this->logger->notice('Cache state file path: @path', ['@path' => $this->cacheStateFile]);
   }
 
   /**
@@ -161,7 +188,14 @@ class CachePersistenceSubscriber implements EventSubscriberInterface {
     
     // Salva il file di stato
     try {
-      file_put_contents($this->cacheStateFile, json_encode($cache_state));
+      // Assicuriamoci che la directory padre esista
+      $directory = dirname($this->cacheStateFile);
+      if (!is_dir($directory)) {
+        $this->fileSystem->mkdir($directory, NULL, TRUE);
+      }
+      
+      // Scrittura sicura del file
+      $this->fileSystem->saveData(json_encode($cache_state), $this->cacheStateFile, FileSystemInterface::EXISTS_REPLACE);
       $this->logger->info('Stato delle cache DOG salvato con successo');
     }
     catch (\Exception $e) {
