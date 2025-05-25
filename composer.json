@@ -49,6 +49,7 @@
         "drupal/msqrole": "^1.0",
         "drupal/paragraphs": "^1.15",
         "drupal/pathauto": "^1.12",
+        "drupal/pcb": "^4.0",
         "drupal/queue_ui": "^3.1",
         "drupal/select2": "^1.15",
         "drupal/simple_cron": "^1.1@beta",
