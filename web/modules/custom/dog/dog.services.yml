@@ -1,9 +1,17 @@
 services:
 
+  # Cache services.
+  cache.omeka:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory: ['@cache_factory', 'get']
+    arguments: [omeka]
+
   # Services.
   dog.omeka_resource_fetcher:
     class: Drupal\dog\Service\OmekaResourceFetcher
-    arguments: [ '@config.factory', '@http_client_factory', '@logger.factory' ]
+    arguments: [ '@config.factory', '@http_client_factory', '@logger.factory', '@cache.omeka' ]
 
   dog.omeka_url:
     class: Drupal\dog\Service\OmekaUrlService

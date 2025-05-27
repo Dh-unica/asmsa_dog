@@ -5,6 +5,7 @@ namespace Drupal\dog\Service;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Http\ClientFactory;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\State\StateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\dog\OmekaApiResponse;
 use GuzzleHttp\ClientInterface;
@@ -12,7 +13,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 
@@ -54,19 +54,34 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
   protected $logger;
 
   /**
+   * The state service.
+   *
+   * @var \Drupal\Core\State\StateInterface
+   */
+  protected $state;
+
+  /**
    * Constructs a OmekaResourceFetcher object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The config factory service.
+   *   The configuration factory.
    * @param \Drupal\Core\Http\ClientFactory $factory
    *   The client factory.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger channel factory.
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, ClientFactory $factory, LoggerChannelFactoryInterface $logger_factory) {
+  public function __construct(
+    ConfigFactoryInterface $config_factory,
+    ClientFactory $factory,
+    LoggerChannelFactoryInterface $logger_factory,
+    StateInterface $state
+  ) {
     $this->config = $config_factory->get('dog.settings');
     $this->factory = $factory;
     $this->logger = $logger_factory->get('dog');
+    $this->state = $state;
   }
 
   /**
@@ -94,7 +109,25 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    * {@inheritDoc}
    */
   public function retrieveResource(string $id, string $resource_type): ?array {
-    // Run request.
+    // Definisci la chiave di cache con il pattern corretto in base al tipo di risorsa
+    if ($resource_type === 'mapping_features' || $resource_type === 'o-module-mapping:features') {
+      // Pattern per features: omeka_geo_data:feature:ID
+      $cache_key = "omeka_geo_data:feature:{$id}";
+    } else {
+      // Pattern per items e altri tipi: omeka_resource:TIPO:ID
+      $cache_key = "omeka_resource:{$resource_type}:{$id}";
+    }
+    
+    // Verifica se l'elemento è già in cache
+    if ($cache = $this->cache->get($cache_key)) {
+      $this->logger->debug('Recuperato elemento @type ID:@id dalla cache permanente', [
+        '@type' => $resource_type,
+        '@id' => $id,
+      ]);
+      return $cache->data;
+    }
+    
+    // Se non è in cache, esegui la richiesta API
     $uri = sprintf("api/%s/%s", $resource_type, $id);
     $result = $this->request('GET', $uri);
 
@@ -106,7 +139,16 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
     $data = $result->getContent();
     $data['id'] = $id;
     $data['type'] = $resource_type;
-
+    
+    // Salva il risultato nella cache permanente
+    // CACHE_PERMANENT indica che l'elemento rimarrà in cache fino a quando non viene esplicitamente cancellato
+    $this->cache->set($cache_key, $data, CacheBackendInterface::CACHE_PERMANENT);
+    
+    $this->logger->debug('Elemento @type ID:@id recuperato da API e salvato in cache permanente', [
+      '@type' => $resource_type,
+      '@id' => $id,
+    ]);
+    
     return $data;
   }
 
@@ -249,6 +291,7 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
         $total_results = $response->getHeader('Omeka-S-Total-Results');
         $return->setTotalResults((int) reset($total_results));
       }
+
 
       return $return;
     }

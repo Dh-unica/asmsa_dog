@@ -323,26 +323,31 @@ function italiagov_preprocess_block(&$variables) {
       $items_ids = [];
       foreach ($omeka_items as $omeka_item) {
         $omeka_id = $omeka_item['id'];
-        $omeka_item_full = $omeka_utils->getItem($omeka_id);
+        //$omeka_item_full = $omeka_utils->getItem($omeka_id);
+
+        $omeka_item_full = italiagov_omeka_fetcher($omeka_id, 'items');
         $marker_key = 'o-module-mapping:feature';
         $date_key = 'dcterms:date';
-        if (!empty($omeka_item_full->$marker_key)) {
+        if (!empty($omeka_item_full[$marker_key])) {
+          
           $items_ids[] = $omeka_id;
-          $marker = $omeka_item_full->{'o-module-mapping:feature'};
+          $marker = $omeka_item_full[$marker_key];
+          $markers = explode('/', $marker[0]['@id']);
           // if $marker['0']->{'@id'} is empty
           $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
-          $marker_object = $omeka_utils->getLocation($omeka_item_full);
+          
+          //$marke_object = $omek_utils->getLocation($omeka_item_full);
+          $marker_object = italiagov_omeka_fetcher(end($markers), 'mapping_features');
+          
           $full_items[$omeka_item['id']]['location'] = $marker_object;
-          $full_items[$omeka_item['id']]['absolute_url'] = $omeka_utils->getItemUrl($omeka_item_full);
+          //$full_items[$omeka_item['id']]['absolute_url'] = $omeka_utils->getItemUrl($omeka_item_full);
+          // Extract coordinates - correzione inversione lat/lon
+          if (!empty($marker_object['o-module-mapping:geography-coordinates'])) {
+            // Nota: le coordinate GeoJSON sono [longitude, latitude] mentre Leaflet usa [latitude, longitude]
+            $full_items[$omeka_item['id']]['latitude'] = $marker_object['o-module-mapping:geography-coordinates'][1]; // Seconda posizione è lat
+            $full_items[$omeka_item['id']]['longitude'] = $marker_object['o-module-mapping:geography-coordinates'][0]; // Prima posizione è lon
 
-          // Extract coordinates
-          if (!empty($marker[0]->{'o-module-mapping:geography-coordinates'})) {
-            $coordinates = $marker[0]->{'o-module-mapping:geography-coordinates'};
-            $full_items[$omeka_item['id']]['latitude'] = $coordinates[1];
-            $full_items[$omeka_item['id']]['longitude'] = $coordinates[0];
-          }
-        } else {
-          continue;
+          } 
         }
       }
 
@@ -350,6 +355,13 @@ function italiagov_preprocess_block(&$variables) {
       // create a key like 'omeka_map_'+ block_id
       $key_id = 'omeka_map_' . $block->id();
 
+      // Preparazione di un render array valido per Twig
+      $variables['sergio'] = [
+        '#markup' => '<pre>' . json_encode($full_items, JSON_PRETTY_PRINT) . '</pre>',
+        '#cache' => [
+          'max-age' => 0, // Non memorizzare in cache
+        ],
+      ];
       // push data to $variables['#attached']['drupalSettings']['omeka_map']
       $variables['#attached']['drupalSettings']['omeka_map'][$key_id] = [
         'block_id' => $block->id(),
@@ -413,4 +425,30 @@ function italiagov_preprocess_block(&$variables) {
     $variables['omeka_images'] = $omeka_images;
   }
 
+}
+
+/**
+ * Implementazione di esempio per utilizzare OmekaResourceFetcher in italiagov.theme
+ */
+function italiagov_omeka_fetcher($id, $resource_type = 'items') {
+  // Ottieni il servizio OmekaResourceFetcher tramite il container di Drupal
+  $omeka_fetcher = \Drupal::service('dog.omeka_resource_fetcher');
+  
+  // Chiama il metodo retrieveResource per ottenere l'item da Omeka
+  $omeka_item = $omeka_fetcher->retrieveResource($id, $resource_type);
+  
+  if ($omeka_item) {
+    \Drupal::logger('italiagov')->notice('Item Omeka @id recuperato con successo', [
+      '@id' => $id,
+    ]);
+    
+    return $omeka_item;
+  } 
+  else {
+    \Drupal::logger('italiagov')->warning('Impossibile recuperare item Omeka @id', [
+      '@id' => $id,
+    ]);
+    
+    return NULL;
+  }
 }
