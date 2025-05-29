@@ -200,16 +200,41 @@ function init_omeka_map(map_selector, store, data, callback) {
 
   const markerData = [];
 
+  // Debug: Visualizza i dati completi Omeka nella console
+  console.log('DEBUG - OMEKA DATA:', store.confs);
+  console.log('DEBUG - OMEKA ITEMS IDS:', itemIDs);
+  console.log('DEBUG - OMEKA ITEMS COMPLETI:', store.confs.omeka_items);
+  
   var finalData = [];
   for (itemID of itemIDs) {
+    // Debug: Stampa informazioni su ogni item Omeka mentre viene processato
+    console.log('DEBUG - Elaborazione item ID:', itemID);
+    console.log('DEBUG - Dati item:', store.confs.omeka_items[itemID]);
+    
+    if (!store.confs.omeka_items[itemID]) {
+      console.error('DEBUG - ERRORE: Item Omeka non trovato per ID:', itemID);
+      continue;
+    }
+    
     itemData = store.confs.omeka_items[itemID].full_item;
     locationData = store.confs.omeka_items[itemID].location;
+    
+    // Debug: Verifica presenza di coordinate
+    console.log('DEBUG - Item coordinate:', locationData);
+    
+    // Aggiungiamo log per capire quali coordinate stiamo effettivamente usando
+    console.log('DEBUG - Coordinate dirette dall\'oggetto:', {
+      latitude: store.confs.omeka_items[itemID].latitude,
+      longitude: store.confs.omeka_items[itemID].longitude
+    });
+    
+    // Utilizziamo direttamente le coordinate dall'oggetto principale invece di locationData
     finalData.push({
       id: itemData["o:id"],
       title: itemData["dcterms:title"] && itemData["dcterms:title"][0]["@value"],
       date: convertDateFormat(itemData["dcterms:date"]?.[0]["@value"]) || null,
-      latitude: locationData['latitude'] || null,
-      longitude: locationData['longitude'] || null,
+      latitude: store.confs.omeka_items[itemID].latitude || null,
+      longitude: store.confs.omeka_items[itemID].longitude || null,
       type: "omeka",
       thumbnail: {
         large: itemData["thumbnail_display_urls"]?.large || null,
@@ -266,6 +291,10 @@ function init_omeka_map(map_selector, store, data, callback) {
 
 
 
+  // Debug: Verifica dati finali prima di creare i marker
+  console.log('DEBUG - FINAL DATA per marker:', finalData);
+  console.log('DEBUG - Numero totale marker da visualizzare:', finalData.length);
+  
   store.markers = L.markerClusterGroup(
     // {
     //   // zoom levels at which clusters are disabled (prevents clustering at this zoom level and below)
@@ -276,8 +305,29 @@ function init_omeka_map(map_selector, store, data, callback) {
   );
 
   finalData.forEach(item => {
+    // Debug: Verifica coordinate di ogni marker
+    console.log('DEBUG - Creazione marker:', item.title, '- Coordinate:', item.latitude, item.longitude);
+    
+    // Verifica validità delle coordinate
+    if (!item.latitude || !item.longitude) {
+      console.error('DEBUG - ERRORE: Coordinate non valide per:', item.title);
+      return; // Salta questo item
+    }
+    
+    // Verifica che le coordinate siano numeri e non stringhe
+    let lat = parseFloat(item.latitude);
+    let lng = parseFloat(item.longitude);
+    
+    if (isNaN(lat) || isNaN(lng)) {
+      console.error('DEBUG - ERRORE: Coordinate non numeriche per:', item.title);
+      return; // Salta questo item
+    }
+    
+    console.log('DEBUG - Coordinate parsate:', lat, lng);
+    
     // Create a new marker using the lat, long data
-    let marker = L.circleMarker([item.latitude, item.longitude], {
+    // Usiamo esplicitamente i valori numerici parsati
+    let marker = L.circleMarker([lat, lng], {
       radius: 10,
       fillColor: "#ff0000",
       color: "#000000",
@@ -371,8 +421,24 @@ function init_omeka_map(map_selector, store, data, callback) {
     store.markers.addLayer(marker);
   });
 
+  // Aggiungiamo i marker alla mappa
   store.map.addLayer(store.markers);
-  store.map.fitBounds(store.markers.getBounds());
+  
+  // Verifichiamo se ci sono marker validi prima di chiamare fitBounds
+  if (finalData.filter(item => item.latitude && item.longitude).length > 0) {
+    try {
+      console.log('DEBUG - Tentativo di impostare i bounds sui marker');
+      store.map.fitBounds(store.markers.getBounds());
+    } catch (e) {
+      console.error('DEBUG - Errore nell\'impostazione dei bounds:', e.message);
+      // Fallback: imposta la vista su un punto specifico in Sardegna
+      store.map.setView([39.22, 9.10], 8);
+    }
+  } else {
+    console.warn('DEBUG - Nessun marker valido trovato, utilizzo vista predefinita');
+    // Fallback: imposta la vista su un punto specifico in Sardegna
+    store.map.setView([39.22, 9.10], 8);
+  }
 
   // Timeline stuff
 

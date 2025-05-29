@@ -434,18 +434,38 @@ function italiagov_omeka_fetcher($id, $resource_type = 'items') {
   // Ottieni il servizio OmekaResourceFetcher tramite il container di Drupal
   $omeka_fetcher = \Drupal::service('dog.omeka_resource_fetcher');
   
+  // Debug: Log dettagliato prima di chiamare retrieveResource
+  \Drupal::logger('italiagov_debug')->notice('Richiesta item Omeka: ID=@id, Type=@type', [
+    '@id' => $id,
+    '@type' => $resource_type,
+  ]);
+  
   // Chiama il metodo retrieveResource per ottenere l'item da Omeka
   $omeka_item = $omeka_fetcher->retrieveResource($id, $resource_type);
   
   if ($omeka_item) {
-    \Drupal::logger('italiagov')->notice('Item Omeka @id recuperato con successo', [
+    // Debug: Analizziamo i dati ritornati
+    $has_mapping_features = isset($omeka_item['o-module-mapping:feature']) ? 'Sì' : 'No';
+    $has_coordinates = false;
+    $coordinates = 'Nessuna';
+    
+    if (isset($omeka_item['o-module-mapping:feature'][0]['o-module-mapping:geography-coordinates'])) {
+      $has_coordinates = true;
+      $coords = $omeka_item['o-module-mapping:feature'][0]['o-module-mapping:geography-coordinates'];
+      $coordinates = isset($coords) ? json_encode($coords) : 'Struttura errata';
+    }
+    
+    \Drupal::logger('italiagov_debug')->notice('Item Omeka @id recuperato: Ha mapping features: @has_features, Ha coordinate: @has_coords, Coordinate: @coords', [
       '@id' => $id,
+      '@has_features' => $has_mapping_features,
+      '@has_coords' => $has_coordinates ? 'Sì' : 'No',
+      '@coords' => $coordinates,
     ]);
     
     return $omeka_item;
   } 
   else {
-    \Drupal::logger('italiagov')->warning('Impossibile recuperare item Omeka @id', [
+    \Drupal::logger('italiagov_debug')->error('Impossibile recuperare item Omeka @id', [
       '@id' => $id,
     ]);
     

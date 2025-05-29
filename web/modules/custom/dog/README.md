@@ -94,6 +94,48 @@ protected function getFromCache($id, $type) {
    - Set appropriate cache tags
    - Configure batch processing limits
 
+## Gestione delle coordinate geografiche
+
+### Flusso di recupero delle coordinate
+
+Le coordinate geografiche degli oggetti Omeka seguono questo percorso:
+
+1. **Origine in Omeka S**: 
+   - Le coordinate sono memorizzate nell'API di Omeka S nel campo `o-module-mapping:feature` di ciascun oggetto
+   - Specificamente nel sotto-array `o-module-mapping:geography-coordinates` in formato `[longitude, latitude]`
+   - Esempio: `"o-module-mapping:geography-coordinates": [8.4507977559954, 39.069830365657]`
+
+2. **Recupero via PHP**:
+   - Il servizio `OmekaResourceFetcher` (in `dog/src/Service/OmekaResourceFetcher.php`) recupera l'intero oggetto Omeka
+   - Utilizza una cache persistente (`@cache.omeka`) per ottimizzare le performance (evitando richieste ripetute)
+   - Il metodo `retrieveResource()` ottiene l'oggetto completo tramite API
+   - Esempio di chiave di cache: `omeka_resource:items:3389` o `omeka_geo_data:feature:7`
+
+3. **Elaborazione delle coordinate**:
+   - La classe `Utils` (in `omeka_utils/src/Utils.php`) con il metodo `getLocation()` estrae le coordinate
+   - Converte il formato da `[longitude, latitude]` (formato GeoJSON) a un array associativo `['latitude' => y, 'longitude' => x]`
+   - Gestisce vari casi di errore e fornisce valori di fallback quando necessario
+   - Supporta sia l'estrazione diretta dalle proprietà dell'oggetto che il recupero tramite URL di feature
+
+4. **Passaggio al frontend**:
+   - Nel file `italiagov.theme`, l'hook di preprocess `italiagov_preprocess_block` aggiunge le coordinate a `drupalSettings.omeka_map`
+   - Le coordinate vengono rese disponibili come proprietà `latitude` e `longitude` dell'oggetto `store.confs.omeka_items[itemID]`
+   - Il file JavaScript `omeka-map.js` utilizza queste coordinate per creare marker sulla mappa Leaflet
+
+### Funzionamento della cache
+
+Il sistema utilizza due cache bin distinti:
+
+1. **cache.omeka**: Cache per le risorse Omeka (items, media)
+   - Pattern della chiave: `omeka_resource:{resource_type}:{id}`
+   - Esempio: `omeka_resource:items:3389`
+
+2. **cache.omeka_geo_data**: Cache per i dati geografici
+   - Pattern della chiave: `omeka_geo_data:feature:{id}`
+   - Esempio: `omeka_geo_data:feature:7`
+
+Questo approccio a doppia cache permette di gestire in modo efficiente sia i contenuti che le informazioni geografiche, riducendo le chiamate API e migliorando le performance.
+
 ## Development Guidelines
 
 1. **Adding New Resource Types**:

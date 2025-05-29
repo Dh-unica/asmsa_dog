@@ -6,6 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Http\ClientFactory;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\State\StateInterface;
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\dog\OmekaApiResponse;
 use GuzzleHttp\ClientInterface;
@@ -61,6 +62,13 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
   protected $state;
 
   /**
+   * The cache backend.
+   *
+   * @var \Drupal\Core\Cache\CacheBackendInterface
+   */
+  protected $cache;
+
+  /**
    * Constructs a OmekaResourceFetcher object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
@@ -69,6 +77,8 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    *   The client factory.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger channel factory.
+   * @param \Drupal\Core\Cache\CacheBackendInterface $cache
+   *   The cache backend.
    * @param \Drupal\Core\State\StateInterface $state
    *   The state service.
    */
@@ -76,11 +86,13 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
     ConfigFactoryInterface $config_factory,
     ClientFactory $factory,
     LoggerChannelFactoryInterface $logger_factory,
-    StateInterface $state
+    CacheBackendInterface $cache,
+    StateInterface $state = NULL
   ) {
     $this->config = $config_factory->get('dog.settings');
     $this->factory = $factory;
     $this->logger = $logger_factory->get('dog');
+    $this->cache = $cache;
     $this->state = $state;
   }
 

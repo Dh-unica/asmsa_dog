@@ -85,23 +85,65 @@ class Utils {
   }
 
   public function getLocation($omeka_item_full) {
-    $location_url = $omeka_item_full->{'o-module-mapping:feature'}[0]->{'@id'} ?? '';
-    if (empty($location_url)) {
-      throw new \ValueError('Path cannot be empty');
+    // Verifica che il campo mapping feature esista
+    if (empty($omeka_item_full->{'o-module-mapping:feature'})) {
+      \Drupal::logger('omeka_utils')->warning('Item Omeka senza mapping features: @id', [
+        '@id' => $omeka_item_full['o:id'] ?? 'ID sconosciuto',
+      ]);
+      return [
+        'latitude' => null,
+        'longitude' => null,
+      ];
     }
-    $location_data = file_get_contents($location_url);
-    $location_json = json_decode($location_data, true);
-
-    // Extract coordinates from the JSON
-    $coordinates = $location_json['o-module-mapping:geography-coordinates'] ?? null;
-    if ($coordinates) {
+    
+    // Prova prima a recuperare le coordinate direttamente dall'oggetto
+    if (isset($omeka_item_full->{'o-module-mapping:feature'}[0]->{'o-module-mapping:geography-coordinates'})) {
+      $coordinates = $omeka_item_full->{'o-module-mapping:feature'}[0]->{'o-module-mapping:geography-coordinates'};
+      \Drupal::logger('omeka_utils')->debug('Coordinate trovate direttamente nell\'oggetto: @coords', [
+        '@coords' => json_encode($coordinates),
+      ]);
       return [
         'latitude' => $coordinates[1],
         'longitude' => $coordinates[0],
       ];
-    } else {
-      throw new \Exception('Coordinates not found in the JSON response');
     }
+    
+    // Se non ci sono coordinate dirette, prova con l'approccio precedente
+    $location_url = $omeka_item_full->{'o-module-mapping:feature'}[0]->{'@id'} ?? '';
+    if (empty($location_url)) {
+      \Drupal::logger('omeka_utils')->warning('URL mapping feature vuoto per item: @id', [
+        '@id' => $omeka_item_full['o:id'] ?? 'ID sconosciuto',
+      ]);
+      return [
+        'latitude' => null,
+        'longitude' => null,
+      ];
+    }
+    
+    try {
+      $location_data = file_get_contents($location_url);
+      $location_json = json_decode($location_data, true);
+
+      // Extract coordinates from the JSON
+      $coordinates = $location_json['o-module-mapping:geography-coordinates'] ?? null;
+      if ($coordinates) {
+        return [
+          'latitude' => $coordinates[1],
+          'longitude' => $coordinates[0],
+        ];
+      }
+    } catch (\Exception $e) {
+      \Drupal::logger('omeka_utils')->error('Errore nel recupero coordinate per item @id: @error', [
+        '@id' => $omeka_item_full['o:id'] ?? 'ID sconosciuto',
+        '@error' => $e->getMessage(),
+      ]);
+    }
+    
+    // Se arriviamo qui, non siamo riusciti a recuperare le coordinate
+    return [
+      'latitude' => null,
+      'longitude' => null,
+    ];
   }
 
   public function getResourceName($resource_id) {
