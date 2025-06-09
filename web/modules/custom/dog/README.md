@@ -106,10 +106,21 @@ Le coordinate geografiche degli oggetti Omeka seguono questo percorso:
    - Esempio: `"o-module-mapping:geography-coordinates": [8.4507977559954, 39.069830365657]`
 
 2. **Recupero via PHP**:
-   - Il servizio `OmekaResourceFetcher` (in `dog/src/Service/OmekaResourceFetcher.php`) recupera l'intero oggetto Omeka
-   - Utilizza una cache persistente (`@cache.omeka`) per ottimizzare le performance (evitando richieste ripetute)
-   - Il metodo `retrieveResource()` ottiene l'oggetto completo tramite API
-   - Esempio di chiave di cache: `omeka_resource:items:3389` o `omeka_geo_data:feature:7`
+   - Il servizio `OmekaResourceFetcher` (in `dog/src/Service/OmekaResourceFetcher.php`) recupera l'intero oggetto Omeka seguendo un flusso ottimizzato:
+     - **Priorità alla cache**: Il sistema verifica *sempre* prima la presenza dell'oggetto in cache
+     - **Struttura della cache**: Utilizza due cache bin separati e ottimizzati:
+       - `@cache.omeka`: Per gli oggetti completi (pattern: `omeka_resource:{type}:{id}`)
+       - `@cache.omeka_geo_data`: Specifico per i dati geografici (pattern: `omeka_geo_data:feature:{id}`)
+     - **Strategia di fallback**: Solo in caso di cache miss, viene effettuata una chiamata API live
+     - **Persistenza**: I dati vengono immediatamente salvati in cache dopo ogni chiamata API
+     - **Dependency Injection**: Il servizio utilizza correttamente `CacheBackendInterface` e `StateInterface`
+   - **Efficienza del sistema**:
+     - Evita richieste HTTP ridondanti grazie alla strategia di cache
+     - Accede direttamente alle coordinate nell'oggetto Omeka tramite `o-module-mapping:feature[0]->o-module-mapping:geography-coordinates`
+     - Non effettua più chiamate HTTP separate per recuperare le coordinate geografiche
+     - Implementa gestione degli errori avanzata con logging dettagliato
+     - Utilizza una TTL configurabile per bilanciare freschezza dei dati e performance
+   - **Esempio di chiave di cache**: `omeka_resource:items:3389` o `omeka_geo_data:feature:7`
 
 3. **Elaborazione delle coordinate**:
    - La classe `Utils` (in `omeka_utils/src/Utils.php`) con il metodo `getLocation()` estrae le coordinate
