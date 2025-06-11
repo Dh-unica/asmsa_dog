@@ -99,6 +99,7 @@ $databases['default']['default'] = array (
   'driver' => 'mysql',
 );
 $settings['config_sync_directory'] = 'sites/default/config';
+$settings['cache']['bins']['omeka'] = 'cache.backend.permanent_database';
 
 /**
  * Customizing database settings.
