@@ -15,7 +15,7 @@ services:
 
   dog.omeka_url:
     class: Drupal\dog\Service\OmekaUrlService
-    arguments: ['@http_client', '@cache.default']
+    arguments: ['@http_client', '@cache.omeka']
 
   dog.omeka_resource_view_builder:
     class: Drupal\dog\Service\OmekaResourceViewBuilder
