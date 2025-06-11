@@ -75,3 +75,165 @@ function dog_theme_suggestions_dog_omeka_resource(array $variables) {
 
   return $suggestions;
 }
+
+/**
+ * Batch operation for fetching and caching Omeka resources.
+ *
+ * This function is called by the Batch API.
+ *
+ * @param string $api_resource_type
+ *   The Omeka API resource type (e.g., 'items', 'mapping_features').
+ * @param string $state_key_prefix
+ *   The prefix for state keys (e.g., 'dog.omeka_items').
+ * @param array $context
+ *   The batch context array, passed by reference.
+ */
+function _dog_omeka_batch_operation($api_resource_type, $state_key_prefix, &$context) {
+  if (!isset($context['sandbox']['progress'])) {
+    $context['sandbox']['progress'] = 0;
+    $context['sandbox']['current_page'] = 1;
+    $context['sandbox']['total_api_results'] = 0;
+    $context['results']['processed_count'] = 0;
+    $context['results']['api_resource_type'] = $api_resource_type;
+    $context['results']['state_key_prefix'] = $state_key_prefix;
+  }
+
+  $items_per_page_batch = 20; // You can adjust this value for the batch
+
+  /** @var \Drupal\dog\Service\OmekaResourceFetcher $fetcher */
+  $fetcher = \Drupal::service('dog.omeka_resource_fetcher');
+
+  $logger = \Drupal::logger('dog_batch');
+  $logger->info('Batch operation starting for @type, page @page.', [
+    '@type' => $api_resource_type,
+    '@page' => $context['sandbox']['current_page'],
+  ]);
+
+  try {
+    $total_api_results_from_search = 0;
+    $results_page = $fetcher->search(
+      $api_resource_type,
+      [],
+      $context['sandbox']['current_page'],
+      $items_per_page_batch,
+      $total_api_results_from_search
+    );
+
+    if ($context['sandbox']['current_page'] === 1) {
+      $context['sandbox']['total_api_results'] = $total_api_results_from_search;
+      if ($context['sandbox']['total_api_results'] === 0 && empty($results_page)) {
+        $logger->info('No results found for resource type @type on the first page for batch.', ['@type' => $api_resource_type]);
+        $context['finished'] = 1;
+        return;
+      }
+    }
+    
+    if (empty($results_page)) {
+      $context['finished'] = 1;
+      $logger->info('Batch finished for @type: No more items on page @page.', ['@type' => $api_resource_type, '@page' => $context['sandbox']['current_page']]);
+      return;
+    }
+
+    $processed_in_this_tick = 0;
+    foreach ($results_page as $item_summary) {
+      if (empty($item_summary['id'])) {
+        $logger->warning('Batch: Item summary missing ID for @type. Skipping.', ['@type' => $api_resource_type]);
+        continue;
+      }
+      // retrieveResource will fetch from API if not cached, and then cache it.
+      $detailed_item = $fetcher->retrieveResource((string) $item_summary['id'], $api_resource_type);
+      if ($detailed_item) {
+        $context['sandbox']['progress']++;
+        $processed_in_this_tick++;
+      }
+    }
+    $context['results']['processed_count'] = $context['sandbox']['progress'];
+
+    $context['message'] = t('Processing @type: page @current_page. Fetched @processed_in_tick items. Total processed so far: @total_processed.', [
+      '@type' => $api_resource_type,
+      '@current_page' => $context['sandbox']['current_page'],
+      '@processed_in_tick' => $processed_in_this_tick,
+      '@total_processed' => $context['sandbox']['progress'],
+    ]);
+
+    if ($context['sandbox']['total_api_results'] > 0) {
+        $context['finished'] = ($context['sandbox']['progress'] / $context['sandbox']['total_api_results']);
+    } else if (count($results_page) < $items_per_page_batch) {
+        // If less items than per_page were returned, assume it's the last page
+        $context['finished'] = 1;
+    } else {
+        // Default to not finished if total_api_results is 0 and we got a full page
+        // This ensures the batch continues if the API doesn't return a total count but there might be more pages.
+        $context['finished'] = ($context['sandbox']['current_page'] * $items_per_page_batch) / (($context['sandbox']['current_page'] * $items_per_page_batch) + $items_per_page_batch); // Estimate progress
+    }
+    
+    // If we processed fewer items than requested per page, it's likely the last page.
+    if (count($results_page) < $items_per_page_batch) {
+        $context['finished'] = 1;
+    }
+    // If the total processed matches the total API results (and total_api_results is > 0)
+    if ($context['sandbox']['total_api_results'] > 0 && $context['sandbox']['progress'] >= $context['sandbox']['total_api_results']) {
+        $context['finished'] = 1;
+    }
+
+    $context['sandbox']['current_page']++;
+
+  } catch (\Exception $e) {
+    $logger->error('Batch error for @type: @message. Stack: @stack', [
+      '@type' => $api_resource_type,
+      '@message' => $e->getMessage(),
+      '@stack' => $e->getTraceAsString(),
+    ]);
+    $context['finished'] = 1; // Stop batch on error
+    \Drupal::messenger()->addError(t('An error occurred while processing @type: @message', [
+        '@type' => $api_resource_type,
+        '@message' => $e->getMessage()
+    ]));
+  }
+}
+
+/**
+ * Batch finished callback.
+ *
+ * This function is called by the Batch API when all operations are complete.
+ *
+ * @param bool $success
+ *   TRUE if the batch operation was successful.
+ * @param array $results
+ *   The results array from the batch operations.
+ * @param array $operations
+ *   The operations array.
+ */
+function _dog_omeka_batch_finished($success, $results, array $operations) {
+  if ($success) {
+    $count = $results['processed_count'] ?? 0;
+    $type = $results['api_resource_type'] ?? 'resources';
+    $state_key_prefix = $results['state_key_prefix'] ?? 'dog.omeka_unknown';
+
+    // Update state after successful batch completion
+    /** @var \Drupal\Core\State\StateInterface $state */
+    $state = \Drupal::service('state');
+    $current_time = \Drupal::time()->getRequestTime();
+    $state->set("{$state_key_prefix}_last_update", $current_time);
+    $state->set("{$state_key_prefix}_count", $count);
+
+    \Drupal::messenger()->addStatus(t('Successfully fetched and cached @count @type. Last update time recorded.', [
+      '@count' => $count,
+      '@type' => $type,
+    ]));
+    \Drupal::logger('dog_batch')->info('Batch finished successfully for @type. Processed @count items. State prefix @prefix updated.', [
+        '@type' => $type, 
+        '@count' => $count,
+        '@prefix' => $state_key_prefix
+    ]);
+  }
+  else {
+    // An error occurred.
+    $error_operation = reset($operations);
+    \Drupal::messenger()->addError(t('An error occurred while processing the batch operation with error: @error', [
+      '@error' => $error_operation[0] ?? 'Unknown error',
+    ]));
+    \Drupal::logger('dog_batch')->error('Batch failed. Error from operation: @error', ['@error' => $error_operation[0] ?? 'Unknown error']);
+  }
+}
+

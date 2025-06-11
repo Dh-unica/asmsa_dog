@@ -112,8 +112,12 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
       case 'o:Item':
         return 'items';
 
+      case 'o-module-mapping:Feature':
+        return 'mapping_features';
+
       default:
-        throw new \InvalidArgumentException(sprintf("Resource type not mapped: %s", $original_type));
+        $this->logger->warning("Resource type not mapped: {type}", ['type' => $original_type]);
+        return null;
     }
   }
 
@@ -274,6 +278,134 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
     return [
       'items' => "Items",
     ];
+  }
+
+  /**
+   * Fetches all resources of a given type from Omeka API, caches them,
+   * and updates state with statistics.
+   *
+   * This method is intended to be called by a batch process.
+   *
+   * @param string $api_resource_type
+   *   The resource type slug to be used in API calls (e.g., 'items', 'mapping_features').
+   *   This is passed to search() and retrieveResource().
+   * @param string $state_key_prefix
+   *   The prefix for state keys (e.g., 'dog.omeka_items', 'dog.omeka_features').
+   *   Used to store '..._last_update' and '..._count'.
+   * @param callable|null $progress_callback
+   *   Optional callback for progress updates.
+   *   It receives ($processed_in_page, $total_processed_overall, $current_page, $total_api_results).
+   * @param int $items_per_page
+   *   Number of items to fetch per API call.
+   *
+   * @return int
+   *   The total number of resources processed and cached.
+   *
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   *   If an API request fails.
+   * @throws \InvalidArgumentException
+   *   If configuration is missing.
+   */
+  public function fetchAllResourcesAndCache(string $api_resource_type, string $state_key_prefix, callable $progress_callback = NULL, int $items_per_page = 50): int {
+    $total_processed_overall = 0;
+    $current_page = 1; // Omeka API pages are typically 1-indexed.
+    $total_api_results = 0; // Will be updated by the first search call.
+
+    if (empty($this->config->get('base_url'))) {
+      $this->logger->error('Omeka base URL is not configured. Cannot fetch all resources for type: @type', ['@type' => $api_resource_type]);
+      throw new \InvalidArgumentException('Omeka base URL is not configured.');
+    }
+
+    $this->logger->info('Starting to fetch all resources for type: @type using state prefix @state_prefix.', ['@type' => $api_resource_type, '@state_prefix' => $state_key_prefix]);
+
+    do {
+      $total_api_results_from_search = 0; // Initialize for each call to search
+      $results_page = $this->search($api_resource_type, [], $current_page, $items_per_page, $total_api_results_from_search);
+
+      if ($current_page === 1) {
+        $total_api_results = $total_api_results_from_search;
+        if ($total_api_results === 0 && empty($results_page)) {
+            $this->logger->info('No results found for resource type @type on the first page.', ['@type' => $api_resource_type]);
+            break; // No items to process if first page is empty and total is 0.
+        }
+        $this->logger->info('Total API results for @type: @total', ['@type' => $api_resource_type, '@total' => $total_api_results]);
+      }
+
+      if (empty($results_page)) {
+        $this->logger->info('No more results for type @type on page @page. Expected total: @total_api, processed so far: @processed', [
+            '@type' => $api_resource_type, 
+            '@page' => $current_page, 
+            '@total_api' => $total_api_results, 
+            '@processed' => $total_processed_overall
+        ]);
+        break; // Exit loop if no items are returned on the current page.
+      }
+
+      $processed_in_this_page = 0;
+      foreach ($results_page as $item_summary) {
+        if (empty($item_summary['id'])) {
+          $this->logger->warning('Item summary missing ID for resource type @type on page @page. Skipping. Item data: @data', ['@type' => $api_resource_type, '@page' => $current_page, '@data' => json_encode($item_summary)]);
+          continue;
+        }
+        $item_id = $item_summary['id'];
+
+        // retrieveResource will fetch from API if not cached, and then cache it.
+        $detailed_item = $this->retrieveResource((string) $item_id, $api_resource_type);
+
+        if ($detailed_item) {
+          $total_processed_overall++;
+          $processed_in_this_page++;
+        }
+        else {
+          $this->logger->warning('Failed to retrieve or cache resource @type with ID @id.', ['@type' => $api_resource_type, '@id' => $item_id]);
+        }
+      }
+      
+      $this->logger->debug('Processed @count items from page @page for resource type @type. Overall processed: @overall.', [
+        '@count' => $processed_in_this_page,
+        '@page' => $current_page,
+        '@type' => $api_resource_type,
+        '@overall' => $total_processed_overall,
+      ]);
+
+      if (is_callable($progress_callback)) {
+        call_user_func($progress_callback, $processed_in_this_page, $total_processed_overall, $current_page, $total_api_results);
+      }
+
+      if (empty($results_page) || count($results_page) < $items_per_page || ($total_api_results > 0 && $total_processed_overall >= $total_api_results) ) {
+        // This was the last page or all expected items processed
+        $this->logger->info('Reached end of results for @type. Processed: @overall, API total: @api_total, Page items: @page_count, Per page: @per_page', [
+            '@type' => $api_resource_type, 
+            '@overall' => $total_processed_overall, 
+            '@api_total' => $total_api_results, 
+            '@page_count' => count($results_page), 
+            '@per_page' => $items_per_page
+        ]);
+        break;
+      }
+      
+      $current_page++;
+
+    } while (true); // Loop broken internally by conditions above.
+
+    // Update state.
+    if ($this->state) {
+      // Ensure state is available (it should be, as per constructor type hint, but good practice for robustness)
+      $current_time = \Drupal::time()->getRequestTime();
+      $this->state->set("{$state_key_prefix}_last_update", $current_time);
+      $this->state->set("{$state_key_prefix}_count", $total_processed_overall);
+      $this->logger->info('Updated state for @prefix: count = @count, last_update = @time.', [
+        '@prefix' => $state_key_prefix,
+        '@count' => $total_processed_overall,
+        '@time' => $current_time,
+      ]);
+    }
+    else {
+         $this->logger->warning('State service not available, cannot save update stats for @prefix.', ['@prefix' => $state_key_prefix]);
+    }
+    
+    $this->logger->info('Finished fetching all resources for type @type. Total processed and cached: @count', ['@type' => $api_resource_type, '@count' => $total_processed_overall]);
+    return $total_processed_overall;
   }
 
   /**
