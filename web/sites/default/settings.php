@@ -782,6 +782,8 @@ if (file_exists(__DIR__ . '/settings.ddev.php') && getenv('IS_DDEV_PROJECT') == 
   include __DIR__ . '/settings.ddev.php';
 }
 
+$settings['state_cache'] = TRUE;
+
 /**
  * Load local development override configuration, if available.
  *
