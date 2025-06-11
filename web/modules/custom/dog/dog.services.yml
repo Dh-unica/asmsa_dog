@@ -11,7 +11,7 @@ services:
   # Services.
   dog.omeka_resource_fetcher:
     class: Drupal\dog\Service\OmekaResourceFetcher
-    arguments: [ '@config.factory', '@http_client_factory', '@logger.factory', '@cache.omeka', '@state' ]
+    arguments: [ '@config.factory', '@http_client_factory', '@logger.factory', '@cache.omeka', '@state', '@dog.omeka_url' ]
 
   dog.omeka_url:
     class: Drupal\dog\Service\OmekaUrlService

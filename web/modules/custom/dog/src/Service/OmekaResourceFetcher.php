@@ -16,6 +16,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
+use Drupal\dog\Service\OmekaUrlService;
 
 /**
  * Defines the OmekaResourceFetcher class.
@@ -69,6 +70,13 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
   protected $cache;
 
   /**
+   * The Omeka URL service.
+   *
+   * @var \Drupal\dog\Service\OmekaUrlService
+   */
+  protected $omekaUrlService;
+
+  /**
    * Constructs a OmekaResourceFetcher object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
@@ -81,19 +89,23 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    *   The cache backend.
    * @param \Drupal\Core\State\StateInterface $state
    *   The state service.
+   * @param \Drupal\dog\Service\OmekaUrlService $omeka_url_service
+   *   The Omeka URL service.
    */
   public function __construct(
     ConfigFactoryInterface $config_factory,
     ClientFactory $factory,
     LoggerChannelFactoryInterface $logger_factory,
     CacheBackendInterface $cache,
-    StateInterface $state = NULL
+    StateInterface $state = NULL,
+    OmekaUrlService $omeka_url_service
   ) {
     $this->config = $config_factory->get('dog.settings');
     $this->factory = $factory;
     $this->logger = $logger_factory->get('dog');
     $this->cache = $cache;
     $this->state = $state;
+    $this->omekaUrlService = $omeka_url_service;
   }
 
   /**
@@ -307,6 +319,11 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
    *   If configuration is missing.
    */
   public function fetchAllResourcesAndCache(string $api_resource_type, string $state_key_prefix, callable $progress_callback = NULL, int $items_per_page = 50): int {
+    // DEBUG: Log all'inizio della funzione (temporaneamente INFO per test)
+    $this->logger->info('Batch: fetchAllResourcesAndCache START. API Resource Type: @api_type, State Prefix: @state_prefix', [
+        '@api_type' => $api_resource_type,
+        '@state_prefix' => $state_key_prefix,
+    ]);
     $total_processed_overall = 0;
     $current_page = 1; // Omeka API pages are typically 1-indexed.
     $total_api_results = 0; // Will be updated by the first search call.
@@ -321,6 +338,13 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
     do {
       $total_api_results_from_search = 0; // Initialize for each call to search
       $results_page = $this->search($api_resource_type, [], $current_page, $items_per_page, $total_api_results_from_search);
+
+      // DEBUG: Log dopo la chiamata a search()
+      $this->logger->debug('Batch: Search results for page @page. Count: @count. API Total from search: @api_total_search', [
+          '@page' => $current_page,
+          '@count' => is_array($results_page) ? count($results_page) : 'N/A (not an array)',
+          '@api_total_search' => $total_api_results_from_search,
+      ]);
 
       if ($current_page === 1) {
         $total_api_results = $total_api_results_from_search;
@@ -343,6 +367,10 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
 
       $processed_in_this_page = 0;
       foreach ($results_page as $item_summary) {
+        // DEBUG: Log all'inizio del loop foreach
+        $this->logger->debug('Batch: Processing item summary. ID from summary: @item_id_summary', [
+            '@item_id_summary' => $item_summary['id'] ?? 'N/A',
+        ]);
         if (empty($item_summary['id'])) {
           $this->logger->warning('Item summary missing ID for resource type @type on page @page. Skipping. Item data: @data', ['@type' => $api_resource_type, '@page' => $current_page, '@data' => json_encode($item_summary)]);
           continue;
@@ -352,9 +380,69 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
         // retrieveResource will fetch from API if not cached, and then cache it.
         $detailed_item = $this->retrieveResource((string) $item_id, $api_resource_type);
 
+        // DEBUG: Log dopo retrieveResource e prima di if ($detailed_item)
+        $this->logger->debug('Batch: Result of retrieveResource for ID @item_id. Is detailed_item set? @is_set. Type: @type. Content snippet (if array): @snippet', [
+            '@item_id' => $item_id,
+            '@is_set' => isset($detailed_item) ? 'Yes' : 'No',
+            '@type' => gettype($detailed_item),
+            '@snippet' => is_array($detailed_item) ? substr(json_encode(array_keys($detailed_item)), 0, 200) : 'N/A (not an array)',
+        ]);
+
         if ($detailed_item) {
           $total_processed_overall++;
           $processed_in_this_page++;
+
+          // DEBUG: Log resource type and item structure
+          $this->logger->debug('Batch: Checking item for URL pre-caching. API Resource Type: @api_type. Item ID: @item_id. Keys in detailed_item: @keys. Has o:media array? @has_media_array', [
+            '@api_type' => $api_resource_type,
+            '@item_id' => $item_id,
+            '@keys' => implode(', ', array_keys($detailed_item)),
+            '@has_media_array' => (isset($detailed_item['o:media']) && is_array($detailed_item['o:media'])) ? 'Yes' : 'No',
+          ]);
+          if (isset($detailed_item['o:media'])) {
+             $this->logger->debug('Batch: Type of o:media: @type. Is array? @is_array. Content snippet: @snippet', [
+                '@type' => gettype($detailed_item['o:media']),
+                '@is_array' => is_array($detailed_item['o:media']) ? 'Yes' : 'No',
+                '@snippet' => substr(json_encode($detailed_item['o:media']), 0, 200)
+             ]);
+          }
+
+          // Pre-cache Omeka URLs if this is an item and omekaUrlService is available.
+          if ($api_resource_type === 'items' && isset($this->omekaUrlService) && isset($detailed_item['o:media']) && is_array($detailed_item['o:media'])) {
+            foreach ($detailed_item['o:media'] as $media_data) {
+              if (isset($media_data['@id'])) {
+                $media_api_url = $media_data['@id'];
+                $media_id_for_log = $media_data['o:id'] ?? ($media_data['id'] ?? 'N/A');
+
+                // Cache the public URL of the media itself.
+                try {
+                  $this->omekaUrlService->transformApiUrl($media_api_url);
+                } catch (\Exception $e) {
+                  $this->logger->warning('Batch: Error pre-caching media URL for media ID @media_id (from item ID @item_id): @error', [
+                    '@media_id' => $media_id_for_log,
+                    '@item_id' => $item_id,
+                    '@error' => $e->getMessage(),
+                  ]);
+                }
+                
+                // Cache the public URL of the parent item (derived from media).
+                try {
+                  $this->omekaUrlService->transformToItemUrl($media_api_url);
+                } catch (\Exception $e) {
+                  $this->logger->warning('Batch: Error pre-caching item URL for media ID @media_id (from item ID @item_id): @error', [
+                    '@media_id' => $media_id_for_log,
+                    '@item_id' => $item_id,
+                    '@error' => $e->getMessage(),
+                  ]);
+                }
+                
+                $this->logger->debug('Batch: Attempted to pre-cache URLs for media ID @media_id (from item ID @item_id).', [
+                  '@media_id' => $media_id_for_log,
+                  '@item_id' => $item_id, // $item_id is from the outer loop
+                ]);
+              }
+            }
+          }
         }
         else {
           $this->logger->warning('Failed to retrieve or cache resource @type with ID @id.', ['@type' => $api_resource_type, '@id' => $item_id]);
