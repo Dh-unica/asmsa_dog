@@ -782,8 +782,6 @@ if (file_exists(__DIR__ . '/settings.ddev.php') && getenv('IS_DDEV_PROJECT') == 
   include __DIR__ . '/settings.ddev.php';
 }
 
-$settings['state_cache'] = TRUE;
-
 /**
  * Load local development override configuration, if available.
  *
@@ -820,3 +818,19 @@ $settings['trusted_host_patterns'] = [
   '^nginx$',
   '^localhost$',
 ];
+
+/**
+ * Impostazioni per il debug delle performance del backend.
+ *
+ * Disabilita le cache di rendering e dinamica per forzare Drupal
+ * a rigenerare i blocchi ad ogni caricamento.
+ * ATTENZIONE: Rende il sito molto lento. Da commentare o rimuovere dopo il test.
+ */
+// Controlla che il file esista prima di includerlo.
+if (file_exists(DRUPAL_ROOT . '/sites/development.services.yml')) {
+  $settings['container_yamls'][] = DRUPAL_ROOT . '/sites/development.services.yml';
+}
+$settings['cache']['bins']['render'] = 'cache.backend.null';
+$settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';
+$config['system.performance']['css']['preprocess'] = FALSE;
+$config['system.performance']['js']['preprocess'] = FALSE;
