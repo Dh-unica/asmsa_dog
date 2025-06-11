@@ -11,3 +11,4 @@ layout_builder_iframe_routes:
   - layout_builder.move_block_form
   - layout_builder.translate_block
   - layout_builder.translate_inline_block
+custom_routes: {  }
