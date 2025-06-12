@@ -1,0 +1,4 @@
+access dog settings:
+  title: 'Access Dog module settings'
+  description: 'Allow users to access the Dog module configuration page.'
+  restrict access: true

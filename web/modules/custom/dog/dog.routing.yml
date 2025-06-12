@@ -4,4 +4,4 @@ dog.settings:
     _title: 'Drupal Omeka Geonode Settings'
     _form: 'Drupal\dog\Form\SettingsForm'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'access dog settings'
