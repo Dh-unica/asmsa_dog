@@ -156,7 +156,7 @@ function italiagov_preprocess_block(&$variables) {
       $items_ids = [];
       foreach ($omeka_items as $omeka_item) {
         $omeka_id = $omeka_item['id'];
-        $omeka_item_full = $omeka_utils->getItem($omeka_id);
+        $omeka_item_full = italiagov_omeka_fetcher($omeka_id, 'items');
         $marker_key = 'o-module-mapping:feature';
         $date_key = 'dcterms:date';
         if (!empty($omeka_item_full->$marker_key) && !empty($omeka_item_full->$date_key)) {
@@ -468,7 +468,23 @@ function italiagov_omeka_fetcher($id, $resource_type = 'items') {
       '@coords' => $coordinates,
     ]);
     
-    return $omeka_item;
+    $data_to_return = null;
+    if (is_object($omeka_item) && isset($omeka_item->data)) {
+      // Data from cache.
+      $data_to_return = $omeka_item->data;
+    } else {
+      // Data directly from API.
+      $data_to_return = $omeka_item;
+    }
+
+    // The preprocessing code expects an object, not an array.
+    // If the data from cache was stored as an associative array, cast it back to an object.
+    // We use json_encode/json_decode for a deep conversion.
+    if (is_array($data_to_return)) {
+      $data_to_return = json_decode(json_encode($data_to_return));
+    }
+
+    return $data_to_return;
   } 
   else {
     \Drupal::logger('italiagov_debug')->error('Impossibile recuperare item Omeka @id', [
