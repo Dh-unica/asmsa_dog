@@ -334,11 +334,11 @@ function italiagov_preprocess_block(&$variables) {
         $omeka_item_full = italiagov_omeka_fetcher($omeka_id, 'items');
         $marker_key = 'o-module-mapping:feature';
         $date_key = 'dcterms:date';
-        if (!empty($omeka_item_full[$marker_key])) {
+        if (!empty($omeka_item_full->$marker_key)) {
           
           $items_ids[] = $omeka_id;
-          $marker = $omeka_item_full[$marker_key];
-          $markers = explode('/', $marker[0]['@id']);
+          $marker = $omeka_item_full->$marker_key;
+          $markers = explode('/', $marker[0]->{'@id'});
           // if $marker['0']->{'@id'} is empty
           $full_items[$omeka_item['id']]['full_item'] = $omeka_item_full;
           
@@ -346,12 +346,12 @@ function italiagov_preprocess_block(&$variables) {
           $marker_object = italiagov_omeka_fetcher(end($markers), 'mapping_features');
           
           $full_items[$omeka_item['id']]['location'] = $marker_object;
-          //$full_items[$omeka_item['id']]['absolute_url'] = $omeka_utils->getItemUrl($omeka_item_full);
+          $full_items[$omeka_item['id']]['absolute_url'] = $omeka_utils->getItemUrl($omeka_item_full);
           // Extract coordinates - correzione inversione lat/lon
-          if (!empty($marker_object['o-module-mapping:geography-coordinates'])) {
+          if (!empty($marker_object->{'o-module-mapping:geography-coordinates'})) {
             // Nota: le coordinate GeoJSON sono [longitude, latitude] mentre Leaflet usa [latitude, longitude]
-            $full_items[$omeka_item['id']]['latitude'] = $marker_object['o-module-mapping:geography-coordinates'][1]; // Seconda posizione è lat
-            $full_items[$omeka_item['id']]['longitude'] = $marker_object['o-module-mapping:geography-coordinates'][0]; // Prima posizione è lon
+            $full_items[$omeka_item['id']]['latitude'] = $marker_object->{'o-module-mapping:geography-coordinates'}[1]; // Seconda posizione è lat
+            $full_items[$omeka_item['id']]['longitude'] = $marker_object->{'o-module-mapping:geography-coordinates'}[0]; // Prima posizione è lon
 
           } 
         }
