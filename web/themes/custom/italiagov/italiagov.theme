@@ -182,12 +182,18 @@ function italiagov_preprocess_block(&$variables) {
       $wms = [];
       $omeka_wms = $omeka_map_timeline->get('field_wms_server_timeline')->referencedEntities();
       foreach($omeka_wms as $omeka_wms_single) {
+        $layer_value = $omeka_wms_single->get('field_wms_layer')->getValue();
+        $layer_name_value = $omeka_wms_single->get('field_wms_layer_name')->getValue();
+        $layer_start_value = $omeka_wms_single->get('field_wms_layer_start')->getValue();
+        $layer_end_value = $omeka_wms_single->get('field_wms_layer_end')->getValue();
+        $server_link_value = $omeka_wms_single->get('field_wms_server_link')->getValue();
+
         $wms[] = [
-          'layer' => $omeka_wms_single->get('field_wms_layer')->getValue()[0]['value'],
-          'layer_name' => $omeka_wms_single->get('field_wms_layer_name')->getValue()[0]['value'],
-          'layer_start' => $omeka_wms_single->get('field_wms_layer_start')->getValue()[0]['value'],
-          'layer_end' => $omeka_wms_single->get('field_wms_layer_end')->getValue()[0]['value'],
-          'server_link' => $omeka_wms_single->get('field_wms_server_link')->getValue()[0]['uri'],
+          'layer' => !empty($layer_value) ? $layer_value[0]['value'] : NULL,
+          'layer_name' => !empty($layer_name_value) ? $layer_name_value[0]['value'] : NULL,
+          'layer_start' => !empty($layer_start_value) ? $layer_start_value[0]['value'] : NULL,
+          'layer_end' => !empty($layer_end_value) ? $layer_end_value[0]['value'] : NULL,
+          'server_link' => !empty($server_link_value) ? $server_link_value[0]['uri'] : NULL,
         ];
       }
 
