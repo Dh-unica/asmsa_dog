@@ -14,6 +14,7 @@ dependencies:
   module:
     - comment
     - contextual
+    - dog
     - file
     - filter
     - layout_builder
@@ -34,6 +35,7 @@ permissions:
   - 'access administration pages'
   - 'access content overview'
   - 'access contextual links'
+  - 'access dog settings'
   - 'access files overview'
   - 'access media overview'
   - 'access toolbar'
