@@ -53,12 +53,24 @@ function template_preprocess_dog_omeka_resource(array &$variables) {
  * Implements hook_preprocess_HOOK() for dog-omeka-resource templates.
  */
 function dog_preprocess_dog_omeka_resource(&$variables) {
-  if (isset($variables['omeka_resource_data']['o:media'][0]['@id'])) {
-    /** @var \Drupal\dog\Service\OmekaUrlService $url_service */
-    $url_service = \Drupal::service('dog.omeka_url');
-    $api_url = $variables['omeka_resource_data']['o:media'][0]['@id'];
-    $variables['public_url'] = $url_service->transformToItemUrl($api_url);
+  $item_data = $variables['omeka_resource_data'] ?? NULL;
+
+  // Se non ci sono dati o l'ID dell'oggetto non è presente, non fare nulla.
+  if (empty($item_data) || !isset($item_data['o:id'])) {
+    return;
   }
+
+  // Estrai l'ID dell'oggetto.
+  $item_id = $item_data['o:id'];
+
+  // Estrai l'URL base del sito Omeka.
+  $base_url = \Drupal::service('dog.omeka_resource_fetcher')->getOmekaBaseUrl();
+
+  // Costruisci l'URL pubblico dell'oggetto.
+  // Nota: questo presuppone uno slug del sito statico "asmsa".
+  // Per una soluzione dinamica, lo slug dovrebbe essere recuperato e cachato.
+  $site_slug = 'asmsa';
+  $variables['public_url'] = sprintf('%s/s/%s/item/%s', $base_url, $site_slug, $item_id);
 }
 
 /**

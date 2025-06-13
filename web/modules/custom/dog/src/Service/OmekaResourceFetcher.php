@@ -109,6 +109,16 @@ class OmekaResourceFetcher implements ResourceFetcherInterface {
   }
 
   /**
+   * Gets the Omeka base URL from configuration.
+   *
+   * @return string|null
+   *   The base URL, or null if not set.
+   */
+  public function getOmekaBaseUrl(): ?string {
+    return $this->config->get('base_url');
+  }
+
+  /**
    * Convert the value used in API.
    *
    * @param string $original_type
