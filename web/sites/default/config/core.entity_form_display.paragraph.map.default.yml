@@ -106,13 +106,13 @@ content:
       geocoder:
         control: false
         settings:
+          popup: false
           position: topright
           input_size: 25
           providers: {  }
           min_terms: 4
           delay: 800
           zoom: 16
-          popup: false
           options: ''
     third_party_settings: {  }
   field_settings:

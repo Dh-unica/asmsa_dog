@@ -96,15 +96,6 @@ display:
   widget_table:
     display_title: 'Widget (table)'
     display_options:
-      fields:
-        thumbnail__target_id:
-          label: Thumbnail
-        name:
-          label: Name
-        uid:
-          label: Author
-        changed:
-          label: Updated
       arguments:
         bundle:
           exception:

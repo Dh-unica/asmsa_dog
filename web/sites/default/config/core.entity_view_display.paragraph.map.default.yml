@@ -41,6 +41,7 @@ content:
         minZoom: 1
         maxZoom: 18
         zoomFiner: 0
+      weight: ''
       icon:
         iconType: marker
         iconUrl: ''
@@ -72,16 +73,15 @@ content:
       geocoder:
         control: false
         settings:
+          popup: false
           position: topright
           input_size: 25
           providers: {  }
           min_terms: 4
           delay: 800
           zoom: 16
-          popup: false
           options: ''
       fullscreen_control: true
-      weight: ''
     third_party_settings: {  }
     weight: 0
     region: content

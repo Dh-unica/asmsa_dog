@@ -4,9 +4,7 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.media.media_library
-    - image.style.media_library
   module:
-    - image
     - media
     - media_library
     - user
@@ -479,6 +477,7 @@ display:
     cache_metadata:
       max-age: 0
       contexts:
+        - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
@@ -977,6 +976,48 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        field_titolo_value:
+          id: field_titolo_value
+          table: media__field_titolo
+          field: field_titolo_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: string
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_titolo_value_op
+            label: Titolo
+            description: ''
+            use_operator: false
+            operator: field_titolo_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: field_titolo_value
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              content_editor: '0'
+              administrator: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
         name:
           id: name
           table: media_field_data
@@ -993,7 +1034,7 @@ display:
           exposed: true
           expose:
             operator_id: name_op
-            label: Nome
+            label: 'Nome file'
             description: ''
             use_operator: false
             operator: name_op
@@ -1006,7 +1047,9 @@ display:
             remember_roles:
               authenticated: authenticated
               anonymous: '0'
+              content_editor: '0'
               administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1108,79 +1151,6 @@ display:
     display_plugin: page
     position: 3
     display_options:
-      fields:
-        media_library_select_form:
-          id: media_library_select_form
-          table: media
-          field: media_library_select_form
-          relationship: none
-          entity_type: media
-          plugin_id: media_library_select_form
-          label: ''
-          element_class: ''
-          element_wrapper_class: ''
-        thumbnail__target_id:
-          id: thumbnail__target_id
-          table: media_field_data
-          field: thumbnail__target_id
-          relationship: none
-          entity_type: media
-          entity_field: thumbnail
-          plugin_id: field
-          label: Miniatura
-          type: image
-          settings:
-            image_link: ''
-            image_style: media_library
-            image_loading:
-              attribute: eager
-        name:
-          id: name
-          table: media_field_data
-          field: name
-          relationship: none
-          entity_type: media
-          entity_field: name
-          plugin_id: field
-          label: Nome
-          type: string
-          settings:
-            link_to_entity: false
-        uid:
-          id: uid
-          table: media_field_revision
-          field: uid
-          relationship: none
-          entity_type: media
-          entity_field: uid
-          plugin_id: field
-          label: Autore
-          type: entity_reference_label
-          settings:
-            link: true
-        changed:
-          id: changed
-          table: media_field_data
-          field: changed
-          relationship: none
-          entity_type: media
-          entity_field: changed
-          plugin_id: field
-          label: Aggiornato
-          type: timestamp
-          settings:
-            date_format: short
-            custom_date_format: ''
-            timezone: ''
-            tooltip:
-              date_format: long
-              custom_date_format: ''
-            time_diff:
-              enabled: false
-              future_format: '@interval hence'
-              past_format: '@interval ago'
-              granularity: 2
-              refresh: 60
       access:
         type: perm
         options:
@@ -1283,7 +1253,7 @@ display:
           exposed: true
           expose:
             operator_id: name_op
-            label: Nome
+            label: 'Nome file'
             description: ''
             use_operator: false
             operator: name_op
@@ -1296,7 +1266,51 @@ display:
             remember_roles:
               authenticated: authenticated
               anonymous: '0'
+              content_editor: '0'
               administrator: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        field_titolo_value:
+          id: field_titolo_value
+          table: media__field_titolo
+          field: field_titolo_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: string
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_titolo_value_op
+            label: Titolo
+            description: ''
+            use_operator: false
+            operator: field_titolo_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: field_titolo_value
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              content_editor: '0'
+              administrator: '0'
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1365,7 +1379,7 @@ display:
         css_class: false
         style: false
         row: false
-        fields: false
+        fields: true
         arguments: false
         filters: false
         filter_groups: false
@@ -1392,7 +1406,7 @@ display:
       display_extenders: {  }
       path: admin/content/media-widget-table
     cache_metadata:
-      max-age: -1
+      max-age: 0
       contexts:
         - 'languages:language_interface'
         - url
