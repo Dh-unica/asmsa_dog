@@ -176,7 +176,9 @@ class Utils {
       $site_source = file_get_contents($site_id[0]->{'@id'});
       $site = json_decode($site_source);
       $slug = $site->{'o:slug'};
-      $site_url = $this->base_url . 's/' . $slug;
+      // Rimuovo il trailing slash dalla base_url per evitare il doppio slash
+      $base_url_clean = rtrim($this->base_url, '/');
+      $site_url = $base_url_clean . '/s/' . $slug;
       $expire = strtotime('now +1 week');
       \Drupal::cache('omeka')->set($cacheId, $site_url, $expire);
       return $site_url;

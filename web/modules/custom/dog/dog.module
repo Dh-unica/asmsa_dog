@@ -66,6 +66,9 @@ function dog_preprocess_dog_omeka_resource(&$variables) {
   // Estrai l'URL base del sito Omeka.
   $base_url = \Drupal::service('dog.omeka_resource_fetcher')->getOmekaBaseUrl();
 
+  // Rimuovo il trailing slash dal base_url per evitare doppi slash
+  $base_url = rtrim($base_url, '/');
+
   // Costruisci l'URL pubblico dell'oggetto.
   // Nota: questo presuppone uno slug del sito statico "asmsa".
   // Per una soluzione dinamica, lo slug dovrebbe essere recuperato e cachato.
