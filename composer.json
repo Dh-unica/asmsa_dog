@@ -46,6 +46,7 @@
         "drupal/layout_builder_modal": "^1.2",
         "drupal/layout_builder_restrictions": "^2.19",
         "drupal/leaflet": "^10.2",
+        "drupal/metatag": "^2.1",
         "drupal/msqrole": "^1.0",
         "drupal/paragraphs": "^1.15",
         "drupal/pathauto": "^1.12",
