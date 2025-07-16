@@ -28,11 +28,13 @@ export default class DrupalOmekaResourceEditing extends Plugin {
       drupalOmekaResourceEntityId: 'data-entity-id',
       drupalOmekaResourceEntityBundle: 'data-entity-bundle',
       drupalOmekaResourceViewMode: 'data-view-mode',
+      drupalOmekaResource: 'data-omeka-resource',  // Nuovo attributo per identificare le risorse Omeka
     };
     this.converterAttributes = [
       'drupalOmekaResourceEntityId',
       'drupalOmekaResourceEntityBundle',
       'drupalOmekaResourceEntityType',
+      'drupalOmekaResource',  // Aggiungo l'attributo ai converter
     ];
     const options = this.editor.config.get('drupalOmekaResource');
     if (!options) {
@@ -150,8 +152,7 @@ export default class DrupalOmekaResourceEditing extends Plugin {
       .elementToElement({
         model: 'drupalOmekaResource',
         view: (modelElement, {writer}) => {
-
-          const container = writer.createContainerElement('figure', {
+          const container = writer.createContainerElement('drupal-omeka-resource', {
             class: 'drupal-omeka-resource'
           });
 
