@@ -1,0 +1,21 @@
+uuid: 4f614484-e4ef-4f4f-939c-b90ca8c3bd51
+langcode: it
+status: true
+dependencies: {  }
+name: full100
+label: Full100
+effects:
+  b9eebe16-0801-4ed5-b931-c22a357b608d:
+    uuid: b9eebe16-0801-4ed5-b931-c22a357b608d
+    id: image_convert
+    weight: -9
+    data:
+      extension: webp
+  b876bfd6-2399-4719-82db-f11d9ef6a18c:
+    uuid: b876bfd6-2399-4719-82db-f11d9ef6a18c
+    id: image_scale
+    weight: -10
+    data:
+      width: 1290
+      height: null
+      upscale: true

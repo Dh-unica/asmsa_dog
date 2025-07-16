@@ -97,7 +97,7 @@ settings:
         - heading5
         - heading6
     ckeditor5_imageResize:
-      allow_resize: true
+      allow_resize: false
     ckeditor5_list:
       properties:
         reversed: true
@@ -134,24 +134,6 @@ settings:
         -
           label: 'Citation dark card'
           element: '<blockquote class="blockquote-card dark">'
-        -
-          label: 'Image Fluid'
-          element: '<img class="img-fluid">'
-        -
-          label: 'Image Thumbnail'
-          element: '<img class="img-thumbnail">'
-        -
-          label: 'Image Rounded'
-          element: '<img class="rounded">'
-        -
-          label: 'Image left'
-          element: '<img class="float-start m-5">'
-        -
-          label: 'Image right'
-          element: '<img class="float-end m-5">'
-        -
-          label: 'Image center'
-          element: '<img class="mx-auto d-block my-5">'
         -
           label: Figure
           element: '<figure class="figure">'
@@ -359,8 +341,15 @@ settings:
         -
           label: 'List inline item'
           element: '<li class="list-inline-item">'
+    ckeditor_media_resize_mediaResize:
+      apply_image_styles: false
+      image_styles:
+        - cke_media_resize_small
+        - cke_media_resize_medium
+        - cke_media_resize_large
+        - cke_media_resize_xl
     media_media:
-      allow_view_mode_override: false
+      allow_view_mode_override: true
 image_upload:
   status: true
   scheme: public

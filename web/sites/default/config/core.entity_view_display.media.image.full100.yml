@@ -1,0 +1,108 @@
+uuid: 037ab12b-e905-4317-be0a-4539f6289c5a
+langcode: it
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.full100
+    - field.field.media.image.field_data
+    - field.field.media.image.field_location
+    - field.field.media.image.field_media_image
+    - field.field.media.image.field_titolo
+    - image.style.full100
+    - media.type.image
+  module:
+    - field_group
+    - geocoder_geofield
+    - image
+    - layout_builder
+third_party_settings:
+  field_group:
+    group_wrapper:
+      children:
+        - field_media_image
+        - group_text
+      label: Wrapper
+      parent_name: ''
+      region: content
+      weight: 0
+      format_type: html_element
+      format_settings:
+        classes: omeka-resource-wrapper-link
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+    group_text:
+      children:
+        - field_titolo
+      label: Text
+      parent_name: group_wrapper
+      region: content
+      weight: 4
+      format_type: html_element
+      format_settings:
+        classes: text
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+  layout_builder:
+    enabled: false
+    allow_custom: false
+_core:
+  default_config_hash: 73xaTNkI5J6sfFcBmNYeuk070X3mQS_iwwWaPYyfG2M
+id: media.image.full100
+targetEntityType: media
+bundle: image
+mode: full100
+content:
+  field_location:
+    type: geocoder_geofield_reverse_geocode
+    label: hidden
+    settings:
+      providers:
+        googlemaps:
+          checked: '1'
+          weight: '0'
+      dumper: wkt
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_media_image:
+    type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: full100
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_titolo:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 2
+    region: content
+hidden:
+  created: true
+  field_data: true
+  langcode: true
+  name: true
+  thumbnail: true
+  uid: true

@@ -1,0 +1,11 @@
+uuid: 093629a3-c98d-4132-92cf-1de33944bfde
+langcode: it
+status: true
+dependencies:
+  module:
+    - media
+id: media.full100
+label: full100
+description: ''
+targetEntityType: media
+cache: true

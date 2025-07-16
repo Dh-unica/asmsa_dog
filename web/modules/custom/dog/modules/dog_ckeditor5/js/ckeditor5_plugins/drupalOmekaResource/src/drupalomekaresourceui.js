@@ -1,5 +1,5 @@
 import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView, View, ContextualBalloon } from 'ckeditor5/src/ui';
+import { ButtonView } from 'ckeditor5/src/ui';
 import icon from '../../../../icons/drupalOmekaResource.svg';
 
 /**
@@ -7,7 +7,9 @@ import icon from '../../../../icons/drupalOmekaResource.svg';
  */
 export default class DrupalOmekaResourceUI extends Plugin {
   static get requires() {
-    return [ContextualBalloon];
+    // Temporarily remove ContextualBalloon requirement
+    // return [ContextualBalloon];
+    return [];
   }
 
   init() {
@@ -26,12 +28,14 @@ export default class DrupalOmekaResourceUI extends Plugin {
     // Initialize schema and conversions for alignment attributes
     this._setupSchemaAndConversions();
 
-    // Initialize the balloon panel
+    // Temporarily disable balloon functionality
+    /*
     this._balloon = editor.plugins.get(ContextualBalloon);
     this._createBalloonView();
 
     // Add event listener to handle element selection and display the balloon
     editor.editing.view.document.on('click', () => this._handleDocumentClick());
+    */
   }
 
   /**
@@ -105,7 +109,9 @@ export default class DrupalOmekaResourceUI extends Plugin {
 
   /**
    * Creates the balloon view with alignment buttons.
+   * Temporarily disabled
    */
+  /*
   _createBalloonView() {
     const buttonLeft = this._createAlignmentButton('Float Left', 'left');
     const buttonRight = this._createAlignmentButton('Float Right', 'right');
@@ -120,6 +126,7 @@ export default class DrupalOmekaResourceUI extends Plugin {
       children: [buttonLeft, buttonRight, buttonClear]
     });
   }
+  */
 
   /**
    * Creates an alignment button for the balloon view.
@@ -156,7 +163,9 @@ export default class DrupalOmekaResourceUI extends Plugin {
 
   /**
    * Handles document click events to display or hide the balloon.
+   * Temporarily disabled
    */
+  /*
   _handleDocumentClick() {
     const editor = this.editor;
     const viewElement = editor.editing.view.document.selection.getFirstPosition().parent;
@@ -167,10 +176,13 @@ export default class DrupalOmekaResourceUI extends Plugin {
       this._hideBalloon();
     }
   }
+  */
 
   /**
    * Shows the balloon panel for a given view element.
+   * Temporarily disabled
    */
+  /*
   _showBalloon(viewElement) {
     if (!this._balloon.hasView(this._balloonView)) {
       this._balloon.add({
@@ -181,23 +193,30 @@ export default class DrupalOmekaResourceUI extends Plugin {
       this._balloon.updatePosition(this._getBalloonPosition(viewElement));
     }
   }
+  */
 
   /**
    * Hides the balloon panel.
+   * Temporarily disabled
    */
+  /*
   _hideBalloon() {
     if (this._balloon.hasView(this._balloonView)) {
       this._balloon.remove(this._balloonView);
     }
   }
+  */
 
   /**
    * Calculates the position of the balloon relative to the view element.
+   * Temporarily disabled
    */
+  /*
   _getBalloonPosition(viewElement) {
     const editor = this.editor;
     const domElement = editor.editing.view.domConverter.mapViewToDom(viewElement);
 
     return { target: domElement };
   }
+  */
 }
