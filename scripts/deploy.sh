@@ -113,7 +113,7 @@ else
 fi
 
 # 7. Clear all caches
-log "Pulisco tutte le cache..."
+log "Pulisco tutte le cache...(tranne quelle persistenti)"
 sshpass -p "$REMOTE_PASSWORD" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE_HOST" "cd $REMOTE_WEBROOT && docker exec -t $CONTAINER_NAME vendor/bin/drush cache:rebuild"
 check_status "Cache rebuild"
 
