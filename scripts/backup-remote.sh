@@ -21,7 +21,7 @@ fi
 echo " Avvio del backup del database..."
 
 # 1 Esegui il dump del DB sul server remoto
-$SSH_CMD "$REMOTE_USER@$REMOTE_HOST" "mkdir -p $REMOTE_TEMP_DIR && cd $REMOTE_WEBROOT && docker exec asel_php bash -c 'mkdir -p /var/www/html/web/dump-tmp && drush sql-dump --gzip --result-file=/var/www/html/web/dump-tmp/$DUMP_NAME.sql'"
+$SSH_CMD "$REMOTE_USER@$REMOTE_HOST" "mkdir -p $REMOTE_TEMP_DIR && cd $REMOTE_WEBROOT && docker exec $CONTAINER_NAME bash -c 'mkdir -p /var/www/html/web/dump-tmp && drush sql-dump --gzip --result-file=/var/www/html/web/dump-tmp/$DUMP_NAME.sql'"
 
 # 2 Scarica il dump in locale
 $SCP_CMD "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DUMP_PATH" "$LOCAL_BACKUP_DIR/$DUMP_NAME.sql.gz"
