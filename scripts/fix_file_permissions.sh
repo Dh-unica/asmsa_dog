@@ -1,21 +1,18 @@
 #!/bin/bash
 
+# Nome del container PHP
+PHP_CONTAINER="asmsa_dog_php"
+
 # Imposta i permessi corretti per le directory dei file
 fix_permissions() {
     local base_dir=$1
     
-    # Assicurati che la directory base esista e abbia i permessi corretti
-    mkdir -p "$base_dir"
-    chmod 777 "$base_dir"
+    echo "Fixing permissions for $base_dir..."
     
-    # Crea la directory per il mese corrente se non esiste
-    current_dir="$base_dir/$(date +%Y-%m)"
-    mkdir -p "$current_dir"
-    chmod 777 "$current_dir"
-    
-    # Correggi i permessi di tutte le sottodirectory
-    find "$base_dir" -type d -exec chmod 777 {} \;
-    find "$base_dir" -type f -exec chmod 666 {} \;
+    # Esegui i comandi nel container
+    docker exec $PHP_CONTAINER mkdir -p "$base_dir"
+    docker exec $PHP_CONTAINER chmod -R 777 "$base_dir"
+    docker exec $PHP_CONTAINER find "$base_dir" -type f -exec chmod 666 {} \;
     
     echo "Permessi corretti applicati a: $base_dir"
 }
@@ -24,6 +21,7 @@ fix_permissions() {
 DIRS_TO_CHECK=(
     "/var/www/html/web/sites/default/files"
     "/var/www/html/web/sites/default/files/private"
+    "/var/www/html/web/sites/default"
 )
 
 # Applica le correzioni a tutte le directory
