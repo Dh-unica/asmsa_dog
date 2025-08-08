@@ -14,7 +14,7 @@ bundle: geonode_wms_timeline
 label: 'Wms server link'
 description: 'Enter the address of the geonode, this will have a similar form: https://geonode.dh.unica.it/geoserver/ows?service=WMS&version=1.1.1&request=GetCapabilities'
 required: true
-translatable: false
+translatable: true
 default_value:
   -
     attributes: {  }

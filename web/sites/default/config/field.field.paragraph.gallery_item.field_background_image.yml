@@ -6,7 +6,14 @@ dependencies:
     - field.storage.paragraph.field_background_image
     - paragraphs.paragraphs_type.gallery_item
   module:
+    - content_translation
     - image
+third_party_settings:
+  content_translation:
+    translation_sync:
+      alt: alt
+      title: title
+      file: '0'
 _core:
   default_config_hash: 2CUH18HK6lkjkLMUL8aUWYXYPx5wSjP9FlhB0TKawNA
 id: paragraph.gallery_item.field_background_image

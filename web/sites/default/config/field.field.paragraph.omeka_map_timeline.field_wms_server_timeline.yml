@@ -15,7 +15,7 @@ bundle: omeka_map_timeline
 label: 'Wms server timeline'
 description: 'Enter the connection data of a WMS server and date range for layers'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:

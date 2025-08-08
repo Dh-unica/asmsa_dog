@@ -1,0 +1,20 @@
+uuid: e40c3ab5-6263-4bf7-af59-2d0b2a5a5af4
+langcode: it
+status: true
+dependencies:
+  config:
+    - media.type.remote_video
+  module:
+    - path
+id: media.remote_video.path
+field_name: path
+entity_type: media
+bundle: remote_video
+label: 'Alias URL'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

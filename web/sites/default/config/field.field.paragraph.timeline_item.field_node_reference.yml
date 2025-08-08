@@ -17,7 +17,7 @@ bundle: timeline_item
 label: 'Node reference'
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:

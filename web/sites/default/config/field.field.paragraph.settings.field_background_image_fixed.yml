@@ -14,7 +14,7 @@ bundle: settings
 label: 'Background Image fixed'
 description: 'If on, sets the paragraph background image as fixed.'
 required: false
-translatable: false
+translatable: true
 default_value:
   -
     value: 0

@@ -1,0 +1,18 @@
+uuid: e4cf3360-a5fa-465d-baab-39f585b72718
+langcode: it
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.omeka_gallery
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: paragraph.omeka_gallery
+target_entity_type_id: paragraph
+target_bundle: omeka_gallery
+default_langcode: site_default
+language_alterable: true

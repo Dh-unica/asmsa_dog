@@ -14,7 +14,7 @@ bundle: hero
 label: Overlapping
 description: 'If checked, the following content covers a portion of this component. <a href="https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-immagine-e-margine-negativo-per-contenuti-sovrapposti" title="Read the Docs" target="_blank">Docs</a>'
 required: false
-translatable: false
+translatable: true
 default_value:
   -
     value: 0

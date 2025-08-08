@@ -14,7 +14,7 @@ bundle: accordion
 label: 'Accordion left icon'
 description: 'Show the icon on the left instead of on the right'
 required: false
-translatable: false
+translatable: true
 default_value:
   -
     value: 0

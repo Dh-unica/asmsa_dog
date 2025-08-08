@@ -12,7 +12,7 @@ bundle: geonode_wms
 label: 'Wms layer'
 description: "Enter the name of a wms layer. This will look something like:\r\ngeonode:layername\r\nYou can also enter more than one separated by commas"
 required: true
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

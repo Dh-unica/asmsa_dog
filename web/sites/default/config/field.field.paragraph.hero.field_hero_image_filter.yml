@@ -14,7 +14,7 @@ bundle: hero
 label: 'Image filter'
 description: 'If checked, a filter is added as described in the <a href="https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-overlay-e-filtro-di-colore-primario" title="Read the Docs" target="_blank">Docs</a>.'
 required: false
-translatable: false
+translatable: true
 default_value:
   -
     value: 0

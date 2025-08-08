@@ -1,0 +1,20 @@
+uuid: a380c845-6c31-408b-9d3d-b1aa5a0862d4
+langcode: it
+status: true
+dependencies:
+  config:
+    - media.type.document
+id: media.document.name
+field_name: name
+entity_type: media
+bundle: document
+label: 'Nome file'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: ''
+default_value_callback: ''
+settings: {  }
+field_type: string

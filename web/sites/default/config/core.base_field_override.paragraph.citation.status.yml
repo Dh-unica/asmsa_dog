@@ -1,0 +1,22 @@
+uuid: d110b2cc-72ad-4ae1-9e23-9efdf5238e3b
+langcode: it
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.citation
+id: paragraph.citation.status
+field_name: status
+entity_type: paragraph
+bundle: citation
+label: Pubblicato
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

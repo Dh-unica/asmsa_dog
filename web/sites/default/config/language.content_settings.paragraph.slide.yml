@@ -1,0 +1,18 @@
+uuid: a09b4df6-b74e-49f3-9684-c3ce7c592f4e
+langcode: it
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.slide
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: paragraph.slide
+target_entity_type_id: paragraph
+target_bundle: slide
+default_langcode: site_default
+language_alterable: true

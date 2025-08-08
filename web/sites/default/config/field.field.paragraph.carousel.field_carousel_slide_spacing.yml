@@ -16,7 +16,7 @@ bundle: carousel
 label: 'Slide spacing'
 description: 'Select slide separator.'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

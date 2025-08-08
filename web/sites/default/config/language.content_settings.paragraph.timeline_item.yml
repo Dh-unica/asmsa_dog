@@ -1,0 +1,18 @@
+uuid: a8aaf9eb-c63c-43a1-ac99-2865aa0ee015
+langcode: it
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.timeline_item
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: paragraph.timeline_item
+target_entity_type_id: paragraph
+target_bundle: timeline_item
+default_langcode: site_default
+language_alterable: true

@@ -1,0 +1,18 @@
+uuid: 4f40fef8-0266-4430-a3e8-8e53b4c5addc
+langcode: it
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.geonode_wms_timeline
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: paragraph.geonode_wms_timeline
+target_entity_type_id: paragraph
+target_bundle: geonode_wms_timeline
+default_langcode: site_default
+language_alterable: true

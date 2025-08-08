@@ -16,7 +16,7 @@ bundle: user
 label: Ritratto
 description: 'Il tuo viso virtuale o la tua immagine.'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:

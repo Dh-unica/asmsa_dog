@@ -6,7 +6,14 @@ dependencies:
     - field.storage.paragraph.field_background_image
     - paragraphs.paragraphs_type.slide
   module:
+    - content_translation
     - image
+third_party_settings:
+  content_translation:
+    translation_sync:
+      alt: alt
+      title: title
+      file: '0'
 _core:
   default_config_hash: SR6_kennkya3sIbHnZ2tqH2HO6cvaZWMeA1incXMMSM
 id: paragraph.slide.field_background_image

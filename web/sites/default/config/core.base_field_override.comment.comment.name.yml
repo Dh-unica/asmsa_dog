@@ -1,0 +1,20 @@
+uuid: 36ec76af-ff12-4324-b503-68d24163f9fe
+langcode: it
+status: true
+dependencies:
+  config:
+    - comment.type.comment
+id: comment.comment.name
+field_name: name
+entity_type: comment
+bundle: comment
+label: 'Nome file'
+description: "Nome dell'autore del commento."
+required: false
+translatable: false
+default_value:
+  -
+    value: ''
+default_value_callback: ''
+settings: {  }
+field_type: string

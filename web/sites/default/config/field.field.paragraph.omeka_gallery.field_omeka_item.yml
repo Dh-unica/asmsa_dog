@@ -14,7 +14,7 @@ bundle: omeka_gallery
 label: 'Omeka item'
 description: 'Browse the Omeka server and select the items to associate'
 required: true
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:

@@ -1,0 +1,18 @@
+uuid: be87d95e-6ffd-46e9-a598-7feb7f52debf
+langcode: it
+status: true
+dependencies:
+  config:
+    - comment.type.comment
+id: comment.comment.homepage
+field_name: homepage
+entity_type: comment
+bundle: comment
+label: Homepage
+description: "L'indirizzo della home page dell'autore del commento."
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: uri

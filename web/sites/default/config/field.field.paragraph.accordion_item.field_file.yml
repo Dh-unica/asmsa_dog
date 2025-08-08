@@ -6,7 +6,14 @@ dependencies:
     - field.storage.paragraph.field_file
     - paragraphs.paragraphs_type.accordion_item
   module:
+    - content_translation
     - file
+third_party_settings:
+  content_translation:
+    translation_sync:
+      target_id: target_id
+      display: display
+      description: description
 _core:
   default_config_hash: qRiAafkfqRQSwMnl2sf4X7DqGv9KT4GuwJcGXf5UX_8
 id: paragraph.accordion_item.field_file

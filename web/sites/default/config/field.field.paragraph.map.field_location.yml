@@ -16,7 +16,7 @@ bundle: map
 label: Posizione
 description: ''
 required: true
-translatable: false
+translatable: true
 default_value:
   -
     value: 'POINT (16.331606 38.299063)'

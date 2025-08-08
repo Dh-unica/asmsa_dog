@@ -1,0 +1,18 @@
+uuid: 31fba82d-310e-4256-bc99-12b5cbb61743
+langcode: it
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.callout
+id: paragraph.callout.created
+field_name: created
+entity_type: paragraph
+bundle: callout
+label: 'Creato il'
+description: 'The time that the Paragraph was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

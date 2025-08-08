@@ -1,0 +1,18 @@
+uuid: 76d9b3db-dd6c-4248-8adb-d9c7d64a4828
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.article
+id: node.article.changed
+field_name: changed
+entity_type: node
+bundle: article
+label: Modificato
+description: "Data e ora in cui il nodo è stato modificato l'ultima volta."
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

@@ -6,7 +6,14 @@ dependencies:
     - field.storage.paragraph.field_file
     - paragraphs.paragraphs_type.attachments
   module:
+    - content_translation
     - file
+third_party_settings:
+  content_translation:
+    translation_sync:
+      target_id: target_id
+      display: display
+      description: description
 _core:
   default_config_hash: TI9c6osPfMZ1rMOdlzKKNNjML-PLTGYRJCmbOtQSE-A
 id: paragraph.attachments.field_file
@@ -16,7 +23,7 @@ bundle: attachments
 label: 'File legacy'
 description: 'Upload one or more files from your device. If you want to attach a file that has already been uploaded, use the <em>File Browser</em> by positioning yourself in the <strong>public://attachments</strong> folder.'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:

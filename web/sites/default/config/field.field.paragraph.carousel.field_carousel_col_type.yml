@@ -16,7 +16,7 @@ bundle: carousel
 label: 'Column type'
 description: 'Select slide column type.'
 required: true
-translatable: false
+translatable: true
 default_value:
   -
     value: it-carousel-landscape-abstract-three-cols

@@ -1,0 +1,22 @@
+uuid: bfdfbd5d-ed63-4433-9b9f-7d1ebc51f206
+langcode: it
+status: true
+dependencies:
+  config:
+    - comment.type.comment
+id: comment.comment.status
+field_name: status
+entity_type: comment
+bundle: comment
+label: Pubblicato
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: 'Drupal\comment\Entity\Comment::getDefaultStatus'
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

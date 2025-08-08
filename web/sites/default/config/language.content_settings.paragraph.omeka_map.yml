@@ -1,0 +1,18 @@
+uuid: 26d7c7f1-4aff-4c6c-835d-1fbfb39bca93
+langcode: it
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.omeka_map
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: paragraph.omeka_map
+target_entity_type_id: paragraph
+target_bundle: omeka_map
+default_langcode: site_default
+language_alterable: true

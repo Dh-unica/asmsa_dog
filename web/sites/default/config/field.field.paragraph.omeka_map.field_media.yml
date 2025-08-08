@@ -16,7 +16,7 @@ bundle: omeka_map
 label: Media
 description: 'Inserisci media (immagini, audio, documenti, video remoti).'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:

@@ -1,0 +1,22 @@
+uuid: c5da0d2f-368f-460e-95f1-09fc8a9fd0c4
+langcode: it
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.callout
+id: paragraph.callout.status
+field_name: status
+entity_type: paragraph
+bundle: callout
+label: Pubblicato
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: Acceso
+  off_label: Spento
+field_type: boolean

@@ -1,0 +1,20 @@
+uuid: 9acc181a-90bf-4015-8883-2e9a1729c8eb
+langcode: it
+status: true
+dependencies:
+  config:
+    - media.type.remote_video
+id: media.remote_video.uid
+field_name: uid
+entity_type: media
+bundle: remote_video
+label: 'Creato da'
+description: 'The user ID of the author.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: 'Drupal\media\Entity\Media::getDefaultEntityOwner'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

@@ -133,6 +133,7 @@ module:
   pathauto: 1
   webform_bootstrap: 1
   ds_extras: 2
+  content_translation: 10
   views: 10
   paragraphs: 11
   standard: 1000

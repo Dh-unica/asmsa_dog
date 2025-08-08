@@ -12,7 +12,7 @@ bundle: drupal_gallery
 label: Titolo
 description: "Inserire un titolo per l'immagine"
 required: true
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

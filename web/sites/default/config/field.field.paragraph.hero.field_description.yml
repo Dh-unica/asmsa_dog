@@ -14,7 +14,7 @@ bundle: hero
 label: Descrizione
 description: 'Accessibility text. Default: <em>Highlights section</em>'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

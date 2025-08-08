@@ -1,0 +1,11 @@
+uuid: 11e5a54d-335f-4f83-bf36-42352b333906
+langcode: it
+status: true
+dependencies:
+  config:
+    - crop.type.bootstrap_italia_31_19
+id: crop.bootstrap_italia_31_19
+target_entity_type_id: crop
+target_bundle: bootstrap_italia_31_19
+default_langcode: site_default
+language_alterable: false

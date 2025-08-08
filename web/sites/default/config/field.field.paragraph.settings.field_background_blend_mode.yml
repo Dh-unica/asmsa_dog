@@ -16,7 +16,7 @@ bundle: settings
 label: 'Background blend mode'
 description: 'Choose how to blend the background. You must have set a wallpaper first.'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

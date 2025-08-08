@@ -1,0 +1,18 @@
+uuid: 7e7d02b1-5b81-4b77-bbac-d3b0a1d46320
+langcode: it
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.citation
+id: paragraph.citation.created
+field_name: created
+entity_type: paragraph
+bundle: citation
+label: 'Creato il'
+description: 'The time that the Paragraph was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

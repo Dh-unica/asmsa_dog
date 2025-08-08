@@ -12,7 +12,7 @@ bundle: geonode_wms
 label: 'Wms layer name'
 description: 'Write the name of the layer'
 required: true
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

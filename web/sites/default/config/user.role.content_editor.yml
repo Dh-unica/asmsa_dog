@@ -12,7 +12,9 @@ dependencies:
     - node.type.page
     - taxonomy.vocabulary.tags
   module:
+    - block_content
     - comment
+    - content_translation
     - contextual
     - dog
     - file
@@ -20,6 +22,7 @@ dependencies:
     - layout_builder
     - media
     - node
+    - paragraphs
     - path
     - system
     - taxonomy
@@ -46,6 +49,7 @@ permissions:
   - 'configure editable page node layout overrides'
   - 'create and edit custom blocks'
   - 'create audio media'
+  - 'create content translations'
   - 'create document media'
   - 'create image media'
   - 'create media'
@@ -59,6 +63,7 @@ permissions:
   - 'delete any media'
   - 'delete any page content'
   - 'delete any remote_video media'
+  - 'delete content translations'
   - 'delete media'
   - 'delete own audio media'
   - 'delete own document media'
@@ -81,7 +86,12 @@ permissions:
   - 'edit terms in tags'
   - 'revert all revisions'
   - 'revert page revisions'
+  - 'translate any entity'
+  - 'translate block_content'
+  - 'translate page node'
+  - 'translate paragraph'
   - 'update any media'
+  - 'update content translations'
   - 'update media'
   - 'use text format bootstrap_italia_2'
   - 'view all revisions'

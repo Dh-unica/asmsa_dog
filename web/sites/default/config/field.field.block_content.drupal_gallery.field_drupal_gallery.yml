@@ -15,7 +15,7 @@ bundle: drupal_gallery
 label: 'Drupal gallery'
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:
