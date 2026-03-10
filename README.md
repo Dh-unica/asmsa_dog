@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://storia.dh.unica.it/asmsa/sites/default/files/wallpapers/tritone2_0-transformed-tiny.png" alt="Atlante digitale di Storia Marittima del Regno di Sardegna" width="100%" />
+<img src="docs/images/cover.png" alt="Atlante digitale di Storia Marittima del Regno di Sardegna" width="100%" />
 
 # Atlante digitale di Storia Marittima del Regno di Sardegna
 
