@@ -1,11 +1,11 @@
 uuid: b1880541-a9f2-4251-8d03-3206e3b86654
-langcode: en
+langcode: it
 status: true
 dependencies: {  }
 _core:
   default_config_hash: sL588ui1E_8-2c_UupwyYxcqX2OVyMFp3HTLbbFqvPc
 id: global
-label: Global
+label: Globale
 tags:
   canonical_url: '[current-page:url]'
   title: '[current-page:title] | [site:name]'
