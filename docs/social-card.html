@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASMSA Social Card</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px;
+    height: 640px;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  .card {
+    width: 1280px;
+    height: 640px;
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+    display: flex;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('https://storia.dh.unica.it/asmsa/sites/default/files/wallpapers/tritone2_0-transformed-tiny.png') center/cover no-repeat;
+    opacity: 0.18;
+    z-index: 0;
+  }
+  .content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    width: 100%;
+  }
+  .top-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-os { background: #e67e22; color: #fff; }
+  .badge-dh { background: #2ecc71; color: #fff; }
+  .badge-pa { background: #3498db; color: #fff; }
+  h1 {
+    font-size: 72px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+  }
+  h1 .d { color: #e74c3c; }
+  h1 .o { color: #2ecc71; }
+  h1 .g { color: #3498db; }
+  .subtitle {
+    font-size: 22px;
+    color: #bdc3c7;
+    font-weight: 300;
+    margin-bottom: 36px;
+    max-width: 700px;
+    line-height: 1.4;
+  }
+  .tech-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  .tech {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: #ecf0f1;
+    font-size: 15px;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+  }
+  .tech-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    color: #fff;
+  }
+  .footer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #95a5a6;
+    font-size: 16px;
+  }
+  .footer-line {
+    width: 40px;
+    height: 2px;
+    background: #e74c3c;
+    border-radius: 1px;
+  }
+  .accent-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #e74c3c 0%, #2ecc71 50%, #3498db 100%);
+    z-index: 2;
+  }
+  .side-graphic {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    opacity: 0.08;
+    font-size: 400px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -20px;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="content">
+    <div class="top-bar">
+      <span class="badge badge-os">Open Source</span>
+      <span class="badge badge-dh">Digital Humanities</span>
+      <span class="badge badge-pa">PA Italia</span>
+    </div>
+    <h1 style="font-size:52px;margin-bottom:12px;">Atlante digitale di Storia Marittima del Regno di Sardegna</h1>
+    <p class="subtitle">Patrimonio culturale digitale su mappe interattive e timeline &mdash; powered by <strong style="color:#fff"><span class="d">D</span>rupal + <span class="o">O</span>meka-S + <span class="g">G</span>eonode</strong></p>
+    <div class="tech-row">
+      <span class="tech"><span class="tech-icon" style="background:#0678BE">D</span> Drupal 10</span>
+      <span class="tech"><span class="tech-icon" style="background:#777BB4">P</span> PHP 8.2</span>
+      <span class="tech"><span class="tech-icon" style="background:#2496ED">D</span> Docker</span>
+      <span class="tech"><span class="tech-icon" style="background:#199900">L</span> Leaflet</span>
+      <span class="tech"><span class="tech-icon" style="background:#DC382D">R</span> Redis</span>
+      <span class="tech"><span class="tech-icon" style="background:#06c">B</span> Bootstrap Italia</span>
+    </div>
+    <div class="footer">
+      <span class="footer-line"></span>
+      <span>DH UniCA &mdash; Universit&agrave; degli Studi di Cagliari</span>
+    </div>
+  </div>
+  <div class="side-graphic">ASMSA</div>
+  <div class="accent-line"></div>
+</div>
+</body>
+</html>
