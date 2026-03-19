@@ -11,10 +11,15 @@ use Drupal\media\Entity;
 use Drupal\core\Url;
 
 /**
- * Implements theme_library_info_build().
+ * Implements hook_library_info_alter().
+ *
+ * @phpstan-param array<string, mixed> $libraries
+ *   Libraries array.
  */
-function italiagov_library_info_build(): array {
-  return Libraries::setLibraries();
+function italiagov_library_info_alter(array &$libraries): void {
+  if (class_exists(Libraries::class)) {
+    Libraries::setLibraries($libraries);
+  }
 }
 
 function italiagov_preprocess_dog_omeka_resource(array &$variables) {
