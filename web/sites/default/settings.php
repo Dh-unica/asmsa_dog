@@ -800,12 +800,7 @@ if (file_exists(__DIR__ . '/settings.ddev.php') && getenv('IS_DDEV_PROJECT') == 
 # if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
 #   include $app_root . '/' . $site_path . '/settings.local.php';
 # }
-/**
- * Development mode settings.
- */
-if (file_exists($app_root . '/modules/contrib/dev_mode/settings.dev_mode.php')) {
-  include $app_root . '/modules/contrib/dev_mode/settings.dev_mode.php';
-}
+
 
 ini_set('memory_limit', '1024M');
 

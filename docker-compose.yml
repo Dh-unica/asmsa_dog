@@ -28,6 +28,12 @@ services:
       PHP_FPM_USER: wodby
       PHP_FPM_GROUP: wodby
       COLUMNS: 80 # Set 80 columns for docker exec -it.
+      # L'immagine 8.2.35 cambia tre impostazioni: si tengono quelle di prima. Argomenti delle funzioni
+      # fuori dagli errori (dev_mode li mostra ai visitatori), APCu a 32 MB invece di 256.
+      PHP_ZEND_EXCEPTION_IGNORE_ARGS: "1"
+      PHP_APCU_SHM_SIZE: 32M
+      # CVE-2026-115560 non ha ancora una correzione: passa dal progresso degli upload, che Drupal non usa
+      PHP_SESSION_UPLOAD_PROGRESS_ENABLED: "0"
     volumes:
       - ./:/var/www/html
       - ./web:/var/www/html/asmsa
@@ -38,6 +44,7 @@ services:
     container_name: "${PROJECT_NAME}_crond"
     environment:
       CRONTAB: "0 * * * * drush -r /var/www/html/web cron"
+      PHP_ZEND_EXCEPTION_IGNORE_ARGS: "1"
     command: sudo -E crond -f -d 0
     volumes:
     - ./:/var/www/html:cached
